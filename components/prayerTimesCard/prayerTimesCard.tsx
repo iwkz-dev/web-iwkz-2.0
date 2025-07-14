@@ -145,11 +145,9 @@ export default function PrayerTimesCard({
             ))}
           </div>
         </CardContent>
-        <CardFooter className="flex justify-center flex-col">
-          <p className="text-sm text-green-800">
-            {`🕌 ${currentTime.format('dddd D MMMM YYYY')}`}
-          </p>
-          <p>🌤️ {prayerTimes.terbit}</p>
+        <CardFooter className="flex justify-center flex-col text-sm text-green-800">
+          <p>{`🕌 ${currentTime.format('dddd D MMMM YYYY')}`}</p>
+          <p>{`🌤️ ${prayerTimes.terbit}`}</p>
         </CardFooter>
       </Card>
     </section>
