@@ -99,7 +99,7 @@ export default function Events() {
                 </div>
 
                 <div className="text-center mt-12">
-                    <Button variant="outline">View all</Button>
+                    <Button variant="outline">View More</Button>
                 </div>
             </FadeInOnScroll>
         </section>

@@ -19,15 +19,15 @@ export default function PRS() {
 
                         <ul className="space-y-3 text-gray-700">
                             <li className="flex items-start gap-3">
-                                <FaLeaf className="mt-1 text-green-600" />
+                                <FaLeaf className="mt-1" />
                                 Cultural events that celebrate our heritage and traditions.
                             </li>
                             <li className="flex items-start gap-3">
-                                <FaUsers className="mt-1 text-blue-600" />
+                                <FaUsers className="mt-1" />
                                 Support services for newcomers and community members.
                             </li>
                             <li className="flex items-start gap-3">
-                                <FaHandshake className="mt-1 text-yellow-600" />
+                                <FaHandshake className="mt-1" />
                                 Networking opportunities for personal and professional growth.
                             </li>
                         </ul>
