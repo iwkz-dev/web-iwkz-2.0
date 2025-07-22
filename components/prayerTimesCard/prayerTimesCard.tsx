@@ -5,11 +5,10 @@ import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
 import { Clock, MapPin } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { PrayerTimes } from '@/types/prayerTimes.types';
-import { pick } from '@/lib/pick';
 import dayjs, { Dayjs } from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import { cn } from '@/lib/utils';
-import FadeInOnScroll from '../ui/fadeInScroll';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 dayjs.extend(duration);
 
@@ -49,6 +48,7 @@ export default function PrayerTimesCard({
   }
 
   const [currentTime, setCurrentTime] = useState(dayjs());
+  const [isOpen, setIsOpen] = useState(false);
 
   function getCurrentPrayerKey(
     times: Record<PrayerKey, string>,
@@ -102,57 +102,70 @@ export default function PrayerTimesCard({
   const countdown = getTimeDiff(prayerTimes[nextPrayerKey], currentTime);
 
   return (
-    <section className="py-8 px-4 bg-white select-none">
-      <FadeInOnScroll>
-        <Card className="container mx-auto max-w-6xl border text-card-foreground shadow-2xs bg-gradient-to-br from-green-50 to-green-100 border-green-200 hover:shadow-lg transition-all duration-300">
-          <CardHeader>
-            <div className="flex justify-between">
-              <div className="grid grid-cols-[auto_1fr] items-center gap-2 text-green-800">
+    <>
+      {/* Floating Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed z-50 bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all"
+      >
+        <Clock className="w-4 h-4" />
+        <span className="hidden sm:inline">Prayer Times</span>
+        {isOpen ? <FaChevronDown className="w-3 h-3" /> : <FaChevronUp className="w-3 h-3" />}
+      </button>
+
+      {/* Sliding Panel */}
+      <div
+        className={cn(
+          'fixed z-40 bottom-20 right-6 w-[90vw] sm:w-[400px] transition-transform duration-500',
+          isOpen ? 'translate-y-0' : 'translate-y-[120%]'
+        )}
+      >
+        <Card className="rounded-xl border border-green-200 bg-gradient-to-br from-green-50 to-green-100 shadow-xl">
+          <CardHeader className="pb-4">
+            <div className="flex justify-between items-center text-green-800">
+              <div className="flex items-center gap-2">
                 <Clock className="w-5 h-5" />
-                <p className="font-bold text-lg">Prayer Times</p>
+                <p className="font-bold text-xl tracking-tight">Prayer Times</p>
               </div>
-              <div className="grid grid-cols-[auto_1fr] items-center gap-2 text-green-800">
-                <MapPin className="w-3 h-3" />
-                <p className="text-sm">Berlin</p>
+              <div className="flex items-center gap-2 text-sm text-green-700">
+                <MapPin className="w-4 h-4" />
+                <span>Berlin</span>
               </div>
             </div>
-            <div className="flex justify-between">
-              <Badge variant="green">
-                {`Next prayer: ${PRAYER_LABELS[nextPrayerKey]} - ${String(
-                  countdown.hours()
-                ).padStart(2, '0')}:${String(countdown.minutes()).padStart(
-                  2,
-                  '0'
-                )}:${String(countdown.seconds()).padStart(2, '0')}`}
+
+            <div className="mt-2 flex justify-between items-center">
+              <Badge variant="green" className="text-xs font-medium px-3 py-1 rounded-full bg-green-600 text-white">
+                {`Next: ${PRAYER_LABELS[nextPrayerKey]} – ${String(countdown.hours()).padStart(2, '0')}:${String(countdown.minutes()).padStart(2, '0')}:${String(countdown.seconds()).padStart(2, '0')}`}
               </Badge>
-              <p className="text-sm">{currentTime.format('HH:mm:ss')}</p>
+              <p className="text-sm text-green-700 font-mono">{currentTime.format('HH:mm:ss')}</p>
             </div>
           </CardHeader>
 
-          <CardContent>
-            <div className="grid grid-rows-5 grid-cols-1 sm:grid-rows-1 sm:grid-cols-5 gap-2">
+          <CardContent className="pt-0">
+            <div className="flex flex-col gap-2">
               {PRAYER_ORDER.map((key) => (
                 <div
                   key={key}
                   className={cn(
-                    'flex-1 flex flex-col items-center p-4 rounded-lg',
+                    'flex justify-between items-center px-4 py-3 rounded-md ring-1 ring-inset text-sm',
                     key === currentPrayerKey
-                      ? ' text-white bg-green-700'
-                      : 'bg-white/70 text-green-800'
+                      ? 'bg-green-700 text-white ring-green-700 shadow-md'
+                      : 'bg-white/70 text-green-800 ring-green-100'
                   )}
                 >
-                  <p className="font-bold">{PRAYER_LABELS[key]}</p>
-                  <p className="text-sm">{prayerTimes[key]}</p>
+                  <span className="font-semibold">{PRAYER_LABELS[key]}</span>
+                  <span className="font-mono">{prayerTimes[key]}</span>
                 </div>
               ))}
             </div>
           </CardContent>
-          <CardFooter className="flex justify-center flex-col text-sm text-green-800">
-            <p>{`🕌 ${currentTime.format('dddd D MMMM YYYY')}`}</p>
-            <p>{`🌤️ ${prayerTimes.terbit}`}</p>
+
+          <CardFooter className="flex flex-col items-center mt-4 text-xs text-green-700 space-y-1">
+            <p>{`🕌 ${currentTime.format('dddd, D MMMM YYYY')}`}</p>
+            <p>{`🌤️ Sunrise (Terbit): ${prayerTimes.terbit}`}</p>
           </CardFooter>
         </Card>
-      </FadeInOnScroll>
-    </section>
+      </div>
+    </>
   );
 }
