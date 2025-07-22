@@ -3,16 +3,18 @@
 import { useEffect, useState } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
 
-    // Detect scroll
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 10);
         };
+
+        handleScroll();
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
@@ -24,11 +26,25 @@ export default function Header() {
                 : 'bg-transparent text-white'
                 }`}
         >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-                <div className="text-2xl font-logo">Logo</div>
+            <div
+                className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all duration-300 ${scrolled || menuOpen ? 'py-4' : 'py-6'
+                    }`}
+            >
 
+                <Link href="/" className="flex items-center gap-2">
+                    <div className="relative w-8 h-8">
+                        <Image
+                            src="/iwkz-logo.svg"
+                            alt="IWKZ Logo"
+                            fill
+                            className="object-contain"
+                            priority
+                        />
+                    </div>
+                    <span className="text-xl font-semibold tracking-tight">IWKZ e.V.</span>
+                </Link>
                 <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-                    <Link href="#">Home Page</Link>
+                    <Link href="#">Home</Link>
                     <Link href="#">News</Link>
                     <Link href="#">Our Services</Link>
                     <Link href="#">Upcoming Events</Link>
@@ -58,7 +74,7 @@ export default function Header() {
             >
                 <div className="space-y-3 text-sm font-medium">
                     <Link href="#" className="block">
-                        Home Page
+                        Home
                     </Link>
                     <Link href="#" className="block">
                         News

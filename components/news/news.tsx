@@ -30,8 +30,11 @@ export default function NewsSection() {
     return (
         <section className="relative min-h-dvh px-6 py-20 font-questrial flex flex-col items-center justify-center">
             <FadeInOnScroll>
-                <div className="max-w-5xl mx-auto text-center space-y-4 mb-12">
+                <div className="text-center space-y-4 mb-12 max-w-xl mx-auto">
                     <h2 className="text-4xl">News</h2>
+                    <p className="text-gray-700">
+                        Stay updated with the latest news from IWKZ. Explore recent activities, community events, and inspiring stories from the Indonesian Muslim community in Berlin.
+                    </p>
                 </div>
 
                 {/* Grid now supports 3 columns on large screens */}

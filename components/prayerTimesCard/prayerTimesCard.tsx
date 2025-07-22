@@ -9,6 +9,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import { cn } from '@/lib/utils';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { Button } from '../ui/button';
 
 dayjs.extend(duration);
 
@@ -128,7 +129,7 @@ export default function PrayerTimesCard({
 
   return (
     <>
-      <button
+      <Button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className="fixed z-50 bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all"
@@ -136,7 +137,7 @@ export default function PrayerTimesCard({
         <Clock className="w-4 h-4" />
         <span className="hidden sm:inline">Prayer Times</span>
         {isOpen ? <FaChevronDown className="w-3 h-3" /> : <FaChevronUp className="w-3 h-3" />}
-      </button>
+      </Button>
 
       <div
         ref={panelRef}
@@ -145,7 +146,7 @@ export default function PrayerTimesCard({
           isOpen ? 'translate-y-0' : 'translate-y-[120%]'
         )}
       >
-        <Card className="border border-green-200 bg-white/80 backdrop-blur-md shadow-xl rounded-sm gap-2">
+        <Card className="border border-green-200 bg-white/60 backdrop-blur-md shadow-xl rounded-sm gap-2">
           <CardHeader className="pb-4">
             <div className="flex justify-between items-center text-green-900">
               <div className="flex items-center gap-2">
