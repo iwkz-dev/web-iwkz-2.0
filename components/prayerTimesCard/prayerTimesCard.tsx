@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
 import { Clock, MapPin } from 'lucide-react';
 import { Badge } from '../ui/badge';
@@ -49,6 +49,23 @@ export default function PrayerTimesCard({
 
   const [currentTime, setCurrentTime] = useState(dayjs());
   const [isOpen, setIsOpen] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (panelRef.current && !panelRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isOpen]);
 
   function getCurrentPrayerKey(
     times: Record<PrayerKey, string>,
@@ -103,7 +120,6 @@ export default function PrayerTimesCard({
 
   return (
     <>
-      {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="fixed z-50 bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all"
@@ -113,21 +129,21 @@ export default function PrayerTimesCard({
         {isOpen ? <FaChevronDown className="w-3 h-3" /> : <FaChevronUp className="w-3 h-3" />}
       </button>
 
-      {/* Sliding Panel */}
       <div
         className={cn(
           'fixed z-40 bottom-20 right-6 w-[90vw] sm:w-[400px] transition-transform duration-500',
           isOpen ? 'translate-y-0' : 'translate-y-[120%]'
         )}
+        ref={panelRef}
       >
-        <Card className="rounded-xl border border-green-200 bg-gradient-to-br from-green-50 to-green-100 shadow-xl">
+        <Card className="border border-green-200 bg-white/80 backdrop-blur-md shadow-xl rounded-sm">
           <CardHeader className="pb-4">
-            <div className="flex justify-between items-center text-green-800">
+            <div className="flex justify-between items-center text-green-900">
               <div className="flex items-center gap-2">
                 <Clock className="w-5 h-5" />
                 <p className="font-bold text-xl tracking-tight">Prayer Times</p>
               </div>
-              <div className="flex items-center gap-2 text-sm text-green-700">
+              <div className="flex items-center gap-2 text-sm text-green-800">
                 <MapPin className="w-4 h-4" />
                 <span>Berlin</span>
               </div>
@@ -147,10 +163,10 @@ export default function PrayerTimesCard({
                 <div
                   key={key}
                   className={cn(
-                    'flex justify-between items-center px-4 py-3 rounded-md ring-1 ring-inset text-sm',
+                    'flex justify-between items-center px-4 py-3 ring-1 ring-inset text-sm shadow transition-colors',
                     key === currentPrayerKey
                       ? 'bg-green-700 text-white ring-green-700 shadow-md'
-                      : 'bg-white/70 text-green-800 ring-green-100'
+                      : 'bg-white/60 text-green-900 ring-green-100'
                   )}
                 >
                   <span className="font-semibold">{PRAYER_LABELS[key]}</span>
@@ -160,7 +176,7 @@ export default function PrayerTimesCard({
             </div>
           </CardContent>
 
-          <CardFooter className="flex flex-col items-center mt-4 text-xs text-green-700 space-y-1">
+          <CardFooter className="flex flex-col items-center mt-4 text-xs text-green-800 space-y-1">
             <p>{`🕌 ${currentTime.format('dddd, D MMMM YYYY')}`}</p>
             <p>{`🌤️ Sunrise (Terbit): ${prayerTimes.terbit}`}</p>
           </CardFooter>
