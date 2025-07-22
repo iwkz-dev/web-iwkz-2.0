@@ -120,14 +120,14 @@ export default function PrayerTimesCard({
           isOpen ? 'translate-y-0' : 'translate-y-[120%]'
         )}
       >
-        <Card className="rounded-xl border border-green-200 bg-gradient-to-br from-green-50 to-green-100 shadow-xl">
+        <Card className="border border-green-300 bg-white/80 backdrop-blur-md shadow-xl">
           <CardHeader className="pb-4">
-            <div className="flex justify-between items-center text-green-800">
+            <div className="flex justify-between items-center text-green-900">
               <div className="flex items-center gap-2">
                 <Clock className="w-5 h-5" />
                 <p className="font-bold text-xl tracking-tight">Prayer Times</p>
               </div>
-              <div className="flex items-center gap-2 text-sm text-green-700">
+              <div className="flex items-center gap-2 text-sm text-green-800">
                 <MapPin className="w-4 h-4" />
                 <span>Berlin</span>
               </div>
@@ -137,7 +137,7 @@ export default function PrayerTimesCard({
               <Badge variant="green" className="text-xs font-medium px-3 py-1 rounded-full bg-green-600 text-white">
                 {`Next: ${PRAYER_LABELS[nextPrayerKey]} – ${String(countdown.hours()).padStart(2, '0')}:${String(countdown.minutes()).padStart(2, '0')}:${String(countdown.seconds()).padStart(2, '0')}`}
               </Badge>
-              <p className="text-sm text-green-700 font-mono">{currentTime.format('HH:mm:ss')}</p>
+              <p className="text-sm text-green-800 font-mono">{currentTime.format('HH:mm:ss')}</p>
             </div>
           </CardHeader>
 
@@ -147,10 +147,10 @@ export default function PrayerTimesCard({
                 <div
                   key={key}
                   className={cn(
-                    'flex justify-between items-center px-4 py-3 rounded-md ring-1 ring-inset text-sm',
+                    'flex justify-between items-center px-4 py-3 ring-1 ring-inset text-sm',
                     key === currentPrayerKey
                       ? 'bg-green-700 text-white ring-green-700 shadow-md'
-                      : 'bg-white/70 text-green-800 ring-green-100'
+                      : 'bg-white/60 text-green-900 ring-green-100'
                   )}
                 >
                   <span className="font-semibold">{PRAYER_LABELS[key]}</span>
@@ -160,12 +160,13 @@ export default function PrayerTimesCard({
             </div>
           </CardContent>
 
-          <CardFooter className="flex flex-col items-center mt-4 text-xs text-green-700 space-y-1">
+          <CardFooter className="flex flex-col items-center mt-4 text-xs text-green-900 space-y-1">
             <p>{`🕌 ${currentTime.format('dddd, D MMMM YYYY')}`}</p>
             <p>{`🌤️ Sunrise (Terbit): ${prayerTimes.terbit}`}</p>
           </CardFooter>
         </Card>
       </div>
     </>
+
   );
 }
