@@ -50,17 +50,25 @@ export default function PrayerTimesCard({
   const [currentTime, setCurrentTime] = useState(dayjs());
   const [isOpen, setIsOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      if (panelRef.current && !panelRef.current.contains(event.target as Node)) {
+      if (
+        panelRef.current &&
+        !panelRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
+
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
       document.addEventListener('touchstart', handleClickOutside);
     }
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('touchstart', handleClickOutside);
@@ -121,6 +129,7 @@ export default function PrayerTimesCard({
   return (
     <>
       <button
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className="fixed z-50 bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all"
       >
@@ -130,11 +139,11 @@ export default function PrayerTimesCard({
       </button>
 
       <div
+        ref={panelRef}
         className={cn(
           'fixed z-40 bottom-20 right-6 w-[90vw] sm:w-[400px] transition-transform duration-500',
           isOpen ? 'translate-y-0' : 'translate-y-[120%]'
         )}
-        ref={panelRef}
       >
         <Card className="border border-green-200 bg-white/80 backdrop-blur-md shadow-xl rounded-sm">
           <CardHeader className="pb-4">
