@@ -5,7 +5,7 @@ import FadeInOnScroll from "../ui/fadeInScroll";
 
 export default function Hero() {
     return (
-        <section className="relative h-dvh flex items-center justify-center px-4 bg-[url('/images/hero-bg.webp')] bg-cover bg-center font-questrial bg-fixed">
+        <section className="relative min-h-dvh flex items-center justify-center px-4 bg-[url('/images/hero-bg.webp')] bg-cover bg-center font-questrial bg-fixed">
             <div className="absolute inset-0 bg-black/60 z-0" />
             <FadeInOnScroll>
                 <div className="relative z-10 text-center max-w-2xl space-y-6">
