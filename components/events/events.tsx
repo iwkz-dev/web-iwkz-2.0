@@ -48,7 +48,7 @@ function formatDate(dateString: string) {
 
 export default function Events() {
     return (
-        <section className="relative bg-green-100 min-h-dvh px-6 py-20 font-questrial flex m-auto flex-col items-center justify-center">
+        <section className="relative min-h-dvh px-6 py-20 font-questrial flex m-auto flex-col items-center justify-center">
             <FadeInOnScroll>
                 <div className="text-center space-y-4 mb-12 max-w-xl mx-auto">
                     <h2 className="text-4xl">Upcoming Events</h2>
@@ -63,7 +63,7 @@ export default function Events() {
                         return (
                             <div
                                 key={event.id}
-                                className="min-h-[450px] rounded-xl overflow-hidden shadow-sm border border-gray-200 bg-green-100 transition hover:shadow-md"
+                                className="min-h-[450px] overflow-hidden border border-gray-200 transition"
                             >
                                 <div className="relative h-64 bg-gray-100">
                                     <Image
@@ -72,15 +72,15 @@ export default function Events() {
                                         fill
                                         className="object-cover"
                                     />
-                                    <div className="absolute top-2 right-2 bg-white text-center px-3 py-1 rounded-md shadow-sm text-sm font-medium text-gray-800">
+                                    <div className="absolute top-2 right-2 bg-white text-center px-3 py-1 rounded-sm text-sm font-medium text-gray-800">
                                         <div className="text-xs">{day}</div>
                                         <div className="text-xl font-bold">{dayNum}</div>
                                         <div className="text-xs">{monthYear}</div>
                                     </div>
                                 </div>
 
-                                <div className="bg-green-50 p-6 space-y-3 h-full">
-                                    <span className="inline-block text-xs font-medium px-2 py-1 rounded bg-green-100 text-gray-800 shadow-sm">
+                                <div className="p-6 space-y-3 h-full">
+                                    <span className="inline-block text-xs font-medium px-2 py-1 rounded text-gray-800 border border-gray-300 bg-gray-50">
                                         {event.tag}
                                     </span>
                                     <h3 className="text-lg font-semibold text-gray-900">{event.title}</h3>
