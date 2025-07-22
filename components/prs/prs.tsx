@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Button } from '../ui/button';
-import { FaUsers, FaHandshake, FaLeaf } from 'react-icons/fa';
+import { FaUsers, FaHandshake, FaLeaf, FaHeart } from 'react-icons/fa';
 import FadeInOnScroll from '../ui/fadeInScroll';
 
 export default function PRS() {
@@ -33,7 +33,10 @@ export default function PRS() {
                         </ul>
 
                         <div className="flex flex-wrap gap-4 mt-6">
-                            <Button variant="outline">Donate Now</Button>
+                            <Button variant="outline" className="flex items-center gap-2">
+                                <FaHeart className="text-red-500" />
+                                Donate Now
+                            </Button>
                             <Button variant="ghost" className="text-black border border-gray-400">
                                 Learn More
                             </Button>
@@ -46,7 +49,7 @@ export default function PRS() {
                             src="/images/hero-bg.webp"
                             alt="Community photo"
                             fill
-                            className="object-cover rounded-md"
+                            className="object-cover"
                             priority
                         />
                     </div>

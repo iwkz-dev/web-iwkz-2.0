@@ -20,8 +20,8 @@ export default function Header() {
     return (
         <header
             className={`fixed w-full top-0 z-50 transition-all duration-300 ${scrolled || menuOpen
-                    ? 'bg-white text-gray-800 shadow'
-                    : 'bg-transparent text-white'
+                ? 'bg-white text-gray-800 shadow'
+                : 'bg-transparent text-white'
                 }`}
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
@@ -34,9 +34,9 @@ export default function Header() {
                     <Link href="#">Upcoming Events</Link>
                     <Link
                         href="#"
-                        className={`border px-3 py-1 rounded ${scrolled
-                                ? 'border-gray-300 hover:bg-gray-100'
-                                : 'border-white hover:bg-white hover:text-black'
+                        className={`border px-3 py-1 ${scrolled
+                            ? 'border-gray-300 hover:bg-gray-100'
+                            : 'border-white hover:bg-white hover:text-black'
                             }`}
                     >
                         Proyek Rumah Surga
