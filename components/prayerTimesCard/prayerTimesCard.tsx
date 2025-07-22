@@ -145,7 +145,7 @@ export default function PrayerTimesCard({
           isOpen ? 'translate-y-0' : 'translate-y-[120%]'
         )}
       >
-        <Card className="border border-green-200 bg-white/80 backdrop-blur-md shadow-xl rounded-sm">
+        <Card className="border border-green-200 bg-white/80 backdrop-blur-md shadow-xl rounded-sm gap-2">
           <CardHeader className="pb-4">
             <div className="flex justify-between items-center text-green-900">
               <div className="flex items-center gap-2">
