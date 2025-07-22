@@ -1,6 +1,7 @@
 import fetchPrayerTime from '@/actions/prayerTime';
 import PrayerTimesCard from '@/components/prayerTimesCard/prayerTimesCard';
 import Hero from '@/components/hero/hero';
+import PRS from '@/components/prs/prs';
 
 export default async function Home() {
   const prayerTimeData = await fetchPrayerTime();
@@ -9,6 +10,7 @@ export default async function Home() {
     <div>
       <Hero />
       <PrayerTimesCard prayerTimes={prayerTimeData} />
+      <PRS />
     </div>
   );
 }
