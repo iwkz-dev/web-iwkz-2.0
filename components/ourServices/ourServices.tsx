@@ -67,10 +67,10 @@ export default function CommunityServices() {
                                 <div
                                     key={item.key}
                                     onClick={() => setActiveKey(item.key)}
-                                    className={`cursor-pointer p-4 transition-all duration-200 ${isActive ? 'bg-green-100 border-l-4 border-green-400 shadow-sm' : ''
+                                    className={`cursor-pointer p-4 transition-all duration-200 ${isActive ? 'border-l-4 border-pink-200' : ''
                                         }`}
                                 >
-                                    <h3 className={`text-xl text-gray-800 ${isActive ? 'font-semibold' : 'font-normal'}`}>
+                                    <h3 className="text-xl text-gray-800">
                                         {item.title}
                                     </h3>
                                     <p className="text-gray-700 text-sm mt-1">{item.description}</p>
