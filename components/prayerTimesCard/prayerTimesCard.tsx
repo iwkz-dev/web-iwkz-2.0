@@ -146,7 +146,7 @@ export default function PrayerTimesCard({
           isOpen ? 'translate-y-0' : 'translate-y-[120%]'
         )}
       >
-        <Card className="border border-green-200 bg-white/60 backdrop-blur-md shadow-xl rounded-sm gap-2">
+        <Card className="bg-white/60 backdrop-blur-md shadow-xl rounded-sm gap-2">
           <CardHeader className="pb-4">
             <div className="flex justify-between items-center text-green-900">
               <div className="flex items-center gap-2">
@@ -173,10 +173,10 @@ export default function PrayerTimesCard({
                 <div
                   key={key}
                   className={cn(
-                    'flex justify-between items-center px-4 py-3 ring-1 ring-inset text-sm shadow transition-colors',
+                    'flex justify-between items-center px-4 py-3 text-sm shadow transition-colors',
                     key === currentPrayerKey
-                      ? 'bg-green-700 text-white ring-green-700 shadow-md'
-                      : 'bg-white/60 text-green-900 ring-green-100'
+                      ? 'bg-green-700 text-white shadow-md'
+                      : 'bg-white/60 text-green-900 shadow-md'
                   )}
                 >
                   <span className="font-semibold">{PRAYER_LABELS[key]}</span>
