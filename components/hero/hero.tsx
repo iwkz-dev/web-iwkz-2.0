@@ -14,17 +14,20 @@ export default function Hero(props: IHeroProps) {
     return (
         <section className="relative min-h-dvh flex items-center justify-center px-4 font-questrial overflow-hidden">
             <div
-                className="absolute inset-0 z-0 bg-cover bg-center bg-fixed"
+                className="absolute inset-0 z-0"
                 style={{
                     backgroundImage: `
       radial-gradient(circle at center, rgba(0,0,0,0) 25%, rgba(0,0,0,0.85) 100%),
       url(${heroContent.image.url})
     `,
-                    filter: 'blur(5px)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundAttachment: 'fixed',
+                    backgroundRepeat: 'no-repeat',
                     backgroundBlendMode: 'overlay',
+                    filter: 'blur(5px)',
                 }}
             />
-
             <div className="absolute inset-0 bg-black/60 z-0" />
             <FadeInOnScroll>
                 <div className="relative z-10 text-center max-w-2xl space-y-6">
