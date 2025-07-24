@@ -12,7 +12,7 @@ export default async function fetchPageContent(): Promise<IPageResponse | null> 
         }
     );
     if (!response.ok) {
-        console.error('Failed to fetch home page data');
+        console.error('Failed to fetch page content data');
         return null;
     }
     return response.json();

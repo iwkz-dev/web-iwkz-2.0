@@ -1,10 +1,10 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { IActivityCategory, IActivityCategorySectionComponent, IPage } from '@/types/page.types';
-import FadeInOnScroll from '../ui/fadeInScroll';
+import FadeInOnScroll from '@/components/ui/fadeInScroll';
 
 interface IOurServicesProps {
     ourServicesContent: IPage
@@ -20,7 +20,17 @@ export default function CommunityServices({ ourServicesContent }: IOurServicesPr
         return categories.find((item: IActivityCategory) => item.id === activeKey);
     }, [activeKey, categories]);
 
-    console.log(activeItem?.image[0])
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setActiveKey((prevId) => {
+                const currentIndex = categories.findIndex((cat) => cat.id === prevId);
+                const nextIndex = (currentIndex + 1) % categories.length;
+                return categories[nextIndex].id;
+            });
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [categories]);
 
     return (
         <section className="relative min-h-dvh bg-green-50 px-6 py-20 font-questrial flex flex-col items-center justify-center">
@@ -36,7 +46,7 @@ export default function CommunityServices({ ourServicesContent }: IOurServicesPr
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start max-w-6xl mx-auto">
                     {/* Image Section */}
                     <figure className="w-full h-[350px] md:h-[400px] lg:h-[450px] relative overflow-hidden">
-                        {activeItem?.image[0]?.url && (
+                        {activeItem?.image?.[0]?.url && (
                             <div
                                 key={activeItem.image[0].id}
                                 className="absolute inset-0"
@@ -56,8 +66,7 @@ export default function CommunityServices({ ourServicesContent }: IOurServicesPr
                         )}
                     </figure>
 
-
-                    {/* Text List Section */}
+                    {/* Text Section */}
                     <div className="space-y-3 my-auto">
                         {categories.map(({ id, title, content }) => {
                             const isActive = activeKey === id;
@@ -65,9 +74,8 @@ export default function CommunityServices({ ourServicesContent }: IOurServicesPr
                             return (
                                 <article
                                     key={id}
-                                    onClick={() => setActiveKey(id)}
-                                    className={`cursor-pointer p-4 transition-all duration-200 ${isActive ? 'border-l-4 border-pink-300' : ''
-                                        }`}
+                                    onClick={() => setActiveKey(id)} // still clickable
+                                    className={`cursor-pointer p-4 transition-all duration-200 ${isActive ? 'border-l-4 border-pink-300' : ''}`}
                                 >
                                     <h3 className="text-xl text-gray-800">{title}</h3>
                                     <p

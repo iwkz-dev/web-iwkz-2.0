@@ -11,7 +11,7 @@ export default async function fetchGlobalContent(): Promise<IGlobalContent | nul
         }
     );
     if (!response.ok) {
-        console.error('Failed to fetch home page data');
+        console.error('Failed to fetch global content data');
         return null;
     }
     return response.json();

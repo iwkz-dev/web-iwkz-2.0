@@ -7,16 +7,14 @@ import Events from '@/components/events/events';
 import GetInTouch from '@/components/getInTouch/getInTouch';
 import Header from '@/components/header/header';
 import News from '@/components/news/news';
-import fetchGlobalContent from '@/actions/globalContent';
 import fetchPageContent from '@/actions/page';
 import { IPageResponse } from '@/types/page.types';
-import { IGlobalContent } from '@/types/globalContent.types';
 import { IPrayerTimes } from '@/types/prayerTimes.types';
 
 export default async function Home() {
   const prayerTimeData: IPrayerTimes | null = await fetchPrayerTime();
-  const globalContent: IGlobalContent | null = await fetchGlobalContent();
   const pageData: IPageResponse | null = await fetchPageContent();
+  // const globalContent: IGlobalContent | null = await fetchGlobalContent(); used later
 
   return (
     <div>

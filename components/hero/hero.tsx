@@ -1,8 +1,8 @@
 'use client';
 
 import { IHeroComponent, IPage } from "@/types/page.types";
-import { Button } from "../ui/button";
-import FadeInOnScroll from "../ui/fadeInScroll";
+import { Button } from "@/components/ui/button";
+import FadeInOnScroll from "@/components/ui/fadeInScroll";
 
 interface IHeroProps {
     heroContent: IPage
@@ -10,7 +10,7 @@ interface IHeroProps {
 
 export default function Hero(props: IHeroProps) {
     const heroContent = props.heroContent.content[0] as IHeroComponent;
-    console.log(heroContent);
+
     return (
         <section className="relative min-h-dvh flex items-center justify-center px-4 font-questrial overflow-hidden">
             <div
