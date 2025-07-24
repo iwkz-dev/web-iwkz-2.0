@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
 import { Clock, MapPin } from 'lucide-react';
 import { Badge } from '../ui/badge';
-import { PrayerTimes } from '@/types/prayerTimes.types';
+import { IPrayerTimes } from '@/types/prayerTimes.types';
 import dayjs, { Dayjs } from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import { cn } from '@/lib/utils';
@@ -34,7 +34,7 @@ const PRAYER_ORDER: PrayerKey[] = [
 export default function PrayerTimesCard({
   prayerTimes,
 }: {
-  prayerTimes: PrayerTimes | null;
+  prayerTimes: IPrayerTimes | null;
 }) {
   if (!prayerTimes) {
     return (

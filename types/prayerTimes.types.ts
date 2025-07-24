@@ -1,4 +1,4 @@
-export interface PrayerTimes {
+export interface IPrayerTimes {
   date: string;
   subuh: string;
   terbit: string;
