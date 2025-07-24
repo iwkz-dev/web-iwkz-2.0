@@ -7,18 +7,23 @@ import Events from '@/components/events/events';
 import GetInTouch from '@/components/getInTouch/getInTouch';
 import Header from '@/components/header/header';
 import News from '@/components/news/news';
+import fetchPageContent from '@/actions/page';
+import { IPageResponse } from '@/types/page.types';
+import { IPrayerTimes } from '@/types/prayerTimes.types';
 
 export default async function Home() {
-  const prayerTimeData = await fetchPrayerTime();
+  const prayerTimeData: IPrayerTimes | null = await fetchPrayerTime();
+  const pageData: IPageResponse | null = await fetchPageContent();
+  // const globalContent: IGlobalContent | null = await fetchGlobalContent(); used later
 
   return (
     <div>
       <Header />
-      <Hero />
+      <Hero heroContent={pageData?.data[0]!} />
       <PrayerTimesCard prayerTimes={prayerTimeData} />
       <PRS />
       <News />
-      <OurServices />
+      <OurServices ourServicesContent={pageData?.data[0]!} />
       <Events />
       <GetInTouch />
     </div>

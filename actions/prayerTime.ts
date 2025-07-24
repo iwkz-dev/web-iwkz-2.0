@@ -1,8 +1,8 @@
 'use server';
 
-import { PrayerTimes } from '@/types/prayerTimes.types';
+import { IPrayerTimes } from '@/types/prayerTimes.types';
 
-export default async function fetchPrayerTime(): Promise<PrayerTimes | null> {
+export default async function fetchPrayerTime(): Promise<IPrayerTimes | null> {
   const response = await fetch(
     `${process.env.IWKZ_API_URL as string}/jadwalshalat`,
     {

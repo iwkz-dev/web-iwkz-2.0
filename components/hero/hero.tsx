@@ -1,20 +1,38 @@
 'use client';
 
-import { Button } from "../ui/button";
-import FadeInOnScroll from "../ui/fadeInScroll";
+import { IHeroComponent, IPage } from "@/types/page.types";
+import { Button } from "@/components/ui/button";
+import FadeInOnScroll from "@/components/ui/fadeInScroll";
 
-export default function Hero() {
+interface IHeroProps {
+    heroContent: IPage
+}
+
+export default function Hero(props: IHeroProps) {
+    const heroContent = props.heroContent.content[0] as IHeroComponent;
+
     return (
         <section className="relative min-h-dvh flex items-center justify-center px-4 font-questrial overflow-hidden">
-            <div className="absolute inset-0 z-0 bg-[url('/images/hero-bg.webp')] bg-cover bg-center bg-fixed" />
-            <div className="absolute inset-0 bg-black/50 z-0" />
+            <div
+                className="absolute inset-0 z-0 bg-cover bg-center bg-fixed"
+                style={{
+                    backgroundImage: `
+      radial-gradient(circle at center, rgba(0,0,0,0) 25%, rgba(0,0,0,0.85) 100%),
+      url(${heroContent.image.url})
+    `,
+                    filter: 'blur(5px)',
+                    backgroundBlendMode: 'overlay',
+                }}
+            />
+
+            <div className="absolute inset-0 bg-black/60 z-0" />
             <FadeInOnScroll>
                 <div className="relative z-10 text-center max-w-2xl space-y-6">
                     <h1 className="text-4xl md:text-5xl text-white">
-                        Welcome to IWKZ e.V. Berlin
+                        {heroContent.headline}
                     </h1>
                     <p className="text-lg md:text-xl leading-relaxed text-white">
-                        At IWKZ e.V. Berlin, we unite the Indonesian Islamic community, fostering connections and cultural exchange. Join us in celebrating our rich heritage and vibrant presence in Berlin.
+                        {heroContent.subHeadline}
                     </p>
                     <div className="flex flex-col sm:flex-row justify-center gap-4">
                         <Button
