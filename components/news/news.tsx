@@ -1,9 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
-import { Button } from '../ui/button';
-import FadeInOnScroll from '../ui/fadeInScroll';
+import { Button } from '@/components/ui/button';
+import FadeInOnScroll from '@/components/ui/fadeInScroll';
 
 const newsItems = [
     {

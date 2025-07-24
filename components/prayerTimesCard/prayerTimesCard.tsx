@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
-import { Clock, MapPin } from 'lucide-react';
-import { Badge } from '../ui/badge';
 import { IPrayerTimes } from '@/types/prayerTimes.types';
-import dayjs, { Dayjs } from 'dayjs';
-import duration from 'dayjs/plugin/duration';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import dayjs, { Dayjs } from 'dayjs';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import { Button } from '../ui/button';
+import duration from 'dayjs/plugin/duration';
+import { Clock, MapPin } from 'lucide-react';
 
 dayjs.extend(duration);
 
@@ -187,7 +187,8 @@ export default function PrayerTimesCard({
           </CardContent>
 
           <CardFooter className="flex flex-col items-center mt-4 text-xs text-green-800 space-y-1">
-            <p>{`🕌 ${currentTime.format('dddd, D MMMM YYYY')}`}</p>
+            <p>{`${currentTime.format('dddd, D MMMM YYYY')}`}</p>
+            <p>{`🕋 ${prayerTimes.hijriahDate} ${prayerTimes.hijriahMonth} ${prayerTimes.hijriahYear} H`}</p> {/* 👈 Added Hijri date */}
             <p>{`🌤️ Sunrise (Terbit): ${prayerTimes.terbit}`}</p>
           </CardFooter>
         </Card>
