@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { IActivityCategory, IActivityCategorySectionComponent, IPage } from '@/types/page.types';
 import FadeInOnScroll from '@/components/ui/fadeInScroll';
+import { IActivityCategory, IActivityCategorySectionComponent, IPage } from '@/types/page.types';
 
 interface IOurServicesProps {
-    ourServicesContent: IPage
+    ourServicesContent: IPage;
 }
 
 export default function CommunityServices({ ourServicesContent }: IOurServicesProps) {
@@ -15,22 +15,35 @@ export default function CommunityServices({ ourServicesContent }: IOurServicesPr
     const { headline, subHeadline, ActivityCategory: categories } = content;
 
     const [activeKey, setActiveKey] = useState<number>(categories[0].id);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     const activeItem = useMemo(() => {
         return categories.find((item: IActivityCategory) => item.id === activeKey);
     }, [activeKey, categories]);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
+    const resetInterval = () => {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+
+        intervalRef.current = setInterval(() => {
             setActiveKey((prevId) => {
                 const currentIndex = categories.findIndex((cat) => cat.id === prevId);
                 const nextIndex = (currentIndex + 1) % categories.length;
                 return categories[nextIndex].id;
             });
         }, 5000);
+    };
 
-        return () => clearInterval(interval);
+    useEffect(() => {
+        resetInterval();
+        return () => {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+        };
     }, [categories]);
+
+    const handleClick = (id: number) => {
+        setActiveKey(id);
+        resetInterval(); // restart timer after manual click
+    };
 
     return (
         <section className="relative min-h-dvh bg-green-50 px-6 py-20 font-questrial flex flex-col items-center justify-center">
@@ -70,12 +83,12 @@ export default function CommunityServices({ ourServicesContent }: IOurServicesPr
                     <div className="space-y-3 my-auto">
                         {categories.map(({ id, title, content }) => {
                             const isActive = activeKey === id;
-
                             return (
                                 <article
                                     key={id}
-                                    onClick={() => setActiveKey(id)} // still clickable
-                                    className={`cursor-pointer p-4 transition-all duration-200 ${isActive ? 'border-l-4 border-pink-300' : ''}`}
+                                    onClick={() => handleClick(id)}
+                                    className={`cursor-pointer p-4 transition-all duration-200 ${isActive ? 'border-l-4 border-pink-300' : ''
+                                        }`}
                                 >
                                     <h3 className="text-xl text-gray-800">{title}</h3>
                                     <p

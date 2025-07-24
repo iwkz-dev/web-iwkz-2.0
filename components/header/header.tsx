@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FiMenu, FiX } from 'react-icons/fi';
 import Link from 'next/link';
 import Image from 'next/image';
 import { INavbar } from '@/types/globalContent.types';
+import { FiMenu, FiX } from 'react-icons/fi';
 
 interface IHeaderContentProps {
     headerContent: INavbar;
