@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { FaUsers, FaHandshake, FaLeaf, FaHeart } from 'react-icons/fa';
+import { FaHeart } from 'react-icons/fa';
 import FadeInOnScroll from '@/components/ui/fadeInScroll';
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
