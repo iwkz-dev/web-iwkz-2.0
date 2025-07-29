@@ -1,17 +1,18 @@
 'use client';
 
-import { motion, useAnimation } from 'framer-motion';
+import { motion, useAnimation, useInView } from 'framer-motion';
 import { useEffect, useRef } from 'react';
-import { useInView } from 'framer-motion';
 
 export default function FadeInOnScroll({ children }: { children: React.ReactNode }) {
     const ref = useRef(null);
-    const inView = useInView(ref, { once: true });
+    const inView = useInView(ref, { amount: 0.2 }); // triggers when 20% visible
     const controls = useAnimation();
 
     useEffect(() => {
         if (inView) {
             controls.start('visible');
+        } else {
+            controls.start('hidden'); // fade out when not in view
         }
     }, [controls, inView]);
 
@@ -21,11 +22,11 @@ export default function FadeInOnScroll({ children }: { children: React.ReactNode
             initial="hidden"
             animate={controls}
             variants={{
-                hidden: { opacity: 0 },
-                visible: { opacity: 1 },
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
             }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-            className='w-full'
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className="w-full"
         >
             {children}
         </motion.div>

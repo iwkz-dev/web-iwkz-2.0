@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { FaUsers, FaHandshake, FaLeaf, FaHeart } from 'react-icons/fa';
+import { FaHeart } from 'react-icons/fa';
 import FadeInOnScroll from '@/components/ui/fadeInScroll';
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
@@ -19,7 +19,7 @@ export default function PRS() {
                     className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-center"
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true, amount: 0.3 }}
+                    viewport={{ amount: 0.3 }}
                     transition={{ staggerChildren: 0.2 }}
                 >
                     <motion.div
@@ -41,7 +41,6 @@ export default function PRS() {
                             className="mt-8"
                             initial={{ opacity: 0 }}
                             whileInView={{ opacity: 1 }}
-                            viewport={{ once: true }}
                             transition={{ delay: 0.3 }}
                         >
                             <div className="flex justify-between text-sm mb-2">
@@ -59,7 +58,6 @@ export default function PRS() {
                                     className="bg-green-500 h-4"
                                     initial={{ width: "0%" }}
                                     whileInView={{ width: `${percentage}%` }}
-                                    viewport={{ once: true }}
                                     transition={{ duration: 2, ease: "easeInOut" }}
                                 ></motion.div>
                             </div>
