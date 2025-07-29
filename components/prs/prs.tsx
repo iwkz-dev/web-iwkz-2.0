@@ -36,7 +36,6 @@ export default function PRS() {
                             support, and collaboration.
                         </p>
 
-                        {/* Donation Progress */}
                         <motion.div
                             className="mt-8"
                             initial={{ opacity: 0 }}
@@ -84,8 +83,8 @@ export default function PRS() {
                     <motion.div
                         className="w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[450px] relative"
                         variants={{
-                            hidden: { opacity: 0, x: 50 },
-                            visible: { opacity: 1, x: 0 },
+                            hidden: { opacity: 0, y: 50 },
+                            visible: { opacity: 1, y: 0 },
                         }}
                     >
                         <Image
