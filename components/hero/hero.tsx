@@ -30,7 +30,7 @@ export default function Hero(props: IHeroProps) {
             />
             <div className="absolute inset-0 bg-black/60 z-0" />
             <FadeInOnScroll>
-                <div className="relative z-10 text-center max-w-2xl space-y-6">
+                <div className="relative z-10 text-center max-w-2xl space-y-6 m-auto">
                     <h1 className="text-4xl md:text-5xl text-white">
                         {heroContent.headline}
                     </h1>

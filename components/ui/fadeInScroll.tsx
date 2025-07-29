@@ -25,6 +25,7 @@ export default function FadeInOnScroll({ children }: { children: React.ReactNode
                 visible: { opacity: 1 },
             }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
+            className='w-full'
         >
             {children}
         </motion.div>

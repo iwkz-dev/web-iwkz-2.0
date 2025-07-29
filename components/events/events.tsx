@@ -57,13 +57,15 @@ export default function Events() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div
+                    className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible max-w-6xl mx-auto"
+                >
                     {events.map((event) => {
                         const { day, dayNum, monthYear } = formatDate(event.date);
                         return (
                             <div
                                 key={event.id}
-                                className="min-h-[450px] overflow-hidden border border-gray-200 transition"
+                                className="flex-shrink-0 w-72 md:w-auto snap-start overflow-hidden shadow transition"
                             >
                                 <div className="relative h-64 bg-gray-100">
                                     <Image
@@ -77,31 +79,24 @@ export default function Events() {
                                         <div className="text-xl font-bold">{dayNum}</div>
                                         <div className="text-xs">{monthYear}</div>
                                     </div>
-                                </div>
 
-                                <div className="p-6 space-y-3 h-full">
-                                    <span className="inline-block text-xs font-medium px-2 py-1 rounded text-gray-800 border border-gray-300 bg-gray-50">
-                                        {event.tag}
-                                    </span>
-                                    <h3 className="text-lg font-semibold text-gray-900">{event.title}</h3>
-                                    <p className="text-sm text-gray-600">{event.city}</p>
-                                    <p className="text-sm text-gray-700">{event.description}</p>
-
-                                    <div className="mt-3">
-                                        <Link href="#" className="text-sm font-medium text-black hover:underline flex items-center gap-1">
-                                            View event <span>→</span>
+                                    <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm text-white p-4">
+                                        <Link href={`/events/${event.id}`}>
+                                            <h3 className="text-lg font-semibold hover:underline">
+                                                {event.title}
+                                            </h3>
                                         </Link>
+                                        <p className="text-sm text-gray-200 line-clamp-2">
+                                            {event.description}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         );
                     })}
                 </div>
-
-                <div className="text-center mt-12">
-                    <Button variant="outline">View More</Button>
-                </div>
             </FadeInOnScroll>
         </section>
     );
+
 }
