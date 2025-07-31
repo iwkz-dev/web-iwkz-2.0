@@ -68,7 +68,17 @@ export default function PRS() {
 
                         <div className="flex flex-wrap gap-4 mt-6">
                             <Button variant="outline" className="flex items-center gap-2">
-                                <FaHeart className="text-red-500" />
+                                <motion.div
+                                    animate={{ scale: [1, 1.3, 1] }}
+                                    transition={{
+                                        duration: 1,
+                                        repeat: Infinity,
+                                        repeatType: "loop",
+                                        ease: "easeInOut"
+                                    }}
+                                >
+                                    <FaHeart className="text-red-500" />
+                                </motion.div>
                                 Donate Now
                             </Button>
                             <Button
