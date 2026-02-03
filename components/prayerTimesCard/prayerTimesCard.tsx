@@ -168,7 +168,7 @@ export default function PrayerTimesCard({
       <div
         ref={panelRef}
         className={cn(
-          "fixed z-50 bottom-20 right-6 w-[90vw] sm:w-25 transition-transform duration-500",
+          "fixed z-50 bottom-20 right-6 w-[90vw] sm:w-[400px] transition-transform duration-500",
           isOpen ? "translate-y-0" : "translate-y-[120%]",
         )}
       >
