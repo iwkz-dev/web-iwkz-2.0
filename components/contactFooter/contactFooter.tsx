@@ -3,11 +3,12 @@
 import { JSX } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { IFooter } from "@/types/globalContent.types";
-import FadeInOnScroll from "@/components/ui/fadeInScroll";
 import { FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { FiExternalLink } from "react-icons/fi";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
+
+import { IFooter } from "@/types/globalContent.types";
+import FadeInOnScroll from "@/components/ui/fadeInScroll";
 
 interface IContactFooterProps {
   contactFooterContent: IFooter;
@@ -43,7 +44,6 @@ export default function ContactFooter({
       <FadeInOnScroll>
         <div className="max-w-6xl mx-auto text-center space-y-4 mb-12">
           <h2 className="text-4xl">Get in Touch</h2>
-          <p className="text-gray-600">Kami senang mendengar dari Anda!</p>
         </div>
 
         {/* Contact Info */}

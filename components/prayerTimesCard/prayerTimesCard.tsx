@@ -11,10 +11,15 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import duration from "dayjs/plugin/duration";
 import { Clock } from "lucide-react";
+import {
+  getCurrentPrayerKey,
+  getNextPrayerKey,
+  getTimeDiff,
+} from "@/lib/prayerTimes";
 
 dayjs.extend(duration);
 
@@ -24,17 +29,10 @@ const PRAYER_LABELS = {
   ashr: "Ashr",
   maghrib: "Maghrib",
   isya: "Isya",
+  terbit: "Terbit",
 };
 
-type PrayerKey = keyof typeof PRAYER_LABELS;
-
-const PRAYER_ORDER: PrayerKey[] = [
-  "subuh",
-  "dzuhur",
-  "ashr",
-  "maghrib",
-  "isya",
-];
+type PrayerLabelKey = keyof typeof PRAYER_LABELS;
 
 export default function PrayerTimesCard({
   prayerTimes,
@@ -87,45 +85,7 @@ export default function PrayerTimesCard({
     };
   }, [isOpen]);
 
-  function getCurrentPrayerKey(
-    times: Record<PrayerKey, string>,
-    currentTime: Dayjs,
-  ): PrayerKey | null {
-    // No current prayer before the first prayer time (e.g., 00:00)
-    let current: PrayerKey | null = null;
-    for (const key of PRAYER_ORDER) {
-      const [h, m] = times[key].split(":").map(Number);
-      const time = dayjs().hour(h).minute(m).second(0);
-      if (currentTime.isAfter(time) || currentTime.isSame(time)) {
-        current = key;
-      }
-    }
-
-    return current;
-  }
-
-  function getNextPrayerKey(
-    times: Record<PrayerKey, string>,
-    currentTime: Dayjs,
-  ): PrayerKey {
-    for (const key of PRAYER_ORDER) {
-      const [h, m] = times[key].split(":").map(Number);
-      const time = dayjs().hour(h).minute(m).second(0);
-      if (currentTime.isBefore(time)) return key;
-    }
-
-    return "subuh"; // fallback to next day's Subuh
-  }
-
-  function getTimeDiff(toTime: string, currentTime: Dayjs) {
-    const [h, m] = toTime.split(":").map(Number);
-    let target = dayjs().hour(h).minute(m).second(0);
-    if (currentTime.isAfter(target)) {
-      target = target.add(1, "day");
-    }
-    const diff = target.diff(currentTime);
-    return dayjs.duration(diff);
-  }
+  // logic moved to utils
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -147,7 +107,7 @@ export default function PrayerTimesCard({
     `${String(countdown.seconds()).padStart(2, "0")}`;
 
   // Display order includes muted "terbit" between subuh and dzuhur
-  const DISPLAY_ORDER: Array<keyof typeof PRAYER_LABELS | "terbit"> = [
+  const DISPLAY_ORDER: Array<PrayerLabelKey> = [
     "subuh",
     "terbit",
     "dzuhur",
@@ -166,8 +126,8 @@ export default function PrayerTimesCard({
         <Clock className="w-4 h-4" />
         <span>
           {isAfterLastPrayer
-            ? `current: ${PRAYER_LABELS[currentPrayerKey].toLowerCase()}`
-            : `next: ${PRAYER_LABELS[nextPrayerKey].toLowerCase()} (-${fmtCountdown})`}
+            ? `Now: ${PRAYER_LABELS[currentPrayerKey]}`
+            : `Next: ${PRAYER_LABELS[nextPrayerKey]} (-${fmtCountdown})`}
         </span>
         {isOpen ? (
           <FaChevronDown className="w-3 h-3" />
@@ -194,14 +154,12 @@ export default function PrayerTimesCard({
             <div className="space-y-2">
               {DISPLAY_ORDER.map((key) => {
                 const isTerbit = key === "terbit";
-                const isCurrent = !isTerbit && key === currentPrayerKey;
+                // Do not highlight when current is 'terbit' – treat as default
+                const isCurrent = key === currentPrayerKey && !isTerbit;
                 // After Isya, do NOT treat Subuh as next for styling
-                const isNext = !isTerbit && key === nextPrayerKey;
+                const isNext = key === nextPrayerKey;
                 const effectiveIsNext = isNext && !isAfterLastPrayer;
-
-                const label = isTerbit
-                  ? "terbit"
-                  : PRAYER_LABELS[key].toLowerCase();
+                const label = PRAYER_LABELS[key];
                 const time = isTerbit ? prayerTimes.terbit : prayerTimes[key];
 
                 // unified row height to prevent panel resizing (more compact)
@@ -222,6 +180,7 @@ export default function PrayerTimesCard({
                     ? "text-lg"
                     : "text-sm";
 
+                console.log(currentPrayerKey);
                 return (
                   <div
                     key={key}
@@ -236,9 +195,7 @@ export default function PrayerTimesCard({
                         "bg-rose-100 text-rose-900 shadow-[0_6px_18px_rgba(244,114,182,0.22)]",
                       !isCurrent &&
                         !effectiveIsNext &&
-                        !isTerbit &&
                         "bg-gray-100/70 text-gray-800",
-                      isTerbit && "bg-gray-200/70 text-gray-800",
                       // On hover of a row, shine orange without changing layout size
                       "hover:bg-orange-100! hover:text-orange-900! hover:shadow-[0_0_28px_rgba(251,146,60,0.55)]! hover:scale-100!",
                     )}
@@ -266,7 +223,7 @@ export default function PrayerTimesCard({
           </CardContent>
 
           <CardFooter className="px-4 pb-4 pt-2 flex justify-center">
-            <span className="text-[12px] text-gray-800">
+            <span className="text-[12px] text-gray-900">
               {`${prayerTimes.hijriahDate} ${prayerTimes.hijriahMonth} ${prayerTimes.hijriahYear} H`}
             </span>
           </CardFooter>
