@@ -90,8 +90,9 @@ export default function PrayerTimesCard({
   function getCurrentPrayerKey(
     times: Record<PrayerKey, string>,
     currentTime: Dayjs,
-  ): PrayerKey {
-    let current: PrayerKey = "subuh";
+  ): PrayerKey | null {
+    // No current prayer before the first prayer time (e.g., 00:00)
+    let current: PrayerKey | null = null;
     for (const key of PRAYER_ORDER) {
       const [h, m] = times[key].split(":").map(Number);
       const time = dayjs().hour(h).minute(m).second(0);
@@ -100,7 +101,7 @@ export default function PrayerTimesCard({
       }
     }
 
-    return current; // fallback to next day's Subuh
+    return current;
   }
 
   function getNextPrayerKey(
@@ -136,6 +137,7 @@ export default function PrayerTimesCard({
 
   const currentPrayerKey = getCurrentPrayerKey(prayerTimes, currentTime);
   const nextPrayerKey = getNextPrayerKey(prayerTimes, currentTime);
+  const isAfterLastPrayer = currentPrayerKey === "isya";
   const countdown = getTimeDiff(prayerTimes[nextPrayerKey], currentTime);
 
   // Minimal countdown format for "(−hh:mm:ss)"
@@ -163,7 +165,9 @@ export default function PrayerTimesCard({
       >
         <Clock className="w-4 h-4" />
         <span>
-          next: {PRAYER_LABELS[nextPrayerKey].toLowerCase()} (-{fmtCountdown})
+          {isAfterLastPrayer
+            ? `current: ${PRAYER_LABELS[currentPrayerKey].toLowerCase()}`
+            : `next: ${PRAYER_LABELS[nextPrayerKey].toLowerCase()} (-${fmtCountdown})`}
         </span>
         {isOpen ? (
           <FaChevronDown className="w-3 h-3" />
@@ -175,48 +179,46 @@ export default function PrayerTimesCard({
       <div
         ref={panelRef}
         className={cn(
-          "fixed z-50 bottom-20 right-6 w-[90vw] sm:w-[400px] transition-transform duration-500",
+          "fixed z-50 bottom-20 right-6 w-[90vw] sm:w-100 transition-transform duration-500",
           isOpen ? "translate-y-0" : "translate-y-[120%]",
         )}
       >
-        <Card className="bg-white/30 backdrop-blur-xl shadow-2xl rounded-2xl border border-white/40">
-          <CardHeader className="pb-2">
+        <Card className="bg-white/30 backdrop-blur-xl shadow-2xl rounded-2xl border border-white/40 py-4 gap-4">
+          <CardHeader className="px-4 pb-2">
             <p className="text-center text-base sm:text-lg font-medium tracking-wide text-gray-900">
               {currentTime.format("DD. MMMM YYYY")}
             </p>
           </CardHeader>
 
-          <CardContent className="pt-0">
-            <div className="space-y-3">
+          <CardContent className="px-4 pt-0">
+            <div className="space-y-2">
               {DISPLAY_ORDER.map((key) => {
                 const isTerbit = key === "terbit";
                 const isCurrent = !isTerbit && key === currentPrayerKey;
+                // After Isya, do NOT treat Subuh as next for styling
                 const isNext = !isTerbit && key === nextPrayerKey;
+                const effectiveIsNext = isNext && !isAfterLastPrayer;
 
                 const label = isTerbit
                   ? "terbit"
                   : PRAYER_LABELS[key].toLowerCase();
                 const time = isTerbit ? prayerTimes.terbit : prayerTimes[key];
 
-                // size tiers
-                const containerSize = isCurrent
-                  ? "py-6"
-                  : isNext
-                    ? "py-5"
-                    : "py-4";
+                // unified row height to prevent panel resizing (more compact)
+                const containerSize = "py-4";
                 const containerScale = isCurrent
                   ? "scale-[1.02]"
-                  : isNext
+                  : effectiveIsNext
                     ? "scale-[1.01]"
-                    : "scale-[0.99]";
+                    : "scale-100";
                 const labelSize = isCurrent
                   ? "text-base"
-                  : isNext
+                  : effectiveIsNext
                     ? "text-sm"
                     : "text-xs";
                 const timeSize = isCurrent
                   ? "text-xl"
-                  : isNext
+                  : effectiveIsNext
                     ? "text-lg"
                     : "text-sm";
 
@@ -224,19 +226,21 @@ export default function PrayerTimesCard({
                   <div
                     key={key}
                     className={cn(
-                      "flex items-center justify-between rounded-2xl px-5 font-sans backdrop-blur-md transition-all duration-200 shadow-[0_2px_10px_rgba(0,0,0,0.10)] will-change-transform",
+                      "flex items-center justify-between rounded-2xl px-4 font-sans backdrop-blur-md transition-all duration-200 shadow-[0_2px_10px_rgba(0,0,0,0.10)] will-change-transform",
                       containerSize,
                       containerScale,
                       isCurrent &&
                         "bg-green-200 text-green-900 shadow-[0_0_28px_rgba(74,222,128,0.55)]",
-                      isNext &&
+                      effectiveIsNext &&
                         !isCurrent &&
                         "bg-rose-100 text-rose-900 shadow-[0_6px_18px_rgba(244,114,182,0.22)]",
                       !isCurrent &&
-                        !isNext &&
+                        !effectiveIsNext &&
                         !isTerbit &&
                         "bg-gray-100/70 text-gray-800",
                       isTerbit && "bg-gray-200/70 text-gray-800",
+                      // On hover of a row, shine orange without changing layout size
+                      "hover:bg-orange-100! hover:text-orange-900! hover:shadow-[0_0_28px_rgba(251,146,60,0.55)]! hover:scale-100!",
                     )}
                   >
                     <span className={cn("tracking-wide", labelSize)}>
@@ -248,7 +252,7 @@ export default function PrayerTimesCard({
                           NOW
                         </span>
                       )}
-                      {isNext && !isCurrent && (
+                      {effectiveIsNext && !isCurrent && (
                         <span className="text-xs font-mono text-rose-800">
                           (-{fmtCountdown})
                         </span>
@@ -261,8 +265,8 @@ export default function PrayerTimesCard({
             </div>
           </CardContent>
 
-          <CardFooter className="pb-4 pt-2 flex justify-center">
-            <span className="text-[11px] text-gray-700">
+          <CardFooter className="px-4 pb-4 pt-2 flex justify-center">
+            <span className="text-[12px] text-gray-800">
               {`${prayerTimes.hijriahDate} ${prayerTimes.hijriahMonth} ${prayerTimes.hijriahYear} H`}
             </span>
           </CardFooter>

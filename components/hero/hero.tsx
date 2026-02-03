@@ -41,10 +41,8 @@ export default function Hero(props: IHeroProps) {
             {heroContent.subHeadline}
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button variant="outline">Proyek Rumah Surga</Button>
-
-            <Button variant="ghost" className="text-white border">
-              Learn More
+            <Button asChild variant="ghost" className="text-white border">
+              <a href="#services">See More</a>
             </Button>
           </div>
         </div>
