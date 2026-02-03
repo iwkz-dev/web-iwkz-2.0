@@ -2,16 +2,16 @@ import type { Metadata } from "next";
 import { Questrial } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/toast";
+import { getLayoutMetadata } from "@/lib/seo";
 
 const questrial = Questrial({
   subsets: ["latin"],
   weight: "400",
 });
 
-export const metadata: Metadata = {
-  title: "IWKZ Berlin",
-  description: "indonesischer Weisheits- & Kulturzentrum e.V.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return getLayoutMetadata();
+}
 
 export default function RootLayout({
   children,
