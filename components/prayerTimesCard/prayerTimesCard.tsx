@@ -144,7 +144,7 @@ export default function PrayerTimesCard({
         )}
       >
         <Card className="bg-white/30 backdrop-blur-xl shadow-2xl rounded-2xl border border-white/40 py-4 gap-4">
-          <CardHeader className="px-4 pb-2">
+          <CardHeader className="px-4">
             <p className="text-center text-base sm:text-lg font-medium tracking-wide text-gray-900">
               {currentTime.format("DD. MMMM YYYY")}
             </p>
@@ -222,7 +222,7 @@ export default function PrayerTimesCard({
             </div>
           </CardContent>
 
-          <CardFooter className="px-4 pb-4 pt-2 flex justify-center">
+          <CardFooter className="px-2 flex justify-center">
             <span className="text-[12px] text-gray-900">
               {`${prayerTimes.hijriahDate} ${prayerTimes.hijriahMonth} ${prayerTimes.hijriahYear} H`}
             </span>
