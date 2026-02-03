@@ -3,8 +3,8 @@ import { Questrial } from "next/font/google";
 import "./globals.css";
 
 const questrial = Questrial({
-  subsets: ['latin'],
-  weight: '400',
+  subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -18,12 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={questrial.className}
-      >
-        {children}
-      </body>
+    <html lang="en" style={{ scrollBehavior: "smooth" }}>
+      <body className={questrial.className}>{children}</body>
     </html>
   );
 }

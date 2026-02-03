@@ -1,34 +1,38 @@
-'use client';
+"use client";
 
-import React, { useEffect, useRef, useState } from 'react';
-import { IPrayerTimes } from '@/types/prayerTimes.types';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import dayjs, { Dayjs } from 'dayjs';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import duration from 'dayjs/plugin/duration';
-import { Clock, MapPin } from 'lucide-react';
+import React, { useEffect, useRef, useState } from "react";
+import { IPrayerTimes } from "@/types/prayerTimes.types";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import dayjs, { Dayjs } from "dayjs";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import duration from "dayjs/plugin/duration";
+import { Clock } from "lucide-react";
 
 dayjs.extend(duration);
 
 const PRAYER_LABELS = {
-  subuh: 'Subuh',
-  dzuhur: 'Dzuhur',
-  ashr: 'Ashr',
-  maghrib: 'Maghrib',
-  isya: 'Isya',
+  subuh: "Subuh",
+  dzuhur: "Dzuhur",
+  ashr: "Ashr",
+  maghrib: "Maghrib",
+  isya: "Isya",
 };
 
 type PrayerKey = keyof typeof PRAYER_LABELS;
 
 const PRAYER_ORDER: PrayerKey[] = [
-  'subuh',
-  'dzuhur',
-  'ashr',
-  'maghrib',
-  'isya',
+  "subuh",
+  "dzuhur",
+  "ashr",
+  "maghrib",
+  "isya",
 ];
 
 export default function PrayerTimesCard({
@@ -66,24 +70,24 @@ export default function PrayerTimesCard({
     };
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('touchstart', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
     };
   }, [isOpen]);
 
   function getCurrentPrayerKey(
     times: Record<PrayerKey, string>,
-    currentTime: Dayjs
+    currentTime: Dayjs,
   ): PrayerKey {
-    let current: PrayerKey = 'subuh';
+    let current: PrayerKey = "subuh";
     for (const key of PRAYER_ORDER) {
-      const [h, m] = times[key].split(':').map(Number);
-      const time = dayjs().hour(h).minute(m);
+      const [h, m] = times[key].split(":").map(Number);
+      const time = dayjs().hour(h).minute(m).second(0);
       if (currentTime.isAfter(time) || currentTime.isSame(time)) {
         current = key;
       }
@@ -94,22 +98,22 @@ export default function PrayerTimesCard({
 
   function getNextPrayerKey(
     times: Record<PrayerKey, string>,
-    currentTime: Dayjs
+    currentTime: Dayjs,
   ): PrayerKey {
     for (const key of PRAYER_ORDER) {
-      const [h, m] = times[key].split(':').map(Number);
-      const time = dayjs().hour(h).minute(m);
+      const [h, m] = times[key].split(":").map(Number);
+      const time = dayjs().hour(h).minute(m).second(0);
       if (currentTime.isBefore(time)) return key;
     }
 
-    return 'subuh'; // fallback to next day's Subuh
+    return "subuh"; // fallback to next day's Subuh
   }
 
   function getTimeDiff(toTime: string, currentTime: Dayjs) {
-    const [h, m] = toTime.split(':').map(Number);
+    const [h, m] = toTime.split(":").map(Number);
     let target = dayjs().hour(h).minute(m).second(0);
     if (currentTime.isAfter(target)) {
-      target = target.add(1, 'day');
+      target = target.add(1, "day");
     }
     const diff = target.diff(currentTime);
     return dayjs.duration(diff);
@@ -127,6 +131,22 @@ export default function PrayerTimesCard({
   const nextPrayerKey = getNextPrayerKey(prayerTimes, currentTime);
   const countdown = getTimeDiff(prayerTimes[nextPrayerKey], currentTime);
 
+  // Minimal countdown format for "(−hh:mm:ss)"
+  const fmtCountdown =
+    `${String(countdown.hours()).padStart(2, "0")}:` +
+    `${String(countdown.minutes()).padStart(2, "0")}:` +
+    `${String(countdown.seconds()).padStart(2, "0")}`;
+
+  // Display order includes muted "terbit" between subuh and dzuhur
+  const DISPLAY_ORDER: Array<keyof typeof PRAYER_LABELS | "terbit"> = [
+    "subuh",
+    "terbit",
+    "dzuhur",
+    "ashr",
+    "maghrib",
+    "isya",
+  ];
+
   return (
     <>
       <Button
@@ -135,61 +155,109 @@ export default function PrayerTimesCard({
         className="fixed z-50 bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all"
       >
         <Clock className="w-4 h-4" />
-        <span className="hidden sm:inline">Prayer Times</span>
-        {isOpen ? <FaChevronDown className="w-3 h-3" /> : <FaChevronUp className="w-3 h-3" />}
+        <span>
+          next: {PRAYER_LABELS[nextPrayerKey].toLowerCase()} (-{fmtCountdown})
+        </span>
+        {isOpen ? (
+          <FaChevronDown className="w-3 h-3" />
+        ) : (
+          <FaChevronUp className="w-3 h-3" />
+        )}
       </Button>
 
       <div
         ref={panelRef}
         className={cn(
-          'fixed z-40 bottom-20 right-6 w-[90vw] sm:w-[400px] transition-transform duration-500',
-          isOpen ? 'translate-y-0' : 'translate-y-[120%]'
+          "fixed z-50 bottom-20 right-6 w-[90vw] sm:w-25 transition-transform duration-500",
+          isOpen ? "translate-y-0" : "translate-y-[120%]",
         )}
       >
-        <Card className="bg-white/60 backdrop-blur-md shadow-xl rounded-sm gap-2">
-          <CardHeader className="pb-4">
-            <div className="flex justify-between items-center text-green-900">
-              <div className="flex items-center gap-2">
-                <Clock className="w-5 h-5" />
-                <p className="font-bold text-xl tracking-tight">Prayer Times</p>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-green-800">
-                <MapPin className="w-4 h-4" />
-                <span>Berlin</span>
-              </div>
-            </div>
-
-            <div className="mt-2 flex justify-between items-center">
-              <Badge variant="green" className="text-xs font-medium px-3 py-1 rounded-full bg-green-600 text-white">
-                {`Next: ${PRAYER_LABELS[nextPrayerKey]} – ${String(countdown.hours()).padStart(2, '0')}:${String(countdown.minutes()).padStart(2, '0')}:${String(countdown.seconds()).padStart(2, '0')}`}
-              </Badge>
-              <p className="text-sm text-green-700 font-mono">{currentTime.format('HH:mm:ss')}</p>
-            </div>
+        <Card className="bg-white/30 backdrop-blur-xl shadow-2xl rounded-2xl border border-white/40">
+          <CardHeader className="pb-2">
+            <p className="text-center text-base sm:text-lg font-medium tracking-wide text-gray-900">
+              {currentTime.format("DD. MMMM YYYY")}
+            </p>
           </CardHeader>
 
           <CardContent className="pt-0">
-            <div className="flex flex-col gap-2">
-              {PRAYER_ORDER.map((key) => (
-                <div
-                  key={key}
-                  className={cn(
-                    'flex justify-between items-center px-4 py-3 text-sm shadow transition-colors',
-                    key === currentPrayerKey
-                      ? 'bg-green-700 text-white shadow-md'
-                      : 'bg-white/60 text-green-900 shadow-md'
-                  )}
-                >
-                  <span className="font-semibold">{PRAYER_LABELS[key]}</span>
-                  <span className="font-mono">{prayerTimes[key]}</span>
-                </div>
-              ))}
+            <div className="space-y-3">
+              {DISPLAY_ORDER.map((key) => {
+                const isTerbit = key === "terbit";
+                const isCurrent = !isTerbit && key === currentPrayerKey;
+                const isNext = !isTerbit && key === nextPrayerKey;
+
+                const label = isTerbit
+                  ? "terbit"
+                  : PRAYER_LABELS[key].toLowerCase();
+                const time = isTerbit ? prayerTimes.terbit : prayerTimes[key];
+
+                // size tiers
+                const containerSize = isCurrent
+                  ? "py-6"
+                  : isNext
+                    ? "py-5"
+                    : "py-4";
+                const containerScale = isCurrent
+                  ? "scale-[1.02]"
+                  : isNext
+                    ? "scale-[1.01]"
+                    : "scale-[0.99]";
+                const labelSize = isCurrent
+                  ? "text-base"
+                  : isNext
+                    ? "text-sm"
+                    : "text-xs";
+                const timeSize = isCurrent
+                  ? "text-xl"
+                  : isNext
+                    ? "text-lg"
+                    : "text-sm";
+
+                return (
+                  <div
+                    key={key}
+                    className={cn(
+                      "flex items-center justify-between rounded-2xl px-5 font-sans backdrop-blur-md transition-all duration-200 shadow-[0_2px_10px_rgba(0,0,0,0.10)] will-change-transform",
+                      containerSize,
+                      containerScale,
+                      isCurrent &&
+                        "bg-green-200 text-green-900 shadow-[0_0_28px_rgba(74,222,128,0.55)]",
+                      isNext &&
+                        !isCurrent &&
+                        "bg-rose-100 text-rose-900 shadow-[0_6px_18px_rgba(244,114,182,0.22)]",
+                      !isCurrent &&
+                        !isNext &&
+                        !isTerbit &&
+                        "bg-gray-100/70 text-gray-800",
+                      isTerbit && "bg-gray-200/70 text-gray-800",
+                    )}
+                  >
+                    <span className={cn("tracking-wide", labelSize)}>
+                      {label}
+                    </span>
+                    <div className="flex items-center gap-3">
+                      {isCurrent && (
+                        <span className="text-xs uppercase tracking-widest text-green-800">
+                          NOW
+                        </span>
+                      )}
+                      {isNext && !isCurrent && (
+                        <span className="text-xs font-mono text-rose-800">
+                          (-{fmtCountdown})
+                        </span>
+                      )}
+                      <span className={cn("font-mono", timeSize)}>{time}</span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
 
-          <CardFooter className="flex flex-col items-center mt-4 text-xs text-green-800 space-y-1">
-            <p>{`${currentTime.format('dddd, D MMMM YYYY')}`}</p>
-            <p>{`🕋 ${prayerTimes.hijriahDate} ${prayerTimes.hijriahMonth} ${prayerTimes.hijriahYear} H`}</p> {/* 👈 Added Hijri date */}
-            <p>{`🌤️ Sunrise (Terbit): ${prayerTimes.terbit}`}</p>
+          <CardFooter className="pb-4 pt-2 flex justify-center">
+            <span className="text-[11px] text-gray-700">
+              {`${prayerTimes.hijriahDate} ${prayerTimes.hijriahMonth} ${prayerTimes.hijriahYear} H`}
+            </span>
           </CardFooter>
         </Card>
       </div>
