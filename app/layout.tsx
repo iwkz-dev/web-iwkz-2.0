@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Questrial } from "next/font/google";
 import "./globals.css";
+import { ToastProvider } from "@/components/ui/toast";
 
 const questrial = Questrial({
   subsets: ["latin"],
@@ -19,7 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" style={{ scrollBehavior: "smooth" }}>
-      <body className={questrial.className}>{children}</body>
+      <body className={questrial.className}>
+        <ToastProvider>{children}</ToastProvider>
+      </body>
     </html>
   );
 }

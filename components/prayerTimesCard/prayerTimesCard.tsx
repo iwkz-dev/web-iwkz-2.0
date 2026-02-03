@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { useToast } from "@/components/ui/toast";
 import { IPrayerTimes } from "@/types/prayerTimes.types";
 import {
   Card,
@@ -40,16 +41,22 @@ export default function PrayerTimesCard({
 }: {
   prayerTimes: IPrayerTimes | null;
 }) {
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!prayerTimes) {
+      toast({
+        title: "Prayer times unavailable",
+        description:
+          "The prayer times API is not working right now. Please try again later.",
+        variant: "destructive",
+        duration: 6000,
+      });
+    }
+  }, [prayerTimes, toast]);
+
   if (!prayerTimes) {
-    return (
-      <section className="py-8 px-4 bg-white">
-        <Card className="container mx-auto max-w-6xl border text-card-foreground shadow-2xs bg-gradient-to-br from-green-50 to-green-100 border-green-200 hover:shadow-lg transition-all duration-300">
-          <CardHeader>
-            <p className="text-red-500">Prayer times data is not available.</p>
-          </CardHeader>
-        </Card>
-      </section>
-    );
+    return null; // toast informs the user
   }
 
   const [currentTime, setCurrentTime] = useState(dayjs());
