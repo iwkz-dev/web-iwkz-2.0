@@ -1,6 +1,7 @@
 {
   "engines": {
-    "node": ">=22.16.0"
+    "node": "22.x",
+    "pnpm": "10.x"
   },
   "name": "web-iwkz",
   "version": "0.1.0",
