@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { JSX } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-import { FiExternalLink } from "react-icons/fi";
-import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
+import { JSX } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
+import { FiExternalLink } from 'react-icons/fi';
+import { FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa';
 
-import { IFooter } from "@/types/globalContent.types";
-import FadeInOnScroll from "@/components/ui/fadeInScroll";
+import { IFooter } from '@/types/globalContent.types';
+import FadeInOnScroll from '@/components/ui/fadeInScroll';
 
 interface IContactFooterProps {
   contactFooterContent: IFooter;
@@ -27,14 +27,14 @@ export default function ContactFooter({
   };
 
   // Helper: Parse description lines into structured blocks
-  const parsedLines = description.split("\n").filter(Boolean);
+  const parsedLines = description.split('\n').filter(Boolean);
 
-  const orgName = parsedLines[0]?.replace(/\*\*/g, "") || "";
-  const address = parsedLines.slice(1, 3).join(", ");
+  const orgName = parsedLines[0]?.replace(/\*\*/g, '') || '';
+  const address = parsedLines.slice(1, 3).join(', ');
   const emailLine = parsedLines.find((line) =>
-    line.toLowerCase().includes("email"),
+    line.toLowerCase().includes('email')
   );
-  const email = emailLine?.split(":")[1]?.trim() || "";
+  const email = emailLine?.split(':')[1]?.trim() || '';
 
   return (
     <section
@@ -76,7 +76,7 @@ export default function ContactFooter({
               <Link
                 key={link.id}
                 href={link.url}
-                target={link.target || "_blank"}
+                target={link.target || '_blank'}
                 className="flex items-center gap-2 text-sm text-blue-600 hover:underline"
               >
                 {iconMap[link.text] || <FiExternalLink />} {link.text}
@@ -102,7 +102,7 @@ export default function ContactFooter({
               <Link
                 key={link.id}
                 href={`/${link.url}`}
-                target={link.target || "_self"}
+                target={link.target || '_self'}
                 className="hover:underline"
               >
                 {link.text}

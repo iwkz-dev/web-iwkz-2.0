@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
-import FadeInOnScroll from "@/components/ui/fadeInScroll";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import Image from 'next/image';
+import FadeInOnScroll from '@/components/ui/fadeInScroll';
 import {
   IActivityCategory,
   IActivityCategorySectionComponent,
   IPage,
-} from "@/types/page.types";
+} from '@/types/page.types';
 
 interface IOurServicesProps {
   ourServicesContent: IPage;
@@ -74,12 +74,12 @@ export default function CommunityServices({
                 className="absolute inset-0"
                 style={{
                   opacity: 0,
-                  animation: "fadeIn 0.8s ease-in-out forwards",
+                  animation: 'fadeIn 0.8s ease-in-out forwards',
                 }}
               >
                 <Image
                   src={activeItem.image[0].url}
-                  alt={activeItem.image[0].alternativeText || "Community image"}
+                  alt={activeItem.image[0].alternativeText || 'Community image'}
                   fill
                   className="object-cover"
                   priority
@@ -97,13 +97,13 @@ export default function CommunityServices({
                   key={id}
                   onClick={() => handleClick(id)}
                   className={`cursor-pointer p-4 transition-all duration-200 ${
-                    isActive ? "border-l-4 border-pink-300" : ""
+                    isActive ? 'border-l-4 border-pink-300' : ''
                   }`}
                 >
                   <h3 className="text-xl text-gray-800">{title}</h3>
                   <p
                     className={`text-gray-700 text-sm mt-1 transition-opacity duration-500 ease-in-out ${
-                      isActive ? "opacity-100" : "opacity-0 h-0 overflow-hidden"
+                      isActive ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'
                     }`}
                   >
                     {content}

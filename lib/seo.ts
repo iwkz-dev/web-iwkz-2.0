@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import type { IPageResponse } from "@/types/page.types";
+import type { Metadata } from 'next';
+import type { IPageResponse } from '@/types/page.types';
 
 export async function getLayoutMetadata(): Promise<Metadata> {
   const fallback: Metadata = {
-    title: "IWKZ Berlin",
-    description: "indonesischer Weisheits- & Kulturzentrum e.V.",
+    title: 'IWKZ Berlin',
+    description: 'indonesischer Weisheits- & Kulturzentrum e.V.',
   };
 
   try {
@@ -12,7 +12,7 @@ export async function getLayoutMetadata(): Promise<Metadata> {
       headers: {
         Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
       },
-      cache: "no-store",
+      cache: 'no-store',
     });
 
     if (!res.ok) return fallback;
@@ -25,15 +25,15 @@ export async function getLayoutMetadata(): Promise<Metadata> {
 
     const keywords = seo.keywords
       ? seo.keywords
-          .split(",")
+          .split(',')
           .map((s) => s.trim())
           .filter(Boolean)
       : undefined;
 
-    const robotsStr = (seo.metaRobots ?? "").toLowerCase();
+    const robotsStr = (seo.metaRobots ?? '').toLowerCase();
     const robots = {
-      index: !robotsStr.includes("noindex"),
-      follow: !robotsStr.includes("nofollow"),
+      index: !robotsStr.includes('noindex'),
+      follow: !robotsStr.includes('nofollow'),
     };
 
     return {

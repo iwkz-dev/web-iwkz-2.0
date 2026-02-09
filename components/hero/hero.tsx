@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { IHeroComponent, IPage } from "@/types/page.types";
-import { Button } from "@/components/ui/button";
-import FadeInOnScroll from "@/components/ui/fadeInScroll";
+import { IHeroComponent, IPage } from '@/types/page.types';
+import { Button } from '@/components/ui/button';
+import FadeInOnScroll from '@/components/ui/fadeInScroll';
 
 interface IHeroProps {
   heroContent: IPage;
@@ -23,12 +23,12 @@ export default function Hero(props: IHeroProps) {
       radial-gradient(circle at center, rgba(0,0,0,0) 25%, rgba(0,0,0,0.85) 100%),
       url(${heroContent.image.url})
     `,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundAttachment: "fixed",
-          backgroundRepeat: "no-repeat",
-          backgroundBlendMode: "overlay",
-          filter: "blur(5px)",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          backgroundRepeat: 'no-repeat',
+          backgroundBlendMode: 'overlay',
+          filter: 'blur(5px)',
         }}
       />
       <div className="absolute inset-0 bg-black/60 z-0" />

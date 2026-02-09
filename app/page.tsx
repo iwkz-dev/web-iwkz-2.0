@@ -18,11 +18,11 @@ import { notFound } from 'next/navigation';
 export default function Home() {
   const [initialized, setInitialized] = useState(false);
   const [prayerTimeData, setPrayerTimeData] = useState<IPrayerTimes | null>(
-    null,
+    null
   );
   const [pageData, setPageData] = useState<IPageResponse | null>(null);
   const [globalContent, setGlobalContent] = useState<IGlobalContent | null>(
-    null,
+    null
   );
 
   useEffect(() => {

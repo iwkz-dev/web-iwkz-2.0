@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
-import { Questrial } from "next/font/google";
-import "./globals.css";
-import { ToastProvider } from "@/components/ui/toast";
-import { getLayoutMetadata } from "@/lib/seo";
+import type { Metadata } from 'next';
+import { Questrial } from 'next/font/google';
+import './globals.css';
+import { ToastProvider } from '@/components/ui/toast';
+import { getLayoutMetadata } from '@/lib/seo';
 
 const questrial = Questrial({
-  subsets: ["latin"],
-  weight: "400",
+  subsets: ['latin'],
+  weight: '400',
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" style={{ scrollBehavior: "smooth" }}>
+    <html lang="en" style={{ scrollBehavior: 'smooth' }}>
       <body className={questrial.className}>
         <ToastProvider>{children}</ToastProvider>
       </body>
