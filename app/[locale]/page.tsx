@@ -77,14 +77,14 @@ export default function Home() {
       { id: 1, text: t.navbar.home, url: '#hero', target: null },
       {
         id: 2,
-        text: t.navbar.history,
-        url: '#timeline',
+        text: t.navbar.services,
+        url: '#services',
         target: null,
       },
       {
         id: 3,
-        text: t.navbar.services,
-        url: '#services',
+        text: t.navbar.history,
+        url: '#timeline',
         target: null,
       },
       {
