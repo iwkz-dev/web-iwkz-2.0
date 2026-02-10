@@ -10,10 +10,11 @@ import ContactFooter from '@/components/contactFooter/contactFooter';
 import Header from '@/components/header/header';
 //import News from "@/components/news/news";
 import LoadingPage from '@/components/loadingPage/loadingPage';
-import { IPageResponse } from '@/types/page.types';
+import { IHistoriesComponent, IPageResponse } from '@/types/page.types';
 import { IPrayerTimes } from '@/types/prayerTimes.types';
 import { IGlobalContent } from '@/types/globalContent.types';
 import { notFound } from 'next/navigation';
+import Timeline from '@/components/timeline';
 
 export default function Home() {
   const [initialized, setInitialized] = useState(false);
@@ -42,6 +43,8 @@ export default function Home() {
         setPrayerTimeData(prayerJson.error ? null : prayerJson);
         setPageData(pageJson.error ? null : pageJson);
         setGlobalContent(globalJson.error ? null : globalJson);
+        console.log(pageJson);
+
         setInitialized(true);
       } catch (err) {
         console.error('Failed to fetch one or more resources:', err);
@@ -67,12 +70,17 @@ export default function Home() {
     ],
   };
 
+  const timelineData: IHistoriesComponent | undefined =
+    pageData.data[0].content.find(
+      (c) => c.__component === 'dynamic-zone.histories'
+    );
   return (
     <div>
       <Header headerContent={navbarOnlyHome} />
       <PrayerTimesCard prayerTimes={prayerTimeData} />
       <Hero heroContent={pageData?.data[0]!} />
       <OurServices ourServicesContent={pageData?.data[0]!} />
+      {timelineData && <Timeline timelineData={timelineData} />}
       <ContactFooter contactFooterContent={globalContent?.data.footer!} />
     </div>
   );

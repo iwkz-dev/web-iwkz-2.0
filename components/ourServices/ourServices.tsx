@@ -54,7 +54,7 @@ export default function CommunityServices({
   return (
     <section
       id="services"
-      className="relative min-h-dvh bg-green-50 px-6 py-20 font-questrial flex flex-col items-center justify-center"
+      className="relative min-h-dvh bg-primary-foreground px-6 py-20 font-questrial flex flex-col items-center justify-center"
     >
       <FadeInOnScroll>
         <div className="max-w-5xl mx-auto text-center space-y-4 mb-12">
