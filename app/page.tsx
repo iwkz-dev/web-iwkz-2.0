@@ -31,7 +31,7 @@ export default function Home() {
       try {
         const [prayerRes, pageRes, globalRes] = await Promise.all([
           fetch('/api/prayer-time'),
-          fetch('/api/pages'),
+          fetch(`/api/pages`),
           fetch('/api/global'),
         ]);
 

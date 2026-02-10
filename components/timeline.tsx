@@ -1,7 +1,16 @@
-import { Building2, Calendar } from 'lucide-react';
+import {
+  Briefcase,
+  Building2,
+  Calendar,
+  GraduationCap,
+  MoonStar,
+} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { IHistoriesComponent } from '@/types/page.types';
-import { div } from 'framer-motion/client';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Separator } from './ui/separator';
+import { DotPattern } from './ui/dot-pattern';
+import { cn } from '@/lib/utils';
 
 const experiences = [
   {
@@ -36,55 +45,55 @@ export default function Timeline({
   timelineData: IHistoriesComponent;
 }) {
   return (
-    <div>
-      <div>{timelineData.headline}</div>
-      <div className="mx-auto max-w-(--breakpoint-sm) px-6 py-12 md:py-20">
-        <div className="relative ml-3">
-          {/* Timeline line */}
-          <div className="absolute top-4 bottom-0 left-0 border-l-2" />
+    <div className="relative py-16 px-4">
+      <DotPattern
+        className={cn(
+          '[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]'
+        )}
+      />
+      <p className="text-center font-bold text-lg mb-14">
+        {timelineData.headline}
+      </p>
+      <div className="relative max-w-4xl mx-auto p-4">
+        <Separator
+          orientation="vertical"
+          className="absolute left-1/2 h-full transform -translate-x-1/2"
+        />
 
-          {experiences.map(
-            ({ company, description, period, technologies, title }, index) => (
-              <div className="relative pb-12 pl-8 last:pb-0" key={index}>
-                {/* Timeline dot */}
-                <div className="absolute top-3 left-px h-3 w-3 -translate-x-1/2 rounded-full border-2 border-primary bg-background" />
-
-                {/* Content */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent">
-                      <Building2 className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                    <span className="font-medium text-base">{company}</span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-xl tracking-[-0.01em]">
-                      {title}
-                    </h3>
-                    <div className="mt-2 flex items-center gap-2 text-sm">
-                      <Calendar className="h-4 w-4" />
-                      <span>{period}</span>
-                    </div>
-                  </div>
-                  <p className="text-pretty text-muted-foreground text-sm sm:text-base">
-                    {description}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {technologies.map((tech) => (
-                      <Badge
-                        className="rounded-full"
-                        key={tech}
-                        variant="secondary"
-                      >
-                        {tech}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
+        {timelineData.historyLine.map(
+          ({ id, year, headline, content, image }, index) => (
+            // <BlurFade key={index} delay={0.25 + index * 0.05} inView>
+            <div
+              key={index}
+              className={`flex flex-col md:flex-row ${
+                index % 2 === 0 ? 'md:flex-row-reverse' : ''
+              } gap-8 mb-8`}
+            >
+              <div className="flex-1 md:w-1/2"></div>
+              <div className="flex items-center justify-center">
+                <Badge
+                  variant="outline"
+                  className="w-fit h-fit p-3 rounded-full z-10 bg-primary-foreground"
+                >
+                  <MoonStar className="h-6 w-6" />
+                </Badge>
               </div>
-            )
-          )}
-        </div>
+              <Card className="flex-1 md:w-1/2 z-10">
+                <CardHeader>
+                  <CardTitle className="text-xl font-semibold">
+                    {headline}
+                  </CardTitle>
+                  <p className="italic text-lg">{headline}</p>
+                  <p className="text-base text-muted-foreground">{year}</p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-base ">{content}</p>
+                </CardContent>
+              </Card>
+            </div>
+            // </BlurFade>
+          )
+        )}
       </div>
     </div>
   );
