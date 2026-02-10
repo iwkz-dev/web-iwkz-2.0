@@ -3,8 +3,14 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter, usePathname } from 'next/navigation';
 import { INavbar } from '@/types/globalContent.types';
 import { FiMenu, FiX } from 'react-icons/fi';
+import {
+  detectLocaleFromPathname,
+  getLocalePrefix,
+  getAvailableLocales,
+} from '@/lib/locales';
 
 interface IHeaderContentProps {
   headerContent: INavbar;
@@ -13,7 +19,22 @@ interface IHeaderContentProps {
 export default function Header({ headerContent }: IHeaderContentProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Detect current locale from pathname
+  const currentLocale = detectLocaleFromPathname(pathname);
+  const localePrefix = getLocalePrefix(currentLocale);
   const navbarItems = headerContent.left_navbar_items;
+
+  const handleLocaleChange = (newLocale: string) => {
+    // Save locale preference to cookie
+    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`; // 1 year
+
+    // Navigate to the new locale path
+    const newPath = `/${newLocale}`;
+    router.push(newPath);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,7 +60,7 @@ export default function Header({ headerContent }: IHeaderContentProps) {
       return (
         <Link
           key={item.id}
-          href={`/${item.url}`}
+          href={`${localePrefix}/${item.url}`}
           className={`${baseClass} ${mode === 'desktop' ? desktopClass : mobileClass}`}
         >
           {item.text}
@@ -48,7 +69,11 @@ export default function Header({ headerContent }: IHeaderContentProps) {
     }
 
     return (
-      <Link key={item.id} href={`/${item.url}`} className="block">
+      <Link
+        key={item.id}
+        href={`${localePrefix}/${item.url}`}
+        className="block"
+      >
         {item.text}
       </Link>
     );
@@ -67,7 +92,7 @@ export default function Header({ headerContent }: IHeaderContentProps) {
           scrolled || menuOpen ? 'py-4' : 'py-6'
         }`}
       >
-        <Link href="/" className="flex items-center gap-2">
+        <Link href={localePrefix} className="flex items-center gap-2">
           {headerContent.logo.image?.url && (
             <div className="relative w-8 h-8">
               <Image
@@ -89,6 +114,26 @@ export default function Header({ headerContent }: IHeaderContentProps) {
           aria-label="Main Navigation"
         >
           {navbarItems.map((item) => renderNavLink(item, 'desktop'))}
+
+          {/* Language Dropdown */}
+          <select
+            value={currentLocale}
+            onChange={(e) => handleLocaleChange(e.target.value)}
+            className={`border px-3 py-1 rounded cursor-pointer ${
+              scrolled
+                ? 'border-gray-300 bg-white text-gray-800'
+                : 'border-white bg-transparent text-white'
+            }`}
+            style={{
+              color: scrolled ? undefined : 'white',
+            }}
+          >
+            {getAvailableLocales().map(([code, { flag, label }]) => (
+              <option key={code} value={code} style={{ color: 'black' }}>
+                {label}
+              </option>
+            ))}
+          </select>
         </nav>
 
         <button
@@ -107,6 +152,19 @@ export default function Header({ headerContent }: IHeaderContentProps) {
       >
         <div className="space-y-3 text-sm font-medium">
           {navbarItems.map((item) => renderNavLink(item, 'mobile'))}
+
+          {/* Mobile Language Dropdown */}
+          <select
+            value={currentLocale}
+            onChange={(e) => handleLocaleChange(e.target.value)}
+            className="w-full border border-gray-800 px-3 py-1 rounded cursor-pointer bg-white text-gray-800"
+          >
+            {getAvailableLocales().map(([code, { flag, label }]) => (
+              <option key={code} value={code} style={{ color: 'black' }}>
+                {flag} {label}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
     </header>
