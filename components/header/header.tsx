@@ -157,11 +157,11 @@ export default function Header({ headerContent }: IHeaderContentProps) {
           <select
             value={currentLocale}
             onChange={(e) => handleLocaleChange(e.target.value)}
-            className="w-full border border-gray-800 px-3 py-1 rounded cursor-pointer bg-white text-gray-800"
+            className="w-auto border border-gray-800 px-3 py-1 rounded cursor-pointer bg-white text-gray-800"
           >
-            {getAvailableLocales().map(([code, { flag, label }]) => (
+            {getAvailableLocales().map(([code, { label }]) => (
               <option key={code} value={code} style={{ color: 'black' }}>
-                {flag} {label}
+                {label}
               </option>
             ))}
           </select>

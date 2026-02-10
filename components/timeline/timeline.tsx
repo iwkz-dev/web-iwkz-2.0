@@ -1,10 +1,9 @@
 import { MoonStar } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { IHistoriesComponent } from '@/types/page.types';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Separator } from './ui/separator';
-import { cn } from '@/lib/utils';
-import FadeInOnScroll from './ui/fadeInScroll';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Separator } from '../ui/separator';
+import FadeInOnScroll from '../ui/fadeInScroll';
 
 export default function Timeline({
   timelineData,

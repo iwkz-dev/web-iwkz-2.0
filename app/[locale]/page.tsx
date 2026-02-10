@@ -15,7 +15,7 @@ import { IHistoriesComponent, IPageResponse } from '@/types/page.types';
 import { IPrayerTimes } from '@/types/prayerTimes.types';
 import { IGlobalContent } from '@/types/globalContent.types';
 import { notFound } from 'next/navigation';
-import Timeline from '@/components/timeline';
+import Timeline from '@/components/timeline/timeline';
 
 export default function Home() {
   const params = useParams();

@@ -3,6 +3,7 @@
 import { IHeroComponent, IPage } from '@/types/page.types';
 import { Button } from '@/components/ui/button';
 import FadeInOnScroll from '@/components/ui/fadeInScroll';
+import LightRays from '@/components/ui/lightRays/LightRays';
 
 interface IHeroProps {
   heroContent: IPage;
@@ -32,8 +33,25 @@ export default function Hero(props: IHeroProps) {
         }}
       />
       <div className="absolute inset-0 bg-black/60 z-0" />
+      <div className="absolute inset-0 w-full h-full z-0">
+        <LightRays
+          raysOrigin="top-center"
+          raysColor="#ffffff"
+          raysSpeed={1}
+          lightSpread={0.5}
+          rayLength={3}
+          followMouse={true}
+          mouseInfluence={0.1}
+          noiseAmount={0}
+          distortion={0}
+          className="custom-rays"
+          pulsating={false}
+          fadeDistance={1}
+          saturation={1}
+        />
+      </div>
       <FadeInOnScroll>
-        <div className="relative z-10 text-center max-w-2xl space-y-6 m-auto">
+        <div className="relative z-10 text-center max-w-2xl space-y-6 m-auto relative z-10">
           <h1 className="text-4xl md:text-5xl text-white">
             {heroContent.headline}
           </h1>
