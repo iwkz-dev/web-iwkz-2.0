@@ -180,7 +180,6 @@ export default function PrayerTimesCard({
                     ? 'text-lg'
                     : 'text-sm';
 
-                console.log(currentPrayerKey);
                 return (
                   <div
                     key={key}
