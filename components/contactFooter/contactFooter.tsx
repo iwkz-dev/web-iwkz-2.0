@@ -3,12 +3,14 @@
 import { JSX } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa';
 
 import { IFooter } from '@/types/globalContent.types';
 import FadeInOnScroll from '@/components/ui/fadeInScroll';
+import { getTranslations } from '@/lib/translations';
 
 interface IContactFooterProps {
   contactFooterContent: IFooter;
@@ -17,8 +19,12 @@ interface IContactFooterProps {
 export default function ContactFooter({
   contactFooterContent,
 }: IContactFooterProps) {
-  const { description, internal_links, social_media_links, copyright } =
-    contactFooterContent;
+  const params = useParams();
+  const locale = (params.locale as string) || 'id';
+
+  const t = getTranslations(locale);
+
+  const { description, social_media_links, copyright } = contactFooterContent;
 
   const iconMap: Record<string, JSX.Element> = {
     Facebook: <FaFacebook className="text-xl text-blue-600" />,
@@ -43,24 +49,22 @@ export default function ContactFooter({
     >
       <FadeInOnScroll>
         <div className="max-w-6xl mx-auto text-center space-y-4 mb-12">
-          <h2 className="text-4xl">Get in Touch</h2>
+          <h2 className="text-4xl">{t.contactFooter.heading}</h2>
         </div>
 
         {/* Contact Info */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl w-full mx-auto text-center mb-6">
           <div className="space-y-2 flex flex-col items-center">
             <FaMapMarkerAlt className="text-2xl mb-3" />
-            <h3 className="text-lg font-semibold">Alamat</h3>
+            <h3 className="text-lg font-semibold">{t.contactFooter.address}</h3>
             <p className="text-sm text-gray-600">{orgName}</p>
             <p className="text-sm text-gray-600">{address}</p>
           </div>
 
           <div className="space-y-2 flex flex-col items-center">
             <FaEnvelope className="text-2xl mb-3" />
-            <h3 className="text-lg font-semibold">Email</h3>
-            <p className="text-sm text-gray-600">
-              Untuk pertanyaan atau informasi:
-            </p>
+            <h3 className="text-lg font-semibold">{t.contactFooter.email}</h3>
+            <p className="text-sm text-gray-600">{t.contactFooter.emailDesc}</p>
             <Link
               href={`mailto:${email}`}
               className="text-sm text-blue-600 underline"
@@ -71,7 +75,9 @@ export default function ContactFooter({
 
           <div className="space-y-2 flex flex-col items-center">
             <FiExternalLink className="text-2xl mb-3" />
-            <h3 className="text-lg font-semibold">Sosial Media</h3>
+            <h3 className="text-lg font-semibold">
+              {t.contactFooter.socialMedia}
+            </h3>
             {social_media_links.map((link) => (
               <Link
                 key={link.id}
@@ -85,7 +91,7 @@ export default function ContactFooter({
           </div>
         </div>
 
-        {/* Footer Links + Copyright */}
+        {/* Footer Copyright */}
         <footer className="border-t border-gray-200 pt-10 text-center space-y-6 w-full">
           <div className="relative w-8 h-8 mx-auto">
             <Image
@@ -96,19 +102,6 @@ export default function ContactFooter({
               priority
             />
           </div>
-
-          <nav className="flex flex-wrap justify-center gap-x-6 text-sm font-medium text-gray-700">
-            {internal_links.map((link) => (
-              <Link
-                key={link.id}
-                href={`/${link.url}`}
-                target={link.target || '_self'}
-                className="hover:underline"
-              >
-                {link.text}
-              </Link>
-            ))}
-          </nav>
 
           <div className="text-sm text-gray-500">{copyright}</div>
         </footer>

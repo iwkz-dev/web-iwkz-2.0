@@ -16,6 +16,7 @@ import { IPrayerTimes } from '@/types/prayerTimes.types';
 import { IGlobalContent } from '@/types/globalContent.types';
 import { notFound } from 'next/navigation';
 import Timeline from '@/components/timeline/timeline';
+import { getTranslations } from '@/lib/translations';
 
 export default function Home() {
   const params = useParams();
@@ -68,12 +69,30 @@ export default function Home() {
     return <LoadingPage />;
   }
 
+  const t = getTranslations(locale);
+
   const navbarOnlyHome: typeof globalContent.data.navbar = {
     ...globalContent.data.navbar,
     left_navbar_items: [
-      { id: 1, text: 'Home', url: '#hero', target: null },
-      { id: 3, text: 'Layanan', url: '#services', target: null },
-      { id: 4, text: 'Kontak', url: '#contact', target: null },
+      { id: 1, text: t.navbar.home, url: '#hero', target: null },
+      {
+        id: 2,
+        text: t.navbar.history,
+        url: '#timeline',
+        target: null,
+      },
+      {
+        id: 3,
+        text: t.navbar.services,
+        url: '#services',
+        target: null,
+      },
+      {
+        id: 4,
+        text: t.navbar.contact,
+        url: '#contact',
+        target: null,
+      },
     ],
   };
 
