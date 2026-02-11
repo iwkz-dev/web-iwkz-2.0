@@ -147,20 +147,24 @@ export default function JadwalShalatPage() {
                             )}
                         </button>
 
-                        <div className="relative flex py-2 items-center">
-                            <div className="flex-grow border-t border-gray-300"></div>
-                            <span className="flex-shrink-0 mx-4 text-gray-400 text-sm">Or</span>
-                            <div className="flex-grow border-t border-gray-300"></div>
-                        </div>
+                        {process.env.NEXT_PUBLIC_JADWAL_SHALAT_RAMADAN_URL && (
+                            <>
+                                <div className="relative flex py-2 items-center">
+                                    <div className="flex-grow border-t border-gray-300"></div>
+                                    <span className="flex-shrink-0 mx-4 text-gray-400 text-sm">Or</span>
+                                    <div className="flex-grow border-t border-gray-300"></div>
+                                </div>
 
-                        <a
-                            href="https://blog.iwkz.de/download/Jadwal_Shalat_Ramadhan_1447H.pdf"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full block text-center py-3 px-4 rounded-xl text-teal-700 bg-teal-50 border border-teal-200 font-medium hover:bg-teal-100 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
-                        >
-                            {t.jadwalShalatPage.downloadRamadan}
-                        </a>
+                                <a
+                                    href={process.env.NEXT_PUBLIC_JADWAL_SHALAT_RAMADAN_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-full block text-center py-3 px-4 rounded-xl text-teal-700 bg-teal-50 border border-teal-200 font-medium hover:bg-teal-100 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+                                >
+                                    {t.jadwalShalatPage.downloadRamadan}
+                                </a>
+                            </>
+                        )}
                     </div>
                 </div>
             </main>
