@@ -32,7 +32,23 @@ export default function JadwalShalatPage() {
     if (error) return <div>Failed to load</div>;
     if (!globalContent) return <LoadingPage />;
 
-    const navbarContent = globalContent.data?.navbar;
+    const navbarContent = {
+        ...globalContent.data?.navbar,
+        left_navbar_items: [
+            { id: 1, text: t.navbar.home, url: '#hero', target: null },
+            { id: 2, text: t.navbar.services, url: '#services', target: null },
+            { id: 3, text: t.navbar.history, url: '#timeline', target: null },
+            { id: 4, text: t.navbar.contact, url: '#contact', target: null },
+            ...(
+                locale === 'id' ? [{
+                    id: 5,
+                    text: t.navbar.jadwalShalat,
+                    url: `/jadwal-shalat`,
+                    target: null,
+                }] : []
+            )
+        ]
+    };
     const footerContent = globalContent.data?.footer;
 
     const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 1 + i);
