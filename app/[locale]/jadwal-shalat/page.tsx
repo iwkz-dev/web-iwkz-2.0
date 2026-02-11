@@ -163,7 +163,7 @@ export default function JadwalShalatPage() {
                             )}
                         </button>
 
-                        {process.env.NEXT_PUBLIC_JADWAL_SHALAT_RAMADAN_URL && (
+                        {globalContent.data?.jadwalShalatRamadanUrl && (
                             <>
                                 <div className="relative flex py-2 items-center">
                                     <div className="flex-grow border-t border-gray-300"></div>
@@ -172,7 +172,7 @@ export default function JadwalShalatPage() {
                                 </div>
 
                                 <a
-                                    href={process.env.NEXT_PUBLIC_JADWAL_SHALAT_RAMADAN_URL}
+                                    href={globalContent.data?.jadwalShalatRamadanUrl || '#'}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="w-full block text-center py-3 px-4 rounded-xl text-teal-700 bg-teal-50 border border-teal-200 font-medium hover:bg-teal-100 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
