@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            margin: 10mm 12mm;
+            /* Reduced margins */
+            size: A4 portrait;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #4a5568;
+            margin: 0;
+            padding: 0;
+            font-size: 11px;
+            /* Increased from 10px */
+            line-height: 1.25;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 55px;
+            height: auto;
+            margin-right: 15px;
+        }
+
+        .org-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2d3748;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        .org-sub {
+            font-size: 11px;
+            color: #718096;
+            margin: 2px 0 0 0;
+        }
+
+        .header-right {
+            text-align: right;
+        }
+
+        .month-title {
+            font-size: 24px;
+            font-weight: 300;
+            color: #2c7a7b;
+            margin: 0;
+        }
+
+        .hijri-date {
+            font-size: 11px;
+            color: #718096;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        /* Table Section */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+
+        th {
+            background-color: #f7fafc;
+            /* Gray 50 */
+            color: #2c7a7b;
+            /* Teal 600 */
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            /* Increased from 8px */
+            letter-spacing: 0.5px;
+            padding: 8px 4px;
+            /* Slightly increased padding */
+            border-bottom: 2px solid #edf2f7;
+            /* Gray 200 */
+        }
+
+        td {
+            padding: 5px 4px;
+            /* Increased padding */
+            text-align: center;
+            border-bottom: 1px solid #edf2f7;
+            color: #4a5568;
+            font-size: 12px;
+            /* match body size */
+        }
+
+        tr:nth-child(even) {
+            background-color: #fbfdfd;
+            /* Very light teal/gray */
+        }
+
+        /* Highlight Fridays if needed, or just keep it simple. */
+        /* tr.friday { background-color: #f0fff4; } */
+
+        .date-cell {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .hijri-cell {
+            color: #a0aec0;
+            font-size: 10px;
+        }
+
+        /* Footer Section */
+        .footer {
+            margin-top: auto;
+            /* Push to bottom if flex container, but here just flow */
+            padding-top: 15px;
+            border-top: 1px solid #edf2f7;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            font-size: 10px;
+            /* Smaller footer */
+            color: #718096;
+        }
+
+        .footer-left p,
+        .footer-right p {
+            margin: 1px 0;
+        }
+
+        .footer-right {
+            text-align: right;
+        }
+
+        .wa-box {
+            background-color: #f0fff4;
+            /* Green 50 */
+            border: 1px solid #c6f6d5;
+            /* Green 200 */
+            border-radius: 4px;
+            padding: 4px 8px;
+            /* Compact box */
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        .wa-title {
+            color: #2f855a;
+            /* Green 700 */
+            font-weight: bold;
+            margin-bottom: 1px;
+            display: block;
+            font-size: 10px;
+        }
+
+        .wa-number {
+            color: #22543d;
+            /* Green 900 */
+            font-size: 12px;
+        }
+
+        .website-link {
+            color: #2c7a7b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <img class="logo" src="http://cdn-radiotime-logos.tunein.com/s271525g.png" alt="Logo">
+                <div>
+                    <h1 class="org-name">Masjid Al-Falah Berlin</h1>
+                    <p class="org-sub">Indonesisches Weisheits- und Kulturzentrum e.V.</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <h2 class="month-title">{{monthLabel}} {{year}}</h2>
+                <div class="hijri-date">
+                    {{#if hijriahMonthLabel}}{{hijriahMonthLabel}}{{/if}} {{hijriahYearLabel}}
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 8%;">Tgl</th>
+                    {{#if hijriahMonthLabel}}
+                    <th style="width: 8%;">Hijri</th>
+                    {{/if}}
+                    <th style="width: 14%;">Subuh</th>
+                    <th style="width: 14%;">Terbit</th>
+                    <th style="width: 14%;">Dzuhur</th>
+                    <th style="width: 14%;">Ashr</th>
+                    <th style="width: 14%;">Maghrib</th>
+                    <th style="width: 14%;">Isya</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each data}}
+                <tr>
+                    <td class="date-cell">{{date}}</td>
+                    {{#if hijriahDate}}
+                    <td class="hijri-cell">{{hijriahDate}}</td>
+                    {{/if}}
+                    <td>{{subuh}}</td>
+                    <td>{{terbit}}</td>
+                    <td>{{dzuhur}}</td>
+                    <td>{{ashr}}</td>
+                    <td>{{maghrib}}</td>
+                    <td>{{isya}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-left">
+                <p><strong>IWKZ e.V.</strong></p>
+                <p>Feldzeugmeisterstr. 1, 10557 Berlin</p>
+                <p><a href="https://www.iwkz.de" class="website-link">www.iwkz.de</a> | info@iwkz.de</p>
+                <p><a href="https://linktr.ee/iwkz" class="website-link">linktr.ee/iwkz</a></p>
+            </div>
+            <div class="footer-right">
+                <div class="wa-box">
+                    <span class="wa-title">WA Broadcast Info</span>
+                    <span class="wa-number">+49 176 8781 1106</span>
+                </div>
+                <p>Bankverbindung: Postbank</p>
+                <p>IBAN: DE29 1001 0010 0346 6691 06</p>
+                <p>BIC : PBNKDEFFXX</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

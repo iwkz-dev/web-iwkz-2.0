@@ -5,6 +5,7 @@ export const translations = {
       services: 'Layanan',
       history: 'Sejarah',
       contact: 'Kontak',
+      jadwalShalat: 'Jadwal Shalat',
     },
     contactFooter: {
       heading: 'Hubungi Kami',
@@ -13,6 +14,16 @@ export const translations = {
       emailDesc: 'Untuk pertanyaan atau informasi:',
       socialMedia: 'Sosial Media',
     },
+    jadwalShalatPage: {
+      title: 'Jadwal Shalat',
+      description: 'Download jadwal shalat bulanan dalam format PDF.',
+      month: 'Bulan',
+      year: 'Tahun',
+      generate: 'Download Jadwal Shalat',
+      loading: 'Sedang memproses...',
+      error: 'Terjadi kesalahan saat membuat PDF',
+      downloadRamadan: 'Download Jadwal Shalat Ramadan',
+    },
   },
   'de-DE': {
     navbar: {
@@ -20,6 +31,7 @@ export const translations = {
       services: 'Dienstleistungen',
       history: 'Geschichte',
       contact: 'Kontakt',
+      jadwalShalat: '-',
     },
     contactFooter: {
       heading: 'Kontaktieren Sie uns',
@@ -27,6 +39,16 @@ export const translations = {
       email: 'E-Mail',
       emailDesc: 'Für Fragen oder Informationen:',
       socialMedia: 'Soziale Medien',
+    },
+    jadwalShalatPage: {
+      title: '-',
+      description: '-',
+      month: '-',
+      year: '-',
+      generate: '-',
+      loading: '-',
+      error: '-',
+      downloadRamadan: '-',
     },
   },
 } as const;
