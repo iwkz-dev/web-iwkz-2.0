@@ -32,7 +32,23 @@ export default function JadwalShalatPage() {
     if (error) return <div>Failed to load</div>;
     if (!globalContent) return <LoadingPage />;
 
-    const navbarContent = globalContent.data?.navbar;
+    const navbarContent = {
+        ...globalContent.data?.navbar,
+        left_navbar_items: [
+            { id: 1, text: t.navbar.home, url: '#hero', target: null },
+            { id: 2, text: t.navbar.services, url: '#services', target: null },
+            { id: 3, text: t.navbar.history, url: '#timeline', target: null },
+            { id: 4, text: t.navbar.contact, url: '#contact', target: null },
+            ...(
+                locale === 'id' ? [{
+                    id: 5,
+                    text: t.navbar.jadwalShalat,
+                    url: `/jadwal-shalat`,
+                    target: null,
+                }] : []
+            )
+        ]
+    };
     const footerContent = globalContent.data?.footer;
 
     const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 1 + i);
@@ -147,7 +163,7 @@ export default function JadwalShalatPage() {
                             )}
                         </button>
 
-                        {process.env.NEXT_PUBLIC_JADWAL_SHALAT_RAMADAN_URL && (
+                        {globalContent.data?.jadwalShalatRamadanUrl && (
                             <>
                                 <div className="relative flex py-2 items-center">
                                     <div className="flex-grow border-t border-gray-300"></div>
@@ -156,7 +172,7 @@ export default function JadwalShalatPage() {
                                 </div>
 
                                 <a
-                                    href={process.env.NEXT_PUBLIC_JADWAL_SHALAT_RAMADAN_URL}
+                                    href={globalContent.data?.jadwalShalatRamadanUrl || '#'}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="w-full block text-center py-3 px-4 rounded-xl text-teal-700 bg-teal-50 border border-teal-200 font-medium hover:bg-teal-100 transition-all transform hover:scale-[1.02] active:scale-[0.98]"

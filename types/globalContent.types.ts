@@ -10,6 +10,7 @@ export interface IGlobalContent {
     locale: string;
     navbar: INavbar;
     footer: IFooter;
+    jadwalShalatRamadanUrl?: string | null;
   };
   meta: Record<string, unknown>;
 }
