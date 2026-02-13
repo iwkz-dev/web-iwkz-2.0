@@ -1,4 +1,5 @@
 'use client';
+import { useEffect, useState } from 'react';
 
 import { IHeroComponent, IPage } from '@/types/page.types';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,20 @@ interface IHeroProps {
 
 export default function Hero(props: IHeroProps) {
   const heroContent = props.heroContent.content[0] as IHeroComponent;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 768px)');
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+
+    // Initial check
+    setIsMobile(mql.matches);
+    // Subscribe to changes
+    mql.addEventListener('change', onChange);
+    return () => {
+      mql.removeEventListener('change', onChange);
+    };
+  }, []);
 
   return (
     <section
@@ -18,7 +33,7 @@ export default function Hero(props: IHeroProps) {
       className="relative min-h-dvh flex items-center justify-center px-4 font-questrial overflow-hidden"
     >
       <div
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 h-full w-full overflow-hidden"
         style={{
           backgroundImage: `
       radial-gradient(circle at center, rgba(0,0,0,0) 25%, rgba(0,0,0,0.85) 100%),
@@ -26,7 +41,7 @@ export default function Hero(props: IHeroProps) {
     `,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          backgroundAttachment: 'fixed',
+          backgroundAttachment: isMobile ? 'scroll' : 'fixed',
           backgroundRepeat: 'no-repeat',
           backgroundBlendMode: 'overlay',
           filter: 'blur(5px)',
@@ -51,7 +66,7 @@ export default function Hero(props: IHeroProps) {
         />
       </div>
       <FadeInOnScroll>
-        <div className="relative z-10 text-center max-w-2xl space-y-6 m-auto relative z-10">
+        <div className="relative z-10 text-center max-w-2xl space-y-6 m-auto">
           <h1 className="text-4xl md:text-5xl text-white">
             {heroContent.headline}
           </h1>
