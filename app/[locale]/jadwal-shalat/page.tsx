@@ -79,7 +79,11 @@ export default function JadwalShalatPage() {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to generate PDF');
+                const errorText = await response.text();
+                console.error('Failed to generate PDF:', response.status, errorText);
+                alert(t.jadwalShalatPage.error);
+                setLoading(false);
+                return;
             }
 
             const blob = await response.blob();
