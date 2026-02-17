@@ -19,6 +19,8 @@ COPY . .
 # Disable Next.js telemetry during build
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+# Ensure standalone output inside Docker
+ENV NEXT_STANDALONE=true
 
 RUN pnpm build
 
