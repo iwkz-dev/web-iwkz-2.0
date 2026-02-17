@@ -5,6 +5,19 @@ export async function getLayoutMetadata(): Promise<Metadata> {
   const fallback: Metadata = {
     title: 'IWKZ Berlin',
     description: 'indonesischer Weisheits- & Kulturzentrum e.V.',
+    applicationName: 'IWKZ e.V.',
+    manifest: '/site.webmanifest',
+    icons: {
+      icon: [
+        { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+        { url: '/favicon.svg', type: 'image/svg+xml' },
+        { url: '/favicon.ico' },
+      ],
+      apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+    },
+    appleWebApp: {
+      title: 'IWKZ e.V.',
+    },
   };
 
   try {
@@ -44,6 +57,19 @@ export async function getLayoutMetadata(): Promise<Metadata> {
         ? { canonical: seo.canonicalURL }
         : undefined,
       robots,
+      applicationName: 'IWKZ e.V.',
+      manifest: '/site.webmanifest',
+      icons: {
+        icon: [
+          { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+          { url: '/favicon.svg', type: 'image/svg+xml' },
+          { url: '/favicon.ico' },
+        ],
+        apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+      },
+      appleWebApp: {
+        title: 'IWKZ e.V.',
+      },
     };
   } catch {
     return fallback;
