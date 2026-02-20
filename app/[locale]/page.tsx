@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import PrayerTimesCard from '@/components/prayerTimesCard/prayerTimesCard';
 import Hero from '@/components/hero/hero';
 //import PRS from "@/components/prs/prs";
 import OurServices from '@/components/ourServices/ourServices';
@@ -12,7 +11,6 @@ import Header from '@/components/header/header';
 //import News from "@/components/news/news";
 import LoadingPage from '@/components/loadingPage/loadingPage';
 import { IHistoriesComponent, IPageResponse } from '@/types/page.types';
-import { IPrayerTimes } from '@/types/prayerTimes.types';
 import { IGlobalContent } from '@/types/globalContent.types';
 import { notFound } from 'next/navigation';
 import Timeline from '@/components/timeline/timeline';
@@ -22,9 +20,6 @@ export default function Home() {
   const params = useParams();
   const locale = params.locale as string;
   const [initialized, setInitialized] = useState(false);
-  const [prayerTimeData, setPrayerTimeData] = useState<IPrayerTimes | null>(
-    null
-  );
   const [pageData, setPageData] = useState<IPageResponse | null>(null);
   const [globalContent, setGlobalContent] = useState<IGlobalContent | null>(
     null
@@ -39,18 +34,15 @@ export default function Home() {
           locale: apiLocale,
         });
 
-        const [prayerRes, pageRes, globalRes] = await Promise.all([
-          fetch('/api/prayer-time'),
+        const [pageRes, globalRes] = await Promise.all([
           fetch(`/api/pages?${params.toString()}`),
           fetch(`/api/global?${params.toString()}`),
         ]);
 
-        const [prayerJson, pageJson, globalJson] = await Promise.all([
-          prayerRes.json(),
+        const [pageJson, globalJson] = await Promise.all([
           pageRes.json(),
           globalRes.json(),
         ]);
-        setPrayerTimeData(prayerJson.error ? null : prayerJson);
         setPageData(pageJson.error ? null : pageJson);
         setGlobalContent(globalJson.error ? null : globalJson);
         setInitialized(true);
@@ -62,7 +54,7 @@ export default function Home() {
     fetchData();
   }, [locale]);
 
-  if (!prayerTimeData || !pageData || !globalContent) {
+  if (!pageData || !globalContent) {
     if (initialized) {
       notFound();
     }
@@ -120,7 +112,6 @@ export default function Home() {
   return (
     <div>
       <Header headerContent={navbarOnlyHome} />
-      <PrayerTimesCard prayerTimes={prayerTimeData} />
       <Hero heroContent={pageData?.data[0]!} />
       <OurServices ourServicesContent={pageData?.data[0]!} />
       {timelineData && <Timeline timelineData={timelineData} />}
