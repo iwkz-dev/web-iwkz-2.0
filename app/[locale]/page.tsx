@@ -93,14 +93,22 @@ export default function Home() {
         url: '#contact',
         target: null,
       },
-      ...(
-        globalContent.data.locale === 'id' ? [{
-          id: 5,
-          text: t.navbar.jadwalShalat,
-          url: `/jadwal-shalat`,
-          target: null,
-        }] : []
-      )
+      ...(globalContent.data.locale === 'id'
+        ? [
+            {
+              id: 5,
+              text: t.navbar.jadwalShalat,
+              url: `/jadwal-shalat`,
+              target: null,
+            },
+            {
+              id: 6,
+              text: 'Kalender Kegiatan',
+              url: `/kalender-kegiatan`,
+              target: null,
+            },
+          ]
+        : []),
     ],
   };
 

@@ -38,6 +38,7 @@ export interface ISEO {
 export type IDynamicZone =
   | IHeroComponent
   | IActivityCategorySectionComponent
+  | IActivityCategoryComponent
   | IHistoriesComponent;
 
 export interface IHeroComponent {
@@ -72,7 +73,17 @@ export interface IActivityCategory {
   title: string;
   url: string | null;
   content: string;
-  image: IMedia[];
+  image: IMedia[] | IMedia | null;
+  Activities: IActivity[];
+}
+
+export interface IActivityCategoryComponent {
+  __component: 'dynamic-zone.activity-category';
+  id: number;
+  title: string;
+  url: string | null;
+  content: string;
+  image: IMedia | null;
   Activities: IActivity[];
 }
 

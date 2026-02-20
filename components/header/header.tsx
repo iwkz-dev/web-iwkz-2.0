@@ -47,6 +47,7 @@ export default function Header({ headerContent }: IHeaderContentProps) {
   }, []);
 
   const isJadwalShalat = pathname.includes('/jadwal-shalat');
+  const isKalenderKegiatan = pathname.includes('/kalender-kegiatan');
 
   const renderNavLink = (
     item: INavbar['left_navbar_items'][0],
@@ -107,11 +108,7 @@ export default function Header({ headerContent }: IHeaderContentProps) {
     }
 
     return (
-      <Link
-        key={item.id}
-        href={href}
-        className="block"
-      >
+      <Link key={item.id} href={href} className="block">
         {item.text}
       </Link>
     );
@@ -119,16 +116,18 @@ export default function Header({ headerContent }: IHeaderContentProps) {
 
   return (
     <header
-      className={`fixed w-full top-0 z-50 transition-all duration-300 ${scrolled || menuOpen
-        ? 'bg-white text-gray-800 shadow'
-        : isJadwalShalat
-          ? 'bg-gray-900 text-white shadow-md'
-          : 'bg-transparent text-white'
-        }`}
+      className={`fixed w-full top-0 z-50 transition-all duration-300 ${
+        scrolled || menuOpen
+          ? 'bg-white text-gray-800 shadow'
+          : isJadwalShalat || isKalenderKegiatan
+            ? 'bg-gray-900 text-white shadow-md'
+            : 'bg-transparent text-white'
+      }`}
     >
       <div
-        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all duration-300 ${scrolled || menuOpen ? 'py-4' : 'py-6'
-          }`}
+        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all duration-300 ${
+          scrolled || menuOpen ? 'py-4' : 'py-6'
+        }`}
       >
         <Link href={localePrefix} className="flex items-center gap-2">
           {headerContent.logo.image?.url && (
@@ -157,10 +156,11 @@ export default function Header({ headerContent }: IHeaderContentProps) {
           <select
             value={currentLocale}
             onChange={(e) => handleLocaleChange(e.target.value)}
-            className={`border px-3 py-1 rounded cursor-pointer ${scrolled
-              ? 'border-gray-300 bg-white text-gray-800'
-              : 'border-white bg-transparent text-white'
-              }`}
+            className={`border px-3 py-1 rounded cursor-pointer ${
+              scrolled
+                ? 'border-gray-300 bg-white text-gray-800'
+                : 'border-white bg-transparent text-white'
+            }`}
             style={{
               color: scrolled ? undefined : 'white',
             }}
@@ -183,8 +183,9 @@ export default function Header({ headerContent }: IHeaderContentProps) {
 
       {/* Mobile menu */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${menuOpen ? 'max-h-60 opacity-100 py-4' : 'max-h-0 opacity-0 py-0'
-          } bg-white text-gray-800 px-4 border-t border-gray-200`}
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          menuOpen ? 'max-h-60 opacity-100 py-4' : 'max-h-0 opacity-0 py-0'
+        } bg-white text-gray-800 px-4 border-t border-gray-200`}
       >
         <div className="space-y-3 text-sm font-medium">
           {navbarItems.map((item) => renderNavLink(item, 'mobile'))}
