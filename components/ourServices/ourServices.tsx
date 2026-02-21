@@ -10,15 +10,17 @@ import {
 } from '@/types/page.types';
 
 interface IOurServicesProps {
-  ourServicesContent: IPage;
+  ourServicesContent: IActivityCategorySectionComponent;
 }
 
 export default function CommunityServices({
   ourServicesContent,
 }: IOurServicesProps) {
-  const content = ourServicesContent
-    .content[1] as IActivityCategorySectionComponent;
-  const { headline, subHeadline, ActivityCategory: categories } = content;
+  const {
+    headline,
+    subHeadline,
+    ActivityCategory: categories,
+  } = ourServicesContent;
 
   const [activeKey, setActiveKey] = useState<number>(categories[0].id);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);

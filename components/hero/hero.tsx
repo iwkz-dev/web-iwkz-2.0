@@ -7,11 +7,11 @@ import FadeInOnScroll from '@/components/ui/fadeInScroll';
 import LightRays from '@/components/ui/lightRays/LightRays';
 
 interface IHeroProps {
-  heroContent: IPage;
+  heroContent: IHeroComponent;
 }
 
 export default function Hero(props: IHeroProps) {
-  const heroContent = props.heroContent.content[0] as IHeroComponent;
+  const heroContent = props.heroContent;
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {

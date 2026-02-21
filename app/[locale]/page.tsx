@@ -2,18 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Hero from '@/components/hero/hero';
-//import PRS from "@/components/prs/prs";
 import OurServices from '@/components/ourServices/ourServices';
-//import Events from "@/components/events/events";
 import ContactFooter from '@/components/contactFooter/contactFooter';
 import Header from '@/components/header/header';
-//import News from "@/components/news/news";
 import LoadingPage from '@/components/loadingPage/loadingPage';
-import { IHistoriesComponent, IPageResponse } from '@/types/page.types';
-import { IGlobalContent } from '@/types/globalContent.types';
-import { notFound } from 'next/navigation';
 import Timeline from '@/components/timeline/timeline';
+import {
+  IActivityCategorySectionComponent,
+  IHeroComponent,
+  IHistoriesComponent,
+  IPageResponse,
+} from '@/types/page.types';
+import { IGlobalContent } from '@/types/globalContent.types';
 import { getTranslations } from '@/lib/translations';
 
 export default function Home() {
@@ -28,21 +30,19 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Use the locale from URL params
         const apiLocale = locale || 'id';
-        const params = new URLSearchParams({
-          locale: apiLocale,
-        });
+        const queryParams = new URLSearchParams({ locale: apiLocale });
 
         const [pageRes, globalRes] = await Promise.all([
-          fetch(`/api/pages?${params.toString()}`),
-          fetch(`/api/global?${params.toString()}`),
+          fetch(`/api/pages?${queryParams.toString()}`),
+          fetch(`/api/global?${queryParams.toString()}`),
         ]);
 
         const [pageJson, globalJson] = await Promise.all([
           pageRes.json(),
           globalRes.json(),
         ]);
+
         setPageData(pageJson.error ? null : pageJson);
         setGlobalContent(globalJson.error ? null : globalJson);
         setInitialized(true);
@@ -67,24 +67,9 @@ export default function Home() {
     ...globalContent.data.navbar,
     left_navbar_items: [
       { id: 1, text: t.navbar.home, url: '#hero', target: null },
-      {
-        id: 2,
-        text: t.navbar.services,
-        url: '#services',
-        target: null,
-      },
-      {
-        id: 3,
-        text: t.navbar.history,
-        url: '#timeline',
-        target: null,
-      },
-      {
-        id: 4,
-        text: t.navbar.contact,
-        url: '#contact',
-        target: null,
-      },
+      { id: 2, text: t.navbar.services, url: '#services', target: null },
+      { id: 3, text: t.navbar.history, url: '#timeline', target: null },
+      { id: 4, text: t.navbar.contact, url: '#contact', target: null },
       ...(globalContent.data.locale === 'id'
         ? [
             {
@@ -104,18 +89,27 @@ export default function Home() {
     ],
   };
 
-  const timelineData: IHistoriesComponent | undefined =
-    pageData.data[0].content.find(
-      (c) => c.__component === 'dynamic-zone.histories'
-    );
+  const heroContent = pageData.data[0].content.find(
+    (c) => c.__component === 'dynamic-zone.hero'
+  ) as IHeroComponent;
+
+  const ourServicesContent = pageData.data[0].content.find(
+    (c) => c.__component === 'dynamic-zone.activity-category-section'
+  ) as IActivityCategorySectionComponent;
+
+  const timelineData = pageData.data[0].content.find(
+    (c) => c.__component === 'dynamic-zone.histories'
+  ) as IHistoriesComponent;
 
   return (
     <div>
       <Header headerContent={navbarOnlyHome} />
-      <Hero heroContent={pageData?.data[0]!} />
-      <OurServices ourServicesContent={pageData?.data[0]!} />
+      {heroContent && <Hero heroContent={heroContent} />}
+      {ourServicesContent && (
+        <OurServices ourServicesContent={ourServicesContent} />
+      )}
       {timelineData && <Timeline timelineData={timelineData} />}
-      <ContactFooter contactFooterContent={globalContent?.data.footer!} />
+      <ContactFooter contactFooterContent={globalContent.data.footer} />
     </div>
   );
 }
