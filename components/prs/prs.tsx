@@ -24,8 +24,8 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
 
   const paypalUrl =
     process.env.NODE_ENV === 'development'
-      ? 'https://www.paypal.com/cgi-bin/webscr'
-      : 'https://www.paypal.com/cgi-bin/webscr';
+      ? 'https://www.sandbox.paypal.com/cgi-bin/webscr'
+      : 'https://www.paypal.com/ncp/payment/7VZJVXHVZLSPU';
 
   return (
     <section className="relative min-h-dvh bg-pink-50 font-questrial px-4 py-20 sm:px-6 lg:px-8 md:py-24 flex flex-col items-center justify-center">
@@ -86,13 +86,16 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
 
             <div className="flex flex-wrap gap-4 mt-6">
               <form action={paypalUrl} method="post" target="_blank">
-                <input type="hidden" name="cmd" value="_s-xclick" />
-                <input
-                  type="hidden"
-                  name="hosted_button_id"
-                  value={paypalHostId}
-                />
-                <input type="hidden" name="item_name" value="prs" />
+                {process.env.NODE_ENV === 'development' && (
+                  <>
+                    <input type="hidden" name="cmd" value="_s-xclick" />
+                    <input
+                      type="hidden"
+                      name="hosted_button_id"
+                      value={paypalHostId}
+                    />
+                  </>
+                )}
                 <Button
                   type="submit"
                   name="submit"
