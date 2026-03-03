@@ -33,7 +33,7 @@ export function usePayment() {
 
   const calculatePaypalFee = useCallback(
     (subtotal: number) => {
-      if (!config) return { fee: 0, total: subtotal };
+      if (!config || !config.paypal) return { fee: 0, total: subtotal };
       const { fixFee, percentageFee } = config.paypal;
       // API now returns fee in EUR and percentage as plain percent (e.g. 2.5 => 2.5%)
       const fixFeeEuro = fixFee;

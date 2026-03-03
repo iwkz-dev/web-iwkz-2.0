@@ -1,14 +1,15 @@
 'use client';
 
-import type { DonationPackage } from '@/types/donationApi';
+import type { DonationPackageData } from '@/types/donationApi';
 import { DonationCard } from './donationCard/donationCard';
 import FadeInOnScroll from '../ui/fadeInScroll';
 
 interface DonationListProps {
-  packages: DonationPackage[];
+  donationData: DonationPackageData;
 }
 
-export function DonationList({ packages }: DonationListProps) {
+export function DonationList({ donationData }: DonationListProps) {
+  const { headline, subHeadline, donationPackages } = donationData;
   return (
     <section
       id="donation-package"
@@ -17,13 +18,14 @@ export function DonationList({ packages }: DonationListProps) {
     >
       <FadeInOnScroll>
         <div className="max-w-5xl mx-auto text-center space-y-4 mb-12">
-          <h2 className="text-4xl">Donasi IWKZ</h2>
+          <h2 className="text-4xl">{headline}</h2>
+          <p className="text-lg">{subHeadline}</p>
         </div>
       </FadeInOnScroll>
       <div className="w-full max-w-5xl h-screen">
         <div className="flex items-center gap-2"></div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {packages.map((pkg, index) => (
+          {donationPackages.map((pkg, index) => (
             <DonationCard key={pkg.id} donationPackage={pkg} index={index} />
           ))}
         </div>

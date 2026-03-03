@@ -165,7 +165,7 @@ export default function JadwalShalatPage() {
                 ${
                   loading
                     ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700'
+                    : 'bg-linear-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700'
                 }`}
             >
               {loading ? (
@@ -200,11 +200,11 @@ export default function JadwalShalatPage() {
             {globalContent.data?.jadwalShalatRamadanUrl && (
               <>
                 <div className="relative flex py-2 items-center">
-                  <div className="flex-grow border-t border-gray-300"></div>
-                  <span className="flex-shrink-0 mx-4 text-gray-400 text-sm">
+                  <div className="grow border-t border-gray-300"></div>
+                  <span className="shrink-0 mx-4 text-gray-400 text-sm">
                     Or
                   </span>
-                  <div className="flex-grow border-t border-gray-300"></div>
+                  <div className="grow border-t border-gray-300"></div>
                 </div>
 
                 <a

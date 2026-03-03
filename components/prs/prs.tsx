@@ -2,11 +2,12 @@
 
 import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
+import CountUp from 'react-countup';
+
 import { Button } from '@/components/ui/button';
 import { FaHeart } from 'react-icons/fa';
 import FadeInOnScroll from '@/components/ui/fadeInScroll';
-import { motion } from 'framer-motion';
-import CountUp from 'react-countup';
 
 export default function PRS({ donationProgress }: { donationProgress: any }) {
   const router = useRouter();
@@ -19,14 +20,11 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
   const funded = donationProgress?.currentDonation || 0;
   const percentage = target ? Math.round((funded / target) * 100) : 0;
 
-  const paypalHostId =
-    process.env.NODE_ENV === 'development'
-      ? process.env.NEXT_PUBLIC_PAYPAL_HOST_ID_DEV || ''
-      : process.env.NEXT_PUBLIC_PAYPAL_HOST_ID || '';
+  const paypalHostId = process.env.NEXT_PUBLIC_PAYPAL_HOST_ID_DEV || '';
 
   const paypalUrl =
     process.env.NODE_ENV === 'development'
-      ? 'https://www.sandbox.paypal.com/cgi-bin/webscr'
+      ? 'https://www.paypal.com/cgi-bin/webscr'
       : 'https://www.paypal.com/cgi-bin/webscr';
 
   return (

@@ -50,6 +50,16 @@ export function CheckoutDrawer() {
   const totalQuantity = getTotalQuantity();
   const { fee: paypalFee, total: paypalTotal } = calculatePaypalFee(totalPrice);
 
+  useEffect(() => {
+    if (config) {
+      if (paymentTab === 'bank' && !config.postbank && config.paypal) {
+        setPaymentTab('paypal');
+      } else if (paymentTab === 'paypal' && !config.paypal && config.postbank) {
+        setPaymentTab('bank');
+      }
+    }
+  }, [config, paymentTab]);
+
   const singleItem = selectedPackage?.donationItems?.[0];
   const isFixedSingleItem = Boolean(
     selectedPackage &&
@@ -157,7 +167,7 @@ export function CheckoutDrawer() {
         description: cartItems[0]?.donatorInfo?.trim(),
       });
     }
-    console.log(items);
+
     await submitPaypalCheckout({
       total_order: totalQuantity,
       total_price: totalPrice,
@@ -300,7 +310,12 @@ export function CheckoutDrawer() {
               <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-gray-400">
                 Metode Pembayaran
               </h3>
-              <PaymentTabs activeTab={paymentTab} onTabChange={setPaymentTab} />
+              <PaymentTabs
+                activeTab={paymentTab}
+                onTabChange={setPaymentTab}
+                bankDisabled={!config?.postbank}
+                paypalDisabled={!config?.paypal}
+              />
             </div>
 
             {/* Bank Transfer content */}

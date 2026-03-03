@@ -8,6 +8,7 @@ import { CheckoutDrawer } from '@/components/checkoutDrawer/checkoutDrawer';
 import { DonationPackageData } from '@/types/donationApi';
 import Header from '@/components/header/header';
 import ContactFooter from '@/components/contactFooter/contactFooter';
+import LoadingPage from '@/components/loadingPage/loadingPage';
 
 export default function Home() {
   const params = useParams();
@@ -51,14 +52,7 @@ export default function Home() {
   }, [locale]);
 
   if (loading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="mx-auto max-w-md px-6 text-center">
-          <div className="mb-4 text-2xl">⏳</div>
-          <h1 className="text-xl font-bold text-gray-800">Loading...</h1>
-        </div>
-      </main>
-    );
+    return <LoadingPage />;
   }
 
   if (error || !data || !globalContent || !translations) {
@@ -117,10 +111,12 @@ export default function Home() {
     ],
   };
 
+  console.log(data);
+
   return (
     <div>
       <Header headerContent={navbarContent} />
-      <DonationList packages={data.donationPackages} />
+      <DonationList donationData={data} />
       <CheckoutDrawer />
       <ContactFooter contactFooterContent={globalContent?.data.footer!} />
     </div>
