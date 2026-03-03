@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { useToast } from '@/components/ui/toast';
+import { toast } from 'sonner';
 import { IPrayerTimes } from '@/types/prayerTimes.types';
 import {
   Card,
@@ -39,19 +39,13 @@ export default function PrayerTimesCard({
 }: {
   prayerTimes: IPrayerTimes | null;
 }) {
-  const { toast } = useToast();
-
   useEffect(() => {
     if (!prayerTimes) {
-      toast({
-        title: 'Prayer times unavailable',
-        description:
-          'The prayer times API is not working right now. Please try again later.',
-        variant: 'destructive',
+      toast.error('Failed to load prayer times. Please try again later.', {
         duration: 6000,
       });
     }
-  }, [prayerTimes, toast]);
+  }, [prayerTimes]);
 
   if (!prayerTimes) {
     return null; // toast informs the user

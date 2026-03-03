@@ -48,6 +48,7 @@ export default function Header({ headerContent }: IHeaderContentProps) {
 
   const isJadwalShalat = pathname.includes('/jadwal-shalat');
   const isKalenderKegiatan = pathname.includes('/kalender-kegiatan');
+  const isDonation = pathname.includes('/donation');
 
   const renderNavLink = (
     item: INavbar['left_navbar_items'][0],
@@ -119,7 +120,7 @@ export default function Header({ headerContent }: IHeaderContentProps) {
       className={`fixed w-full top-0 z-50 transition-all duration-300 ${
         scrolled || menuOpen
           ? 'bg-white text-gray-800 shadow'
-          : isJadwalShalat || isKalenderKegiatan
+          : isJadwalShalat || isKalenderKegiatan || isDonation
             ? 'bg-gray-900 text-white shadow-md'
             : 'bg-transparent text-white'
       }`}

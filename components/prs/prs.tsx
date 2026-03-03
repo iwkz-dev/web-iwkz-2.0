@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { FaHeart } from 'react-icons/fa';
@@ -8,11 +9,25 @@ import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
 
 export default function PRS({ donationProgress }: { donationProgress: any }) {
+  const router = useRouter();
+  const params = useParams();
+  const locale = params.locale as string;
+
   const headline = donationProgress?.headline || '';
   const subHeadline = donationProgress?.subHeadline || '';
   const target = donationProgress?.targetDonation || 0;
   const funded = donationProgress?.currentDonation || 0;
   const percentage = target ? Math.round((funded / target) * 100) : 0;
+
+  const paypalHostId =
+    process.env.NODE_ENV === 'development'
+      ? process.env.NEXT_PUBLIC_PAYPAL_HOST_ID_DEV || ''
+      : process.env.NEXT_PUBLIC_PAYPAL_HOST_ID || '';
+
+  const paypalUrl =
+    process.env.NODE_ENV === 'development'
+      ? 'https://www.sandbox.paypal.com/cgi-bin/webscr'
+      : 'https://www.paypal.com/cgi-bin/webscr';
 
   return (
     <section className="relative min-h-dvh bg-pink-50 font-questrial px-4 py-20 sm:px-6 lg:px-8 md:py-24 flex flex-col items-center justify-center">
@@ -72,12 +87,20 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
             </motion.div>
 
             <div className="flex flex-wrap gap-4 mt-6">
-              <a
-                href="https://www.paypal.me/proyekrumahsurga@iwkz.de"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button variant="outline" className="flex items-center gap-2">
+              <form action={paypalUrl} method="post" target="_blank">
+                <input type="hidden" name="cmd" value="_s-xclick" />
+                <input
+                  type="hidden"
+                  name="hosted_button_id"
+                  value={paypalHostId}
+                />
+                <input type="hidden" name="item_name" value="prs" />
+                <Button
+                  type="submit"
+                  name="submit"
+                  variant="outline"
+                  className="flex items-center gap-2 "
+                >
                   <motion.div
                     animate={{ scale: [1, 1.3, 1] }}
                     transition={{
@@ -89,20 +112,21 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
                   >
                     <FaHeart className="text-red-500" />
                   </motion.div>
-                  Donate Now
+                  Sedekah Sekarang!
                 </Button>
-              </a>
+              </form>
               <Button
                 variant="ghost"
                 className="text-black border border-gray-400"
+                onClick={() => router.push(`/${locale}/donation`)}
               >
-                Learn More
+                Lihat donasi lainnya
               </Button>
             </div>
           </motion.div>
 
           <motion.div
-            className="w-full h-[250px] sm:h-[300px] md:h-[400px] lg:h-[450px] relative"
+            className="w-full h-62.5 sm:h-75 md:h-100 lg:h-112.5 relative"
             variants={{
               hidden: { opacity: 0, y: 50 },
               visible: { opacity: 1, y: 0 },

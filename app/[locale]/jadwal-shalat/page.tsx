@@ -114,7 +114,7 @@ export default function JadwalShalatPage() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header headerContent={navbarContent} />
 
-      <main className="flex-grow pt-32 pb-16 px-4  flex flex-col items-center">
+      <main className="grow pt-32 pb-16 px-4  flex flex-col items-center">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 space-y-6">
           <div className="text-center space-y-2">
             <h1 className="text-3xl font-bold text-gray-800">

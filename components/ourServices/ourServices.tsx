@@ -69,7 +69,7 @@ export default function CommunityServices({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start max-w-6xl mx-auto">
           {/* Image Section */}
-          <figure className="w-full h-[350px] md:h-[400px] lg:h-[450px] relative overflow-hidden">
+          <figure className="w-full h-87.5 md:h-100 lg:h-112.5 relative overflow-hidden">
             {Array.isArray(activeItem?.image) && activeItem.image[0]?.url && (
               <div
                 key={activeItem.image[0].id}
