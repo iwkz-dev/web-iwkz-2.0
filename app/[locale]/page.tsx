@@ -74,9 +74,28 @@ export default function Home() {
     ...globalContent.data.navbar,
     left_navbar_items: [
       { id: 1, text: t.navbar.home, url: '#hero', target: null },
-      { id: 2, text: t.navbar.services, url: '#services', target: null },
-      { id: 3, text: t.navbar.history, url: '#timeline', target: null },
-      { id: 4, text: t.navbar.contact, url: '#contact', target: null },
+      ...(globalContent.data.locale === 'de-DE'
+        ? [
+            {
+              id: 2,
+              text: t.navbar.services,
+              url: '#services',
+              target: null,
+            },
+            {
+              id: 3,
+              text: t.navbar.history,
+              url: '#timeline',
+              target: null,
+            },
+            {
+              id: 4,
+              text: t.navbar.contact,
+              url: '#contact',
+              target: null,
+            },
+          ]
+        : []),
       ...(globalContent.data.locale === 'id'
         ? [
             {
@@ -89,6 +108,12 @@ export default function Home() {
               id: 6,
               text: 'Kalender Kegiatan',
               url: `/kalender-kegiatan`,
+              target: null,
+            },
+            {
+              id: 7,
+              text: 'Donasi',
+              url: `/donation`,
               target: null,
             },
           ]

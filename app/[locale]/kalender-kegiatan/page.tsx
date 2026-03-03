@@ -62,19 +62,22 @@ export default function KalenderKegiatanPage() {
     ...globalContent.data?.navbar,
     left_navbar_items: [
       { id: 1, text: t.navbar.home, url: '/', target: null },
-      { id: 2, text: t.navbar.services, url: '/#services', target: null },
-      { id: 3, text: t.navbar.history, url: '/#timeline', target: null },
-      { id: 4, text: t.navbar.contact, url: '/#contact', target: null },
       {
-        id: 5,
+        id: 2,
         text: t.navbar.jadwalShalat,
         url: `/jadwal-shalat`,
         target: null,
       },
       {
-        id: 6,
+        id: 3,
         text: 'Kalender Kegiatan',
         url: `/kalender-kegiatan`,
+        target: null,
+      },
+      {
+        id: 4,
+        text: 'Donasi',
+        url: `/donation`,
         target: null,
       },
     ],
