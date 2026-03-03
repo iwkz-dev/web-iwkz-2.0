@@ -7,10 +7,12 @@ import FadeInOnScroll from '@/components/ui/fadeInScroll';
 import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
 
-export default function PRS() {
-  const target = 600000;
-  const funded = 264353;
-  const percentage = Math.round((funded / target) * 100);
+export default function PRS({ donationProgress }: { donationProgress: any }) {
+  const headline = donationProgress?.headline || '';
+  const subHeadline = donationProgress?.subHeadline || '';
+  const target = donationProgress?.targetDonation || 0;
+  const funded = donationProgress?.currentDonation || 0;
+  const percentage = target ? Math.round((funded / target) * 100) : 0;
 
   return (
     <section className="relative min-h-dvh bg-pink-50 font-questrial px-4 py-20 sm:px-6 lg:px-8 md:py-24 flex flex-col items-center justify-center">
@@ -29,12 +31,8 @@ export default function PRS() {
               visible: { opacity: 1, y: 0 },
             }}
           >
-            <h2 className="text-4xl">Proyek Rumah Surga</h2>
-            <p className="max-w-2xl mx-auto">
-              IWKZ e.V. is dedicated to fostering a vibrant Indonesian community
-              in Berlin. We provide a welcoming space for cultural exchange,
-              support, and collaboration.
-            </p>
+            <h2 className="text-4xl">{headline}</h2>
+            <p className="max-w-2xl mx-auto">{subHeadline}</p>
 
             <motion.div
               className="mt-8"
@@ -74,20 +72,26 @@ export default function PRS() {
             </motion.div>
 
             <div className="flex flex-wrap gap-4 mt-6">
-              <Button variant="outline" className="flex items-center gap-2">
-                <motion.div
-                  animate={{ scale: [1, 1.3, 1] }}
-                  transition={{
-                    duration: 1,
-                    repeat: Infinity,
-                    repeatType: 'loop',
-                    ease: 'easeInOut',
-                  }}
-                >
-                  <FaHeart className="text-red-500" />
-                </motion.div>
-                Donate Now
-              </Button>
+              <a
+                href="https://www.paypal.me/proyekrumahsurga@iwkz.de"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button variant="outline" className="flex items-center gap-2">
+                  <motion.div
+                    animate={{ scale: [1, 1.3, 1] }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      repeatType: 'loop',
+                      ease: 'easeInOut',
+                    }}
+                  >
+                    <FaHeart className="text-red-500" />
+                  </motion.div>
+                  Donate Now
+                </Button>
+              </a>
               <Button
                 variant="ghost"
                 className="text-black border border-gray-400"

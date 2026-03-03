@@ -9,6 +9,7 @@ import ContactFooter from '@/components/contactFooter/contactFooter';
 import Header from '@/components/header/header';
 import LoadingPage from '@/components/loadingPage/loadingPage';
 import Timeline from '@/components/timeline/timeline';
+import PRS from '@/components/prs/prs';
 import {
   IActivityCategorySectionComponent,
   IHeroComponent,
@@ -26,6 +27,7 @@ export default function Home() {
   const [globalContent, setGlobalContent] = useState<IGlobalContent | null>(
     null
   );
+  const [donationProgress, setDonationProgress] = useState<any | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,18 +35,23 @@ export default function Home() {
         const apiLocale = locale || 'id';
         const queryParams = new URLSearchParams({ locale: apiLocale });
 
-        const [pageRes, globalRes] = await Promise.all([
+        const [pageRes, globalRes, donationProgressRes] = await Promise.all([
           fetch(`/api/pages?${queryParams.toString()}`),
           fetch(`/api/global?${queryParams.toString()}`),
+          fetch(`/api/prs-donation-progress?${queryParams.toString()}`),
         ]);
 
-        const [pageJson, globalJson] = await Promise.all([
+        const [pageJson, globalJson, donationProgressJson] = await Promise.all([
           pageRes.json(),
           globalRes.json(),
+          donationProgressRes.json(),
         ]);
 
         setPageData(pageJson.error ? null : pageJson);
         setGlobalContent(globalJson.error ? null : globalJson);
+        setDonationProgress(
+          donationProgressJson.error ? null : donationProgressJson
+        );
         setInitialized(true);
       } catch (err) {
         console.error('Failed to fetch one or more resources:', err);
@@ -54,7 +61,7 @@ export default function Home() {
     fetchData();
   }, [locale]);
 
-  if (!pageData || !globalContent) {
+  if (!pageData || !globalContent || !donationProgress) {
     if (initialized) {
       notFound();
     }
@@ -101,10 +108,13 @@ export default function Home() {
     (c) => c.__component === 'dynamic-zone.histories'
   ) as IHistoriesComponent;
 
+  const donationProgressData = donationProgress.data;
+
   return (
     <div>
       <Header headerContent={navbarOnlyHome} />
       {heroContent && <Hero heroContent={heroContent} />}
+      <PRS donationProgress={donationProgressData} />
       {ourServicesContent && (
         <OurServices ourServicesContent={ourServicesContent} />
       )}
