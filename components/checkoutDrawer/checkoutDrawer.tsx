@@ -2,14 +2,26 @@
 
 import { useEffect, useRef } from 'react';
 import { useState } from 'react';
+import { useParams } from 'next/navigation';
 import { X, Loader2, Copy, Check, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDonationStore } from '@/store/donation-store';
 import { usePayment } from '@/hooks/use-payment';
 import type { PaypalCheckoutItem } from '@/types/donationApi';
+import { getTranslations } from '@/lib/translations';
 import { MarkdownRenderer } from '../ui/markdownRenderer';
 import { QuantityCounter } from '../ui/quantityCounter';
 import { PaymentTabs } from '../ui/paymentTabs';
+
+const scrollHideStyle = `
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+`;
 
 function formatCurrency(amount: number): string {
   return new Intl.NumberFormat('de-DE', {
@@ -21,6 +33,10 @@ function formatCurrency(amount: number): string {
 }
 
 export function CheckoutDrawer() {
+  const params = useParams();
+  const locale = params.locale as string;
+  const t = getTranslations(locale);
+
   const {
     selectedPackage,
     drawerOpen,
@@ -44,7 +60,12 @@ export function CheckoutDrawer() {
 
   const [paymentTab, setPaymentTab] = useState<'bank' | 'paypal'>('paypal');
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [dragStartY, setDragStartY] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [dragVelocity, setDragVelocity] = useState(0);
   const drawerRef = useRef<HTMLDivElement>(null);
+  const lastDragYRef = useRef(0);
+  const lastDragTimeRef = useRef(0);
 
   const totalPrice = getTotalPrice();
   const totalQuantity = getTotalQuantity();
@@ -109,16 +130,16 @@ export function CheckoutDrawer() {
     try {
       await navigator.clipboard.writeText(text);
       setCopiedField(field);
-      toast.success('Copied to clipboard!');
+      toast.success(t.checkoutDrawer.copiedToClipboard);
       setTimeout(() => setCopiedField(null), 2000);
     } catch {
-      toast.error('Failed to copy');
+      toast.error(t.checkoutDrawer.copyFailed);
     }
   };
 
   const handlePaypalSubmit = async () => {
     if (totalPrice <= 0) {
-      toast.error('Please select at least one item or enter an amount');
+      toast.error(t.checkoutDrawer.selectItemOrAmount);
       return;
     }
 
@@ -137,7 +158,7 @@ export function CheckoutDrawer() {
         })();
 
     if (missingInfo) {
-      toast.error('Please fill required Donator Info before paying.');
+      toast.error(t.checkoutDrawer.fillRequiredDonatorInfo);
       return;
     }
 
@@ -175,28 +196,103 @@ export function CheckoutDrawer() {
     });
   };
 
+  const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    setDragStartY(clientY);
+    lastDragYRef.current = clientY;
+    lastDragTimeRef.current = Date.now();
+  };
+
+  const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (dragStartY === 0) return;
+
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    const distance = clientY - dragStartY;
+
+    // Only allow positive drag (downward)
+    if (distance >= 0) {
+      setDragOffset(distance);
+
+      // Calculate velocity
+      const now = Date.now();
+      const timeDelta = now - lastDragTimeRef.current;
+      if (timeDelta > 0) {
+        const yDelta = clientY - lastDragYRef.current;
+        setDragVelocity(yDelta / timeDelta);
+      }
+      lastDragYRef.current = clientY;
+      lastDragTimeRef.current = now;
+    }
+  };
+
+  const handleDragEnd = () => {
+    if (dragStartY === 0) return;
+
+    const threshold = 80; // Close if dragged down more than 80px
+    const velocityThreshold = 0.5; // Close if velocity > 0.5px/ms
+
+    // Close if distance exceeded threshold OR velocity is high enough
+    if (dragOffset > threshold || dragVelocity > velocityThreshold) {
+      closeDrawer();
+      // Reset state after close animation
+      setTimeout(() => {
+        setDragOffset(0);
+        setDragVelocity(0);
+        setDragStartY(0);
+      }, 300);
+    } else {
+      // Snap back
+      setDragOffset(0);
+      setDragVelocity(0);
+    }
+
+    setDragStartY(0);
+    lastDragYRef.current = 0;
+    lastDragTimeRef.current = 0;
+  };
+
   if (!selectedPackage) return null;
 
   return (
     <>
+      <style>{scrollHideStyle}</style>
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
-          drawerOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        className={`fixed inset-0 z-40 bg-black/50 backdrop-blur-sm ${
+          drawerOpen ? '' : 'pointer-events-none'
         }`}
+        style={{
+          opacity: drawerOpen ? Math.max(0, 1 - dragOffset / 200) : 0,
+          transition: dragStartY === 0 ? 'opacity 300ms ease-out' : 'none',
+        }}
         onClick={closeDrawer}
       />
 
       {/* Drawer */}
       <div
         ref={drawerRef}
-        className={`fixed inset-x-0 bottom-0 z-50 mx-auto max-w-md transform transition-transform duration-300 ease-out ${
-          drawerOpen ? 'translate-y-0' : 'translate-y-full'
+        className={`fixed inset-x-0 bottom-0 z-50 mx-auto max-w-3xl transform ${
+          drawerOpen ? '' : 'pointer-events-none'
         }`}
+        style={{
+          transform: drawerOpen
+            ? `translateY(${Math.max(0, dragOffset)}px)`
+            : 'translateY(100%)',
+          transition: dragStartY === 0 ? 'transform 300ms ease-out' : 'none',
+        }}
+        onMouseMove={handleDragMove}
+        onMouseUp={handleDragEnd}
+        onMouseLeave={handleDragEnd}
+        onTouchMove={handleDragMove}
+        onTouchEnd={handleDragEnd}
       >
-        <div className="max-h-[90vh] overflow-y-auto rounded-t-3xl bg-white shadow-2xl">
+        <div className="max-h-[90vh] overflow-y-auto scrollbar-hide rounded-t-3xl bg-white shadow-2xl">
           {/* Handle bar */}
-          <div className="sticky top-0 z-10 flex items-center justify-center bg-white px-6 pb-2 pt-4 rounded-t-3xl">
+          <div
+            className="sticky top-0 z-10 flex items-center justify-center bg-white px-4 pb-1 pt-2 rounded-t-3xl cursor-grab active:cursor-grabbing select-none"
+            onMouseDown={handleDragStart}
+            onTouchStart={handleDragStart}
+          >
             <div className="h-1 w-10 rounded-full bg-gray-200" />
             <button
               onClick={closeDrawer}
@@ -206,23 +302,23 @@ export function CheckoutDrawer() {
             </button>
           </div>
 
-          <div className="px-6 pb-8">
+          <div className="px-4 pb-4">
             {/* Title */}
-            <h2 className="text-2xl font-extrabold text-gray-900 mb-1">
+            <h2 className="text-lg font-extrabold text-gray-900 mb-1">
               {selectedPackage.title}
             </h2>
 
             {/* Description */}
             <MarkdownRenderer
               content={selectedPackage.description}
-              className="mt-3 mb-6"
+              className="mt-2 mb-4 text-sm"
             />
 
             {/* Subpackage items */}
             {isSubpackageMode && (
-              <div className="mb-6">
-                <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-gray-400">
-                  Pilih Paket
+              <div className="mb-4">
+                <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-400">
+                  {t.checkoutDrawer.choosePackage}
                 </h3>
                 <div className="flex flex-col gap-3">
                   {cartItems.map((item) => (
@@ -231,16 +327,17 @@ export function CheckoutDrawer() {
                       className="flex items-center justify-between rounded-2xl border border-gray-100 bg-gray-50/50 p-4 transition-colors hover:bg-gray-50"
                     >
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-gray-800 truncate">
+                        <p className="text-xs font-semibold text-gray-800 truncate">
                           {item.title}
                         </p>
-                        <p className="text-xs text-emerald-600 font-medium">
-                          {formatCurrency(item.price)} / paket
+                        <p className="text-xs text-emerald-600 font-medium wrap-break-word">
+                          {formatCurrency(item.price)} /{' '}
+                          {t.checkoutDrawer.perPackage}
                         </p>
                         {item.requireDonatorInfo && (
-                          <div className="mt-2 space-y-1">
-                            <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-600">
-                              Donator Info required
+                          <div className="mt-1 space-y-1">
+                            <p className="text-[10px] font-semibold uppercase tracking-wide text-amber-600">
+                              {t.checkoutDrawer.donatorInfoRequired}
                             </p>
                             <input
                               type="text"
@@ -248,7 +345,9 @@ export function CheckoutDrawer() {
                               onChange={(e) =>
                                 setDonatorInfo(item.uniqueCode, e.target.value)
                               }
-                              placeholder="e.g. Family name, student name"
+                              placeholder={
+                                t.checkoutDrawer.donatorInfoPlaceholder
+                              }
                               className="w-full rounded-lg border border-amber-200 bg-white px-3 py-2 text-sm focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100"
                             />
                           </div>
@@ -270,7 +369,7 @@ export function CheckoutDrawer() {
             {isOpenDonation && (
               <div className="mb-6">
                 <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-gray-400">
-                  Jumlah Donasi
+                  {t.checkoutDrawer.donationAmount}
                 </h3>
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-bold text-gray-400">
@@ -293,12 +392,12 @@ export function CheckoutDrawer() {
 
             {/* Total */}
             {totalPrice > 0 && (
-              <div className="mb-6 rounded-2xl bg-linear-to-r from-emerald-50 to-teal-50 p-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-500">
-                    Subtotal
+              <div className="mb-3 rounded-lg bg-linear-to-r from-emerald-50 to-teal-50 p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-medium text-gray-500">
+                    {t.checkoutDrawer.subtotal}
                   </span>
-                  <span className="text-xl font-extrabold text-emerald-700">
+                  <span className="text-sm font-extrabold text-emerald-700 wrap-break-word">
                     {formatCurrency(totalPrice)}
                   </span>
                 </div>
@@ -306,9 +405,9 @@ export function CheckoutDrawer() {
             )}
 
             {/* Payment tabs */}
-            <div className="mb-4">
-              <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-gray-400">
-                Metode Pembayaran
+            <div className="mb-3">
+              <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-400">
+                {t.checkoutDrawer.paymentMethod}
               </h3>
               <PaymentTabs
                 activeTab={paymentTab}
@@ -320,41 +419,42 @@ export function CheckoutDrawer() {
 
             {/* Bank Transfer content */}
             {paymentTab === 'bank' && config && (
-              <div className="mb-6 animate-fade-in rounded-2xl border border-gray-100 bg-gray-50/50 p-5">
-                <p className="mb-4 text-sm text-gray-500">
-                  Transfer ke rekening berikut dan gunakan jumlah{' '}
-                  <strong className="text-gray-800">
+              <div className="mb-4 animate-fade-in rounded-lg border border-gray-100 bg-gray-50/50 p-3">
+                <p className="mb-3 text-xs text-gray-500 wrap-break-word">
+                  {t.checkoutDrawer.bankTransferInstructionPrefix}{' '}
+                  <strong className="text-gray-800 wrap-break-word">
                     {formatCurrency(totalPrice)}
-                  </strong>{' '}
-                  sebagai nominal transfer.
+                  </strong>
+                  {t.checkoutDrawer.bankTransferInstructionSuffix}
                 </p>
                 {[
                   {
-                    label: 'Bank',
+                    label: t.checkoutDrawer.bank,
                     value: config.postbank.bankName,
                   },
                   {
-                    label: 'IBAN',
+                    label: t.checkoutDrawer.iban,
                     value: config.postbank.iban,
                   },
                   {
-                    label: 'BIC',
+                    label: t.checkoutDrawer.bic,
                     value: config.postbank.bic,
                   },
                   {
-                    label: 'Verwendungszweck',
-                    value: verwendungszweck || 'Donasi',
+                    label: t.checkoutDrawer.usagePurpose,
+                    value:
+                      verwendungszweck || t.checkoutDrawer.donationFallback,
                   },
                 ].map(({ label, value }) => (
                   <div
                     key={label}
-                    className="mb-3 last:mb-0 flex items-center justify-between rounded-xl bg-white p-3 border border-gray-100"
+                    className="mb-2 last:mb-0 flex items-center justify-between rounded-lg bg-white p-2 border border-gray-100 gap-2"
                   >
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
                         {label}
                       </p>
-                      <p className="text-sm font-semibold text-gray-800 font-mono">
+                      <p className="text-xs font-semibold text-gray-800 font-mono wrap-break-word">
                         {value}
                       </p>
                     </div>
@@ -376,25 +476,27 @@ export function CheckoutDrawer() {
 
             {/* PayPal content */}
             {paymentTab === 'paypal' && (
-              <div className="mb-6 animate-fade-in">
+              <div className="mb-4 animate-fade-in">
                 {configLoading ? (
-                  <div className="flex items-center justify-center py-8">
-                    <Loader2 className="h-6 w-6 animate-spin text-gray-300" />
+                  <div className="flex items-center justify-center py-4">
+                    <Loader2 className="h-5 w-5 animate-spin text-gray-300" />
                   </div>
                 ) : config ? (
                   <>
                     {/* Fee breakdown */}
                     {totalPrice > 0 && (
-                      <div className="mb-4 rounded-2xl border border-gray-100 bg-gray-50/50 p-4 space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-500">Subtotal</span>
-                          <span className="font-medium text-gray-700">
+                      <div className="mb-3 rounded-lg border border-gray-100 bg-gray-50/50 p-3 space-y-2">
+                        <div className="flex justify-between text-xs gap-2">
+                          <span className="text-gray-500">
+                            {t.checkoutDrawer.subtotal}
+                          </span>
+                          <span className="font-medium text-gray-700 wrap-break-word">
                             {formatCurrency(totalPrice)}
                           </span>
                         </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-500">
-                            PayPal Fee{' '}
+                        <div className="flex justify-between text-xs gap-2">
+                          <span className="text-gray-500 flex-1">
+                            {t.checkoutDrawer.paypalFee}{' '}
                             <span className="text-xs text-gray-400">
                               ({config.paypal.percentageFee.toFixed(2)}% +{' '}
                               {formatCurrency(config.paypal.fixFee)})
@@ -404,9 +506,11 @@ export function CheckoutDrawer() {
                             +{formatCurrency(paypalFee)}
                           </span>
                         </div>
-                        <div className="border-t border-gray-200 pt-2 flex justify-between">
-                          <span className="font-bold text-gray-800">Total</span>
-                          <span className="font-extrabold text-emerald-700 text-lg">
+                        <div className="border-t border-gray-200 pt-1 flex justify-between items-center gap-2">
+                          <span className="font-bold text-gray-800 text-xs">
+                            {t.checkoutDrawer.total}
+                          </span>
+                          <span className="font-extrabold text-emerald-700 text-sm wrap-break-word">
                             {formatCurrency(paypalTotal)}
                           </span>
                         </div>
@@ -418,24 +522,28 @@ export function CheckoutDrawer() {
                       type="button"
                       onClick={handlePaypalSubmit}
                       disabled={loading || totalPrice <= 0}
-                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-linear-to-r from-emerald-500 to-teal-500 px-6 py-4 text-base font-bold text-white shadow-lg shadow-emerald-500/25 transition-all duration-200 hover:from-emerald-600 hover:to-teal-600 hover:shadow-xl hover:shadow-emerald-500/30 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+                      className="flex w-full items-center justify-center gap-2 rounded-lg bg-linear-to-r from-emerald-500 to-teal-500 px-4 py-2 text-sm font-bold text-white shadow-md shadow-emerald-500/20 transition-all duration-200 hover:from-emerald-600 hover:to-teal-600 hover:shadow-lg hover:shadow-emerald-500/30 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                     >
                       {loading ? (
                         <>
-                          <Loader2 className="h-5 w-5 animate-spin" />
-                          Processing...
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <span className="text-xs">
+                            {t.checkoutDrawer.processing}
+                          </span>
                         </>
                       ) : (
                         <>
-                          Pay with PayPal
-                          <ArrowRight className="h-5 w-5" />
+                          <span className="text-xs">
+                            {t.checkoutDrawer.payWithPaypal}
+                          </span>
+                          <ArrowRight className="h-4 w-4" />
                         </>
                       )}
                     </button>
                   </>
                 ) : (
                   <p className="text-center text-sm text-gray-400 py-4">
-                    Payment configuration unavailable
+                    {t.checkoutDrawer.paymentConfigUnavailable}
                   </p>
                 )}
               </div>

@@ -1,8 +1,10 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import { Heart, Users, Target, ChevronRight } from 'lucide-react';
 import type { DonationPackage } from '@/types/donationApi';
 import { useDonationStore } from '@/store/donation-store';
+import { getTranslations } from '@/lib/translations';
 
 interface DonationCardProps {
   donationPackage: DonationPackage;
@@ -32,6 +34,9 @@ export function DonationCard({
   donationPackage: pkg,
   index,
 }: DonationCardProps) {
+  const params = useParams();
+  const locale = params.locale as string;
+  const t = getTranslations(locale);
   const openDrawer = useDonationStore((s) => s.openDrawer);
 
   const totalDonation = pkg.donationItems.reduce(
@@ -78,7 +83,7 @@ export function DonationCard({
           {/* Subpackage count badge */}
           {pkg.donationItems.length > 1 && (
             <div className="flex h-7 px-3 items-center justify-center rounded-full bg-linear-to-r from-amber-400 to-orange-400 text-xs font-bold text-white shadow-md">
-              {pkg.donationItems.length} Pilihan
+              {pkg.donationItems.length} {t.donationCard.choices}
             </div>
           )}
         </div>
@@ -116,7 +121,7 @@ export function DonationCard({
           // Placeholder if no target to keep card heights uniform
           <div className="h-8.5 flex items-center">
             <span className="text-xs font-medium text-slate-400">
-              Donasi Terbuka
+              {t.donationCard.openDonation}
             </span>
           </div>
         )}
@@ -125,7 +130,7 @@ export function DonationCard({
         <div className="flex items-center justify-between">
           <div className="flex flex-col">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">
-              Terkumpul
+              {t.donationCard.collected}
             </span>
             <span className="text-sm font-bold text-emerald-700">
               {formatCurrency(totalDonation)}
@@ -134,7 +139,7 @@ export function DonationCard({
 
           <div className="flex flex-col items-end">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-0.5">
-              Donatur
+              {t.donationCard.donors}
             </span>
             <span className="flex items-center gap-1 text-sm font-bold text-slate-700">
               <Users className="h-4 w-4 text-emerald-500/70" />

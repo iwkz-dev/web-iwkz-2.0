@@ -32,30 +32,6 @@ export default function JadwalShalatPage() {
   if (error) return <div>Failed to load</div>;
   if (!globalContent) return <LoadingPage />;
 
-  const navbarContent = {
-    ...globalContent.data?.navbar,
-    left_navbar_items: [
-      { id: 1, text: t.navbar.home, url: '/', target: null },
-      {
-        id: 2,
-        text: t.navbar.jadwalShalat,
-        url: `/jadwal-shalat`,
-        target: null,
-      },
-      {
-        id: 3,
-        text: 'Kalender Kegiatan',
-        url: `/kalender-kegiatan`,
-        target: null,
-      },
-      {
-        id: 4,
-        text: 'Donasi',
-        url: `/donation`,
-        target: null,
-      },
-    ],
-  };
   const footerContent = globalContent.data?.footer;
 
   const years = Array.from(
@@ -115,7 +91,7 @@ export default function JadwalShalatPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Header headerContent={navbarContent} />
+      <Header headerContent={globalContent.data.navbar} />
 
       <main className="grow pt-32 pb-16 px-4  flex flex-col items-center">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 space-y-6">

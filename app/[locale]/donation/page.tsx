@@ -69,41 +69,9 @@ export default function Home() {
     );
   }
 
-  const navbarContent = {
-    ...globalContent.data?.navbar,
-    left_navbar_items: [
-      {
-        id: 1,
-        text: translations.navbar?.home || 'Home',
-        url: '/',
-        target: null,
-      },
-      {
-        id: 2,
-        text: translations.navbar?.jadwalShalat || 'Jadwal Shalat',
-        url: `/jadwal-shalat`,
-        target: null,
-      },
-      {
-        id: 3,
-        text: translations.navbar?.kalenderKegiatan || 'Kalender Kegiatan',
-        url: `/kalender-kegiatan`,
-        target: null,
-      },
-      {
-        id: 4,
-        text: 'Donasi',
-        url: `/donation`,
-        target: null,
-      },
-    ],
-  };
-
-  console.log(data);
-
   return (
     <div>
-      <Header headerContent={navbarContent} />
+      <Header headerContent={globalContent.data.navbar} />
       <DonationList donationData={data} />
       <CheckoutDrawer />
       <ContactFooter contactFooterContent={globalContent?.data.footer!} />

@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
-  const res = await fetch(`${process.env.IWKZ_API_URL}/prs-donation-progress`, {
-    cache: 'no-store',
-    headers: {
-      Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
-    },
-  });
+  const res = await fetch(
+    `${process.env.IWKZ_API_URL}/prs-donation-progress?${req.nextUrl.searchParams.toString()}`,
+    {
+      cache: 'no-store',
+      headers: {
+        Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
+      },
+    }
+  );
 
   if (!res.ok) {
     return NextResponse.json(

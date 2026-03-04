@@ -17,7 +17,6 @@ import {
   IPageResponse,
 } from '@/types/page.types';
 import { IGlobalContent } from '@/types/globalContent.types';
-import { getTranslations } from '@/lib/translations';
 
 export default function Home() {
   const params = useParams();
@@ -68,59 +67,6 @@ export default function Home() {
     return <LoadingPage />;
   }
 
-  const t = getTranslations(locale);
-
-  const navbarOnlyHome: typeof globalContent.data.navbar = {
-    ...globalContent.data.navbar,
-    left_navbar_items: [
-      { id: 1, text: t.navbar.home, url: '#hero', target: null },
-      ...(globalContent.data.locale === 'de-DE'
-        ? [
-            {
-              id: 2,
-              text: t.navbar.services,
-              url: '#services',
-              target: null,
-            },
-            {
-              id: 3,
-              text: t.navbar.history,
-              url: '#timeline',
-              target: null,
-            },
-            {
-              id: 4,
-              text: t.navbar.contact,
-              url: '#contact',
-              target: null,
-            },
-          ]
-        : []),
-      ...(globalContent.data.locale === 'id'
-        ? [
-            {
-              id: 5,
-              text: t.navbar.jadwalShalat,
-              url: `/jadwal-shalat`,
-              target: null,
-            },
-            {
-              id: 6,
-              text: 'Kalender Kegiatan',
-              url: `/kalender-kegiatan`,
-              target: null,
-            },
-            {
-              id: 7,
-              text: 'Donasi',
-              url: `/donation`,
-              target: null,
-            },
-          ]
-        : []),
-    ],
-  };
-
   const heroContent = pageData.data[0].content.find(
     (c) => c.__component === 'dynamic-zone.hero'
   ) as IHeroComponent;
@@ -135,9 +81,11 @@ export default function Home() {
 
   const donationProgressData = donationProgress.data;
 
+  console.log('Donation Progress Data:', donationProgressData);
+
   return (
     <div>
-      <Header headerContent={navbarOnlyHome} />
+      <Header headerContent={globalContent.data.navbar} />
       {heroContent && <Hero heroContent={heroContent} />}
       <PRS donationProgress={donationProgressData} />
       {ourServicesContent && (

@@ -8,11 +8,13 @@ import CountUp from 'react-countup';
 import { Button } from '@/components/ui/button';
 import { FaHeart } from 'react-icons/fa';
 import FadeInOnScroll from '@/components/ui/fadeInScroll';
+import { getTranslations } from '@/lib/translations';
 
 export default function PRS({ donationProgress }: { donationProgress: any }) {
   const router = useRouter();
   const params = useParams();
   const locale = params.locale as string;
+  const t = getTranslations(locale);
 
   const headline = donationProgress?.headline || '';
   const subHeadline = donationProgress?.subHeadline || '';
@@ -55,7 +57,7 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
             >
               <div className="flex justify-between text-sm mb-2">
                 <span className="font-semibold text-gray-800">
-                  Donation Progress
+                  {t.prs.donationProgress}
                 </span>
                 <span className="text-gray-600">
                   €
@@ -79,8 +81,8 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
               </div>
 
               <p className="mt-2 text-xs text-gray-500">
-                <CountUp end={percentage} duration={2} enableScrollSpy />%
-                funded
+                <CountUp end={percentage} duration={2} enableScrollSpy />
+                {'% ' + t.prs.funded}
               </p>
             </motion.div>
 
@@ -113,7 +115,7 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
                   >
                     <FaHeart className="text-red-500" />
                   </motion.div>
-                  Sedekah Sekarang!
+                  {t.prs.donateNow}
                 </Button>
               </form>
               <Button
@@ -121,7 +123,7 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
                 className="text-black border border-gray-400"
                 onClick={() => router.push(`/${locale}/donation`)}
               >
-                Lihat donasi lainnya
+                {t.prs.viewOtherDonations}
               </Button>
             </div>
           </motion.div>
@@ -135,7 +137,7 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
           >
             <Image
               src="/images/hero-bg.webp"
-              alt="Community photo"
+              alt={t.prs.imageAlt}
               fill
               className="object-cover"
               priority

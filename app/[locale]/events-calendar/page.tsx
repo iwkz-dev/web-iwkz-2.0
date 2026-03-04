@@ -58,38 +58,13 @@ export default function KalenderKegiatanPage() {
     return <LoadingPage />;
   }
 
-  const navbarContent = {
-    ...globalContent.data?.navbar,
-    left_navbar_items: [
-      { id: 1, text: t.navbar.home, url: '/', target: null },
-      {
-        id: 2,
-        text: t.navbar.jadwalShalat,
-        url: `/jadwal-shalat`,
-        target: null,
-      },
-      {
-        id: 3,
-        text: 'Kalender Kegiatan',
-        url: `/kalender-kegiatan`,
-        target: null,
-      },
-      {
-        id: 4,
-        text: 'Donasi',
-        url: `/donation`,
-        target: null,
-      },
-    ],
-  };
-
   const eventCalendarData = pageData.data[0].content[3] as
     | IActivityCategoryComponent
     | undefined;
 
   return (
     <div>
-      <Header headerContent={navbarContent} />
+      <Header headerContent={globalContent.data.navbar} />
       {eventCalendarData ? (
         <EventCalendar eventCalendarContent={eventCalendarData} />
       ) : (
