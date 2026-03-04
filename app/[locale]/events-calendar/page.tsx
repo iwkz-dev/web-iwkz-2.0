@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, notFound } from 'next/navigation';
-import Header from '@/components/header/header';
-import ContactFooter from '@/components/contactFooter/contactFooter';
 import LoadingPage from '@/components/loadingPage/loadingPage';
 import EventCalendar from '@/components/eventCalendar/eventCalendar';
 import { IActivityCategoryComponent, IPageResponse } from '@/types/page.types';
@@ -63,8 +61,7 @@ export default function KalenderKegiatanPage() {
     | undefined;
 
   return (
-    <div>
-      <Header headerContent={globalContent.data.navbar} />
+    <>
       {eventCalendarData ? (
         <EventCalendar eventCalendarContent={eventCalendarData} />
       ) : (
@@ -72,7 +69,6 @@ export default function KalenderKegiatanPage() {
           <p>No calendar data available</p>
         </div>
       )}
-      <ContactFooter contactFooterContent={globalContent?.data.footer!} />
-    </div>
+    </>
   );
 }

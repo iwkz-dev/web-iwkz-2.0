@@ -51,10 +51,17 @@ export default function PrayerTimesCard({
     return null; // toast informs the user
   }
 
-  const [currentTime, setCurrentTime] = useState(dayjs());
+  const [currentTime, setCurrentTime] = useState<dayjs.Dayjs | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  // Set initial time after mount to avoid hydration mismatch
+  useEffect(() => {
+    setCurrentTime(dayjs());
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
@@ -79,20 +86,26 @@ export default function PrayerTimesCard({
     };
   }, [isOpen]);
 
-  // logic moved to utils
-
   useEffect(() => {
+    if (!mounted) return;
+
     const interval = setInterval(() => {
       setCurrentTime(dayjs());
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [mounted]);
 
-  const currentPrayerKey = getCurrentPrayerKey(prayerTimes, currentTime);
-  const nextPrayerKey = getNextPrayerKey(prayerTimes, currentTime);
+  const currentPrayerKey = getCurrentPrayerKey(
+    prayerTimes,
+    currentTime ?? dayjs()
+  );
+  const nextPrayerKey = getNextPrayerKey(prayerTimes, currentTime ?? dayjs());
   const isAfterLastPrayer = currentPrayerKey === 'isya';
-  const countdown = getTimeDiff(prayerTimes[nextPrayerKey], currentTime);
+  const countdown = getTimeDiff(
+    prayerTimes[nextPrayerKey],
+    currentTime ?? dayjs()
+  );
 
   // Minimal countdown format for "(−hh:mm:ss)"
   const fmtCountdown =
@@ -109,6 +122,18 @@ export default function PrayerTimesCard({
     'maghrib',
     'isya',
   ];
+
+  if (!mounted || !currentTime) {
+    return (
+      <Button
+        className="fixed z-50 bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all"
+        disabled
+      >
+        <Clock className="w-4 h-4" />
+        <span>Loading...</span>
+      </Button>
+    );
+  }
 
   return (
     <>

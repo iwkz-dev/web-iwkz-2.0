@@ -1,39 +1,44 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
 import PrayerTimesCard from '@/components/prayerTimesCard/prayerTimesCard';
 import { IPrayerTimes } from '@/types/prayerTimes.types';
+import Header from '@/components/header/header';
+import ContactFooter from '@/components/contactFooter/contactFooter';
+import { fetchStrapiData } from '@/lib/fetch-strapi-data';
+import { IGlobalContent } from '@/types/globalContent.types';
 
-export default function LocaleLayout({
+export default async function LocaleLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }) {
-  const params = useParams();
-  const locale = params.locale as string;
-  const [prayerTimeData, setPrayerTimeData] = useState<IPrayerTimes | null>(
-    null
-  );
+  const { locale } = await params;
 
-  useEffect(() => {
-    const fetchPrayerTimes = async () => {
-      try {
-        const response = await fetch('/api/prayer-time');
-        const data = await response.json();
-        setPrayerTimeData(data.error ? null : data);
-      } catch (err) {
-        console.error('Failed to fetch prayer times:', err);
-      }
-    };
+  try {
+    // Parallel data fetching for better performance
+    const [prayerTimesData, globalData] = await Promise.all([
+      fetchStrapiData('/jadwalshalat') as Promise<IPrayerTimes>,
+      fetchStrapiData(`/global?locale=${locale}`) as Promise<IGlobalContent>,
+    ]);
 
-    fetchPrayerTimes();
-  }, [locale]);
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        {prayerTimesData && <PrayerTimesCard prayerTimes={prayerTimesData} />}
+        {globalData?.data?.navbar && (
+          <Header headerContent={globalData.data.navbar} />
+        )}
+        {children}
+        {globalData?.data?.footer && (
+          <ContactFooter contactFooterContent={globalData.data.footer} />
+        )}
+      </div>
+    );
+  } catch (error) {
+    console.error('Error fetching layout data:', error);
 
-  return (
-    <>
-      {prayerTimeData && <PrayerTimesCard prayerTimes={prayerTimeData} />}
-      {children}
-    </>
-  );
+    // Fallback UI when data fetch fails
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50">{children}</div>
+    );
+  }
 }

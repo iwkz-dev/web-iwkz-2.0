@@ -5,8 +5,6 @@ import { useParams } from 'next/navigation';
 import { notFound } from 'next/navigation';
 import Hero from '@/components/hero/hero';
 import OurServices from '@/components/ourServices/ourServices';
-import ContactFooter from '@/components/contactFooter/contactFooter';
-import Header from '@/components/header/header';
 import LoadingPage from '@/components/loadingPage/loadingPage';
 import Timeline from '@/components/timeline/timeline';
 import PRS from '@/components/prs/prs';
@@ -16,16 +14,12 @@ import {
   IHistoriesComponent,
   IPageResponse,
 } from '@/types/page.types';
-import { IGlobalContent } from '@/types/globalContent.types';
 
 export default function Home() {
   const params = useParams();
   const locale = params.locale as string;
   const [initialized, setInitialized] = useState(false);
   const [pageData, setPageData] = useState<IPageResponse | null>(null);
-  const [globalContent, setGlobalContent] = useState<IGlobalContent | null>(
-    null
-  );
   const [donationProgress, setDonationProgress] = useState<any | null>(null);
 
   useEffect(() => {
@@ -34,20 +28,17 @@ export default function Home() {
         const apiLocale = locale || 'id';
         const queryParams = new URLSearchParams({ locale: apiLocale });
 
-        const [pageRes, globalRes, donationProgressRes] = await Promise.all([
+        const [pageRes, donationProgressRes] = await Promise.all([
           fetch(`/api/pages?${queryParams.toString()}`),
-          fetch(`/api/global?${queryParams.toString()}`),
           fetch(`/api/prs-donation-progress?${queryParams.toString()}`),
         ]);
 
-        const [pageJson, globalJson, donationProgressJson] = await Promise.all([
+        const [pageJson, donationProgressJson] = await Promise.all([
           pageRes.json(),
-          globalRes.json(),
           donationProgressRes.json(),
         ]);
 
         setPageData(pageJson.error ? null : pageJson);
-        setGlobalContent(globalJson.error ? null : globalJson);
         setDonationProgress(
           donationProgressJson.error ? null : donationProgressJson
         );
@@ -60,7 +51,7 @@ export default function Home() {
     fetchData();
   }, [locale]);
 
-  if (!pageData || !globalContent || !donationProgress) {
+  if (!pageData || !donationProgress) {
     if (initialized) {
       notFound();
     }
@@ -81,18 +72,14 @@ export default function Home() {
 
   const donationProgressData = donationProgress.data;
 
-  console.log('Donation Progress Data:', donationProgressData);
-
   return (
     <div>
-      <Header headerContent={globalContent.data.navbar} />
       {heroContent && <Hero heroContent={heroContent} />}
       <PRS donationProgress={donationProgressData} />
       {ourServicesContent && (
         <OurServices ourServicesContent={ourServicesContent} />
       )}
       {timelineData && <Timeline timelineData={timelineData} />}
-      <ContactFooter contactFooterContent={globalContent.data.footer} />
     </div>
   );
 }

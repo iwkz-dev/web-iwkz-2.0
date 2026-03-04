@@ -6,7 +6,6 @@ import { fetchDonationPackages } from '@/lib/donation-api';
 import { DonationList } from '@/components/donationList/donationList';
 import { CheckoutDrawer } from '@/components/checkoutDrawer/checkoutDrawer';
 import { DonationPackageData } from '@/types/donationApi';
-import Header from '@/components/header/header';
 import ContactFooter from '@/components/contactFooter/contactFooter';
 import LoadingPage from '@/components/loadingPage/loadingPage';
 
@@ -70,11 +69,10 @@ export default function Home() {
   }
 
   return (
-    <div>
-      <Header headerContent={globalContent.data.navbar} />
+    <>
       <DonationList donationData={data} />
       <CheckoutDrawer />
       <ContactFooter contactFooterContent={globalContent?.data.footer!} />
-    </div>
+    </>
   );
 }

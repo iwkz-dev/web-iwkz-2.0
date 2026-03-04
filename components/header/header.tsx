@@ -11,6 +11,7 @@ import {
   getLocalePrefix,
   getAvailableLocales,
 } from '@/lib/locales';
+import { usePathnameWithoutLocale } from '@/hooks/use-pathname-withou-locale';
 
 interface IHeaderContentProps {
   headerContent: INavbar;
@@ -21,6 +22,7 @@ export default function Header({ headerContent }: IHeaderContentProps) {
   const [scrolled, setScrolled] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const pathnameWithoutLocale = usePathnameWithoutLocale();
 
   // Detect current locale from pathname
   const currentLocale = detectLocaleFromPathname(pathname);
@@ -32,7 +34,7 @@ export default function Header({ headerContent }: IHeaderContentProps) {
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`; // 1 year
 
     // Navigate to the new locale path
-    const newPath = `/${newLocale}`;
+    const newPath = `/${newLocale}/${pathnameWithoutLocale}`;
     router.push(newPath);
   };
 
