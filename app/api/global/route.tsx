@@ -24,8 +24,7 @@ export async function GET(req: NextRequest) {
     data: {
       ...data.data,
       jadwalShalatRamadanUrl:
-        process.env.NEXT_PUBLIC_JADWAL_SHALAT_RAMADAN_URL ||
-        null,
+        process.env.NEXT_PUBLIC_JADWAL_SHALAT_RAMADAN_URL || null,
     },
   });
 }
