@@ -22,7 +22,7 @@ export function DonationList({ donationData }: DonationListProps) {
           <p className="text-lg">{subHeadline}</p>
         </div>
       </FadeInOnScroll>
-      <div className="w-full max-w-5xl h-screen">
+      <div className="w-full max-w-5xl h-fit">
         <div className="flex items-center gap-2"></div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {donationPackages.map((pkg, index) => (
