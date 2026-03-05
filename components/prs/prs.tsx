@@ -32,6 +32,16 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
     process.env.NODE_ENV === 'development'
       ? process.env.NEXT_PUBLIC_PAYPAL_SANDBOX_URL || ''
       : process.env.NEXT_PUBLIC_PAYPAL_PRODUCTION_URL || '';
+  console.log('paypalUrl', paypalUrl);
+  console.log('process.env.NODE_ENV', process.env.NODE_ENV);
+  console.log(
+    'process.env.NEXT_PUBLIC_PAYPAL_SANDBOX_URL',
+    process.env.NEXT_PUBLIC_PAYPAL_SANDBOX_URL
+  );
+  console.log(
+    'process.env.NEXT_PUBLIC_PAYPAL_PRODUCTION_URL',
+    process.env.NEXT_PUBLIC_PAYPAL_PRODUCTION_URL
+  );
 
   return (
     <section className="relative min-h-dvh bg-pink-50 font-questrial px-4 py-20 sm:px-6 lg:px-8 md:py-24 flex flex-col items-center justify-center">
