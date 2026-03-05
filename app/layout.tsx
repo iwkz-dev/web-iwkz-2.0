@@ -18,7 +18,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" style={{ scrollBehavior: 'smooth' }}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      style={{ scrollBehavior: 'smooth' }}
+    >
       <body className={questrial.className}>{children}</body>
     </html>
   );
