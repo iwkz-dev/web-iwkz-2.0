@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
   const res = await fetch(
-    `${process.env.IWKZ_API_URL}/global?${req.nextUrl.searchParams.toString()}`,
+    `${process.env.IWKZ_API_URL}/donation-package?${req.nextUrl.searchParams.toString()}`,
     {
       cache: 'no-store',
       headers: {
@@ -13,16 +13,11 @@ export async function GET(req: NextRequest) {
 
   if (!res.ok) {
     return NextResponse.json(
-      { error: 'Failed to fetch global content' },
+      { error: 'Failed to fetch page content' },
       { status: 500 }
     );
   }
 
   const data = await res.json();
-  return NextResponse.json({
-    ...data,
-    data: {
-      ...data.data,
-    },
-  });
+  return NextResponse.json(data);
 }

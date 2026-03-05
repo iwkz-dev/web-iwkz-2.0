@@ -11,6 +11,7 @@ import {
   getLocalePrefix,
   getAvailableLocales,
 } from '@/lib/locales';
+import { usePathnameWithoutLocale } from '@/hooks/use-pathname-withou-locale';
 
 interface IHeaderContentProps {
   headerContent: INavbar;
@@ -21,6 +22,7 @@ export default function Header({ headerContent }: IHeaderContentProps) {
   const [scrolled, setScrolled] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const pathnameWithoutLocale = usePathnameWithoutLocale();
 
   // Detect current locale from pathname
   const currentLocale = detectLocaleFromPathname(pathname);
@@ -32,7 +34,7 @@ export default function Header({ headerContent }: IHeaderContentProps) {
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`; // 1 year
 
     // Navigate to the new locale path
-    const newPath = `/${newLocale}`;
+    const newPath = `/${newLocale}/${pathnameWithoutLocale}`;
     router.push(newPath);
   };
 
@@ -46,8 +48,11 @@ export default function Header({ headerContent }: IHeaderContentProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isJadwalShalat = pathname.includes('/jadwal-shalat');
-  const isKalenderKegiatan = pathname.includes('/kalender-kegiatan');
+  const isMainUrl =
+    pathname === '/' ||
+    pathname === localePrefix ||
+    pathname === `${localePrefix}/`;
+  const isNotMainUrl = !isMainUrl;
 
   const renderNavLink = (
     item: INavbar['left_navbar_items'][0],
@@ -71,41 +76,7 @@ export default function Header({ headerContent }: IHeaderContentProps) {
       );
     }
 
-    // Check if the URL is an anchor link (starts with #) or likely a section ID
-    // If it doesn't start with /, it might be a relative path or section ID
-    let href = `${localePrefix}/${item.url}`;
-
-    // Special handling for homepage sections when not on homepage
-    // If we are on a subpage (like jadwal-shalat) and the link is to a section (e.g. "events", "#events")
-    // we need to make sure it goes to the homepage
-    if (pathname !== localePrefix && pathname !== localePrefix + '/') {
-      // If item.url is just "events" or "about", it might need to be /events or /#events
-      // Assuming these are sections on the homepage, based on the issue description
-      if (!item.url.startsWith('/') && !item.url.startsWith('http')) {
-        // If it looks like a section name (no slash), treat it as an anchor on homepage
-        // However, we don't know for sure if it's a page or a section.
-        // But since /events 404s, it's likely a section on homepage.
-        // Let's try to make it an absolute path to the homepage with hash if it doesn't have one
-        // OR just prepend / if it's meant to be a route but missing slash.
-
-        // Actually, if it is "events" and we are on /id/jadwal-shalat
-        // href becomes /id/events.
-        // If /id/events 404s, then "events" is likely a section ID on the homepage.
-        // So we should change it to /id/#events
-
-        if (!item.url.startsWith('#')) {
-          // Heuristic: if it's not a known page (like jadwal-shalat), treat as anchor
-          if (item.url !== 'jadwal-shalat' && item.url !== 'prs') {
-            href = `${localePrefix}/#${item.url}`;
-          } else {
-            href = `${localePrefix}/${item.url}`;
-          }
-        } else {
-          // If it starts with #, e.g. #events
-          href = `${localePrefix}/${item.url}`; // /id/#events - this works
-        }
-      }
-    }
+    let href = `${item.url}`;
 
     return (
       <Link key={item.id} href={href} className="block">
@@ -119,7 +90,7 @@ export default function Header({ headerContent }: IHeaderContentProps) {
       className={`fixed w-full top-0 z-50 transition-all duration-300 ${
         scrolled || menuOpen
           ? 'bg-white text-gray-800 shadow'
-          : isJadwalShalat || isKalenderKegiatan
+          : isNotMainUrl
             ? 'bg-gray-900 text-white shadow-md'
             : 'bg-transparent text-white'
       }`}

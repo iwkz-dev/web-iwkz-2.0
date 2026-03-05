@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, notFound } from 'next/navigation';
-import Header from '@/components/header/header';
-import ContactFooter from '@/components/contactFooter/contactFooter';
 import LoadingPage from '@/components/loadingPage/loadingPage';
 import EventCalendar from '@/components/eventCalendar/eventCalendar';
 import { IActivityCategoryComponent, IPageResponse } from '@/types/page.types';
@@ -58,35 +56,12 @@ export default function KalenderKegiatanPage() {
     return <LoadingPage />;
   }
 
-  const navbarContent = {
-    ...globalContent.data?.navbar,
-    left_navbar_items: [
-      { id: 1, text: t.navbar.home, url: '/', target: null },
-      { id: 2, text: t.navbar.services, url: '/#services', target: null },
-      { id: 3, text: t.navbar.history, url: '/#timeline', target: null },
-      { id: 4, text: t.navbar.contact, url: '/#contact', target: null },
-      {
-        id: 5,
-        text: t.navbar.jadwalShalat,
-        url: `/jadwal-shalat`,
-        target: null,
-      },
-      {
-        id: 6,
-        text: 'Kalender Kegiatan',
-        url: `/kalender-kegiatan`,
-        target: null,
-      },
-    ],
-  };
-
   const eventCalendarData = pageData.data[0].content[3] as
     | IActivityCategoryComponent
     | undefined;
 
   return (
-    <div>
-      <Header headerContent={navbarContent} />
+    <>
       {eventCalendarData ? (
         <EventCalendar eventCalendarContent={eventCalendarData} />
       ) : (
@@ -94,7 +69,6 @@ export default function KalenderKegiatanPage() {
           <p>No calendar data available</p>
         </div>
       )}
-      <ContactFooter contactFooterContent={globalContent?.data.footer!} />
-    </div>
+    </>
   );
 }

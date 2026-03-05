@@ -3,8 +3,17 @@ import { NextRequest, NextResponse } from 'next/server';
 const locales = ['id', 'de-DE'];
 const defaultLocale = 'id';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Check cookie for saved locale preference
+  const savedLocale = request.cookies.get('NEXT_LOCALE')?.value;
+
+  // Determine which locale to use
+  let locale = defaultLocale;
+  if (savedLocale && locales.includes(savedLocale)) {
+    locale = savedLocale;
+  }
 
   // Skip middleware for API routes, static files, and Next.js internals
   if (
@@ -13,6 +22,11 @@ export function middleware(request: NextRequest) {
     pathname.startsWith('/images/') ||
     pathname.includes('.')
   ) {
+    return NextResponse.next();
+  }
+
+  // PayPal callbacks return to root paths configured in PayPal settings.
+  if (pathname === '/success' || pathname === '/cancel') {
     return NextResponse.next();
   }
 
@@ -27,14 +41,6 @@ export function middleware(request: NextRequest) {
   }
 
   // If pathname is root or doesn't have locale, redirect to locale path
-  // Check cookie for saved locale preference
-  const savedLocale = request.cookies.get('NEXT_LOCALE')?.value;
-
-  // Determine which locale to use
-  let locale = defaultLocale;
-  if (savedLocale && locales.includes(savedLocale)) {
-    locale = savedLocale;
-  }
 
   // Redirect to locale path
   const url = request.nextUrl.clone();
