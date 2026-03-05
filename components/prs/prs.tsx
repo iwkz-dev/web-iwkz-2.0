@@ -21,8 +21,12 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
   const target = donationProgress?.targetDonation || 0;
   const funded = donationProgress?.currentDonation || 0;
   const percentage = target ? Math.round((funded / target) * 100) : 0;
+  const vzw = donationProgress?.VZW || 'prs';
 
-  const paypalHostId = process.env.NEXT_PUBLIC_PAYPAL_HOST_ID_DEV || '';
+  const paypalHostId =
+    process.env.NODE_ENV === 'development'
+      ? process.env.NEXT_PUBLIC_PAYPAL_HOST_ID_DEV || ''
+      : process.env.NEXT_PUBLIC_PAYPAL_HOST_ID || '';
 
   const paypalUrl =
     process.env.NODE_ENV === 'development'
@@ -96,6 +100,7 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
                       name="hosted_button_id"
                       value={paypalHostId}
                     />
+                    <input type="hidden" name="item_name" value={vzw} />
                   </>
                 )}
                 <Button

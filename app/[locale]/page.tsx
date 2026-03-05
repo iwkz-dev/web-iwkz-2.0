@@ -70,12 +70,12 @@ export default function Home() {
     (c) => c.__component === 'dynamic-zone.histories'
   ) as IHistoriesComponent;
 
-  const donationProgressData = donationProgress.data;
+  const donationProgressData = donationProgress.data || null;
 
   return (
     <div>
       {heroContent && <Hero heroContent={heroContent} />}
-      <PRS donationProgress={donationProgressData} />
+      {donationProgressData && <PRS donationProgress={donationProgressData} />}
       {ourServicesContent && (
         <OurServices ourServicesContent={ourServicesContent} />
       )}

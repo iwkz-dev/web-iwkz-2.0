@@ -14,6 +14,13 @@ export default function Hero(props: IHeroProps) {
   const heroContent = props.heroContent;
   const [isMobile, setIsMobile] = useState(false);
 
+  const handleScrollDown = () => {
+    const heroSection = document.getElementById('hero');
+    const nextSection = heroSection?.nextElementSibling as HTMLElement | null;
+
+    nextSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   useEffect(() => {
     const mql = window.matchMedia('(max-width: 768px)');
     const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
@@ -74,8 +81,15 @@ export default function Hero(props: IHeroProps) {
             {heroContent.subHeadline}
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button asChild variant="ghost" className="text-white border">
-              <a href="#services">See More</a>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={handleScrollDown}
+              aria-label="Scroll to next section"
+              className="text-white animate-bounce hover:bg-transparent hover:text-white active:bg-transparent"
+            >
+              <span className="text-3xl leading-none">↓</span>
             </Button>
           </div>
         </div>
