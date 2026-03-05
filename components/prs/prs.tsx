@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -22,16 +23,49 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
   const funded = donationProgress?.currentDonation || 0;
   const percentage = target ? Math.round((funded / target) * 100) : 0;
   const vzw = donationProgress?.VZW || 'prs';
-
-  const paypalHostId =
+  const [paypalHostId, setPaypalHostId] = useState('');
+  const [paypalUrl, setPaypalUrl] = useState('');
+  const [isDevelopment, setIsDevelopment] = useState(
     process.env.NODE_ENV === 'development'
-      ? process.env.NEXT_PUBLIC_PAYPAL_HOST_ID_DEV || ''
-      : process.env.NEXT_PUBLIC_PAYPAL_HOST_ID || '';
+  );
 
-  const paypalUrl =
-    process.env.NODE_ENV === 'development'
-      ? process.env.NEXT_PUBLIC_PAYPAL_SANDBOX_URL || ''
-      : process.env.NEXT_PUBLIC_PAYPAL_PRODUCTION_URL || '';
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadRuntimeConfig = async () => {
+      try {
+        const response = await fetch('/api/runtime-config', {
+          cache: 'no-store',
+        });
+        if (!response.ok) {
+          return;
+        }
+
+        const data = (await response.json()) as {
+          paypalHostId?: string;
+          paypalUrl?: string;
+          isDevelopment?: boolean;
+        };
+
+        if (isMounted) {
+          setPaypalHostId(data.paypalHostId || '');
+          setPaypalUrl(data.paypalUrl || '');
+          setIsDevelopment(Boolean(data.isDevelopment));
+        }
+      } catch {
+        if (isMounted) {
+          setPaypalHostId('');
+          setPaypalUrl('');
+        }
+      }
+    };
+
+    loadRuntimeConfig();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <section className="relative min-h-dvh bg-pink-50 font-questrial px-4 py-20 sm:px-6 lg:px-8 md:py-24 flex flex-col items-center justify-center">
@@ -92,7 +126,7 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
 
             <div className="flex flex-wrap gap-4 mt-6">
               <form action={paypalUrl} method="post" target="_blank">
-                {process.env.NODE_ENV === 'development' && (
+                {isDevelopment && (
                   <>
                     <input type="hidden" name="cmd" value="_s-xclick" />
                     <input

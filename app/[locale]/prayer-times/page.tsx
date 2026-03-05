@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getTranslations } from '@/lib/translations';
 
@@ -11,7 +11,42 @@ export default function JadwalShalatPage() {
   const [month, setMonth] = useState<string>(new Date().getMonth() + 1 + '');
   const [year, setYear] = useState<string>(new Date().getFullYear() + '');
   const [loading, setLoading] = useState(false);
-  const ramadanURL = process.env.NEXT_PUBLIC_JADWAL_SHALAT_RAMADAN_URL || null;
+  const [ramadanURL, setRamadanURL] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadRuntimeConfig = async () => {
+      try {
+        const response = await fetch('/api/runtime-config', {
+          cache: 'no-store',
+        });
+        if (!response.ok) {
+          return;
+        }
+
+        const data = (await response.json()) as {
+          ramadanUrl?: string | null;
+        };
+
+        if (isMounted) {
+          setRamadanURL(data.ramadanUrl || null);
+        }
+      } catch {
+        if (isMounted) {
+          setRamadanURL(
+            process.env.NEXT_PUBLIC_JADWAL_SHALAT_RAMADAN_URL || null
+          );
+        }
+      }
+    };
+
+    loadRuntimeConfig();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const years = Array.from(
     { length: 5 },
