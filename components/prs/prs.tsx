@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { FaHeart } from 'react-icons/fa';
 import FadeInOnScroll from '@/components/ui/fadeInScroll';
 import { getTranslations } from '@/lib/translations';
+import { loadRuntimeConfig } from '@/lib/runtime-config';
 
 export default function PRS({ donationProgress }: { donationProgress: any }) {
   const router = useRouter();
@@ -32,20 +33,9 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
   useEffect(() => {
     let isMounted = true;
 
-    const loadRuntimeConfig = async () => {
+    const fetchConfig = async () => {
       try {
-        const response = await fetch('/api/runtime-config', {
-          cache: 'no-store',
-        });
-        if (!response.ok) {
-          return;
-        }
-
-        const data = (await response.json()) as {
-          paypalHostId?: string;
-          paypalUrl?: string;
-          isDevelopment?: boolean;
-        };
+        const data = await loadRuntimeConfig();
 
         if (isMounted) {
           setPaypalHostId(data.paypalHostId || '');
@@ -60,7 +50,7 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
       }
     };
 
-    loadRuntimeConfig();
+    fetchConfig();
 
     return () => {
       isMounted = false;

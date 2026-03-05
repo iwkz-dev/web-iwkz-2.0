@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getTranslations } from '@/lib/translations';
+import { loadRuntimeConfig } from '@/lib/runtime-config';
 
 export default function JadwalShalatPage() {
   const params = useParams();
@@ -16,18 +17,9 @@ export default function JadwalShalatPage() {
   useEffect(() => {
     let isMounted = true;
 
-    const loadRuntimeConfig = async () => {
+    const fetchConfig = async () => {
       try {
-        const response = await fetch('/api/runtime-config', {
-          cache: 'no-store',
-        });
-        if (!response.ok) {
-          return;
-        }
-
-        const data = (await response.json()) as {
-          ramadanUrl?: string | null;
-        };
+        const data = await loadRuntimeConfig();
 
         if (isMounted) {
           setRamadanURL(data.ramadanUrl || null);
@@ -41,7 +33,7 @@ export default function JadwalShalatPage() {
       }
     };
 
-    loadRuntimeConfig();
+    fetchConfig();
 
     return () => {
       isMounted = false;
