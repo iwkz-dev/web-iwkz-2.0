@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { Questrial } from 'next/font/google';
-import './globals.css';
 import { getLayoutMetadata } from '@/lib/seo';
+import { Toaster } from 'sonner';
+import './globals.css';
 
 const questrial = Questrial({
   subsets: ['latin'],
@@ -23,7 +24,10 @@ export default function RootLayout({
       suppressHydrationWarning
       style={{ scrollBehavior: 'smooth' }}
     >
-      <body className={questrial.className}>{children}</body>
+      <body className={questrial.className}>
+        {children}
+        <Toaster richColors position="top-right" />
+      </body>
     </html>
   );
 }
