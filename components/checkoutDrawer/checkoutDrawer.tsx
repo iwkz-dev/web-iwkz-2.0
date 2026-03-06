@@ -66,6 +66,7 @@ export function CheckoutDrawer() {
   const drawerRef = useRef<HTMLDivElement>(null);
   const lastDragYRef = useRef(0);
   const lastDragTimeRef = useRef(0);
+  const isDragging = dragStartY !== 0;
 
   const totalPrice = getTotalPrice();
   const totalQuantity = getTotalQuantity();
@@ -206,6 +207,10 @@ export function CheckoutDrawer() {
   const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (dragStartY === 0) return;
 
+    if ('touches' in e && e.cancelable) {
+      e.preventDefault();
+    }
+
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
     const distance = clientY - dragStartY;
 
@@ -286,7 +291,11 @@ export function CheckoutDrawer() {
         onTouchMove={handleDragMove}
         onTouchEnd={handleDragEnd}
       >
-        <div className="max-h-[90vh] overflow-y-auto scrollbar-hide rounded-t-3xl bg-white shadow-2xl">
+        <div
+          className={`max-h-[90vh] ${
+            isDragging ? 'overflow-y-hidden' : 'overflow-y-auto'
+          } scrollbar-hide rounded-t-3xl bg-white shadow-2xl`}
+        >
           {/* Handle bar */}
           <div
             className="sticky top-0 z-10 flex items-center justify-center bg-white px-4 pb-1 pt-2 rounded-t-3xl cursor-grab active:cursor-grabbing select-none"
