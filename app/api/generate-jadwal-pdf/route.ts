@@ -5,41 +5,29 @@ import fs from 'fs';
 import path from 'path';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id';
+import { getCachedOrGenerate } from '@/lib/driveCache';
 
 // Set locale to Indonesian
 dayjs.locale('id');
 
-export async function POST(req: NextRequest) {
+/**
+ * Generate a PDF buffer for the given month/year.
+ * This is the core generation logic, extracted so it can be wrapped by the cache layer.
+ */
+async function generateJadwalShalat(
+  monthNum: number,
+  yearNum: number
+): Promise<Buffer> {
   let browser: Browser | null = null;
 
   try {
-    const body = await req.json();
-    const monthNum = parseInt(body.month, 10);
-    const yearNum = parseInt(body.year, 10);
-
-    // Strict validation: must be valid integers within expected ranges
-    if (
-      isNaN(monthNum) ||
-      isNaN(yearNum) ||
-      monthNum < 1 ||
-      monthNum > 12 ||
-      yearNum < 2020 ||
-      yearNum > 2100
-    ) {
-      return NextResponse.json(
-        { error: 'Invalid month or year' },
-        { status: 400 }
-      );
-    }
-
-    // Use ONLY validated integers from here on
     const apiUrl = `${process.env.IWKZ_API_URL}/jadwalshalat?month=${monthNum}&year=${yearNum}`;
     const res = await fetch(apiUrl, {
       headers: {
         Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
       },
       cache: 'no-store',
-      signal: AbortSignal.timeout(15000), // 15s timeout for API fetch
+      signal: AbortSignal.timeout(15000),
     });
 
     if (!res.ok) {
@@ -48,10 +36,7 @@ export async function POST(req: NextRequest) {
         res.status,
         res.statusText
       );
-      return NextResponse.json(
-        { error: 'Failed to fetch prayer times from external API' },
-        { status: 500 }
-      );
+      throw new Error(`Failed to fetch prayer times: ${res.status}`);
     }
 
     const prayerData = await res.json();
@@ -77,28 +62,14 @@ export async function POST(req: NextRequest) {
       hijriahYearLabel = Array.from(hijriYears).join(' / ');
     }
 
-    // Load template — check existence first for clear error messages
+    // Load template
     const templatePath = path.join(
       process.cwd(),
       'lib/templates/jadwal-shalat.hbs'
     );
     if (!fs.existsSync(templatePath)) {
       console.error('[PDF] Template file not found at:', templatePath);
-      console.error('[PDF] Current working directory:', process.cwd());
-      console.error(
-        '[PDF] Directory contents:',
-        (() => {
-          try {
-            return fs.readdirSync(process.cwd()).join(', ');
-          } catch {
-            return 'unable to list';
-          }
-        })()
-      );
-      return NextResponse.json(
-        { error: 'PDF template not found on server' },
-        { status: 500 }
-      );
+      throw new Error('PDF template not found on server');
     }
 
     const templateHtml = fs.readFileSync(templatePath, 'utf-8');
@@ -115,7 +86,7 @@ export async function POST(req: NextRequest) {
     // Launch puppeteer with timeouts
     browser = await puppeteer.launch({
       headless: true,
-      protocolTimeout: 30000, // 30s protocol timeout
+      protocolTimeout: 30000,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -128,7 +99,7 @@ export async function POST(req: NextRequest) {
     });
 
     const page = await browser.newPage();
-    page.setDefaultTimeout(15000); // 15s default timeout for page operations
+    page.setDefaultTimeout(15000);
     await page.setJavaScriptEnabled(false);
     await page.setContent(html, { waitUntil: 'networkidle0', timeout: 15000 });
     const pdfBuffer = await page.pdf({
@@ -146,8 +117,44 @@ export async function POST(req: NextRequest) {
     await browser.close();
     browser = null;
 
-    // Return generated PDF
-    return new NextResponse(pdfBuffer as any, {
+    return Buffer.from(pdfBuffer);
+  } finally {
+    if (browser) {
+      try {
+        await browser.close();
+      } catch (closeError) {
+        console.error('[PDF] Error closing browser:', closeError);
+      }
+    }
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const monthNum = parseInt(body.month, 10);
+    const yearNum = parseInt(body.year, 10);
+
+    // Strict validation: must be valid integers within expected ranges
+    if (
+      isNaN(monthNum) ||
+      isNaN(yearNum) ||
+      monthNum < 1 ||
+      monthNum > 12 ||
+      yearNum < 2020 ||
+      yearNum > 9999
+    ) {
+      return NextResponse.json(
+        { error: 'Invalid month or year' },
+        { status: 400 }
+      );
+    }
+
+    const pdfBuffer = await getCachedOrGenerate(monthNum, yearNum, () =>
+      generateJadwalShalat(monthNum, yearNum)
+    );
+
+    return new NextResponse(new Uint8Array(pdfBuffer), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="jadwal-shalat-${monthNum}-${yearNum}.pdf"`,
@@ -159,14 +166,5 @@ export async function POST(req: NextRequest) {
       { error: 'Internal Server Error' },
       { status: 500 }
     );
-  } finally {
-    // Always close browser to prevent zombie Chromium processes
-    if (browser) {
-      try {
-        await browser.close();
-      } catch (closeError) {
-        console.error('[PDF] Error closing browser:', closeError);
-      }
-    }
   }
 }
