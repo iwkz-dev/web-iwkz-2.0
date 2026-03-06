@@ -28,7 +28,7 @@ export const translations = {
       donationProgress: 'Progres Donasi',
       funded: 'terkumpul',
       donateNow: 'Sedekah Sekarang!',
-      viewOtherDonations: 'Lihat donasi lainnya',
+      viewOtherDonations: 'Donasi lainnya',
       imageAlt: 'Foto komunitas',
     },
     donationCancelPage: {
@@ -116,7 +116,7 @@ export const translations = {
       donationProgress: 'Spendenfortschritt',
       funded: 'finanziert',
       donateNow: 'Jetzt spenden!',
-      viewOtherDonations: 'Weitere Spenden ansehen',
+      viewOtherDonations: 'Weitere Spenden',
       imageAlt: 'Gemeinschaftsfoto',
     },
     donationCancelPage: {

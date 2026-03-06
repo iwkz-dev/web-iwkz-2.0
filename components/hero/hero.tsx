@@ -80,7 +80,7 @@ export default function Hero(props: IHeroProps) {
           <p className="text-lg md:text-xl leading-relaxed text-white">
             {heroContent.subHeadline}
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
             <Button
               type="button"
               variant="ghost"

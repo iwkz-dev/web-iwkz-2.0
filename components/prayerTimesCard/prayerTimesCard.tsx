@@ -145,8 +145,8 @@ export default function PrayerTimesCard({
         <Clock className="w-4 h-4" />
         <span>
           {isAfterLastPrayer
-            ? `Now: ${PRAYER_LABELS[currentPrayerKey]}`
-            : `Next: ${PRAYER_LABELS[nextPrayerKey]} (-${fmtCountdown})`}
+            ? `Now: ${PRAYER_LABELS[currentPrayerKey]} (${prayerTimes[currentPrayerKey]})`
+            : `Next: ${PRAYER_LABELS[nextPrayerKey]} ${prayerTimes[nextPrayerKey]} (-${fmtCountdown})`}
         </span>
         {isOpen ? (
           <FaChevronDown className="w-3 h-3" />
@@ -158,7 +158,7 @@ export default function PrayerTimesCard({
       <div
         ref={panelRef}
         className={cn(
-          'fixed z-50 bottom-20 right-6 w-[90vw] sm:w-100 transition-transform duration-500',
+          'fixed z-50 bottom-20 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-6 w-[90vw] sm:w-100 transition-transform duration-500',
           isOpen ? 'translate-y-0' : 'translate-y-[120%]'
         )}
       >

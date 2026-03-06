@@ -64,12 +64,19 @@ export default function Header({ headerContent }: IHeaderContentProps) {
       : 'border-white hover:bg-white hover:text-black';
     const mobileClass = 'border-gray-800'; // consistent dark border, no hover needed
 
+    const handleMobileClick = () => {
+      if (mode === 'mobile') {
+        setMenuOpen(false);
+      }
+    };
+
     if (item.text === 'PRS') {
       return (
         <Link
           key={item.id}
           href={`${localePrefix}/${item.url}`}
           className={`${baseClass} ${mode === 'desktop' ? desktopClass : mobileClass}`}
+          onClick={handleMobileClick}
         >
           {item.text}
         </Link>
@@ -79,7 +86,12 @@ export default function Header({ headerContent }: IHeaderContentProps) {
     let href = `${item.url}`;
 
     return (
-      <Link key={item.id} href={href} className="block">
+      <Link
+        key={item.id}
+        href={href}
+        className="block"
+        onClick={handleMobileClick}
+      >
         {item.text}
       </Link>
     );
@@ -164,7 +176,10 @@ export default function Header({ headerContent }: IHeaderContentProps) {
           {/* Mobile Language Dropdown */}
           <select
             value={currentLocale}
-            onChange={(e) => handleLocaleChange(e.target.value)}
+            onChange={(e) => {
+              handleLocaleChange(e.target.value);
+              setMenuOpen(false);
+            }}
             className="w-auto border border-gray-800 px-3 py-1 rounded cursor-pointer bg-white text-gray-800"
           >
             {getAvailableLocales().map(([code, { label }]) => (
