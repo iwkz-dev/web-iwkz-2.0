@@ -72,7 +72,6 @@ export default function Home() {
     <>
       <DonationList donationData={data} />
       <CheckoutDrawer />
-      <ContactFooter contactFooterContent={globalContent?.data.footer!} />
     </>
   );
 }
