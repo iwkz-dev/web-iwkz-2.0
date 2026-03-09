@@ -5,14 +5,19 @@ import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
+import { FaHeart } from 'react-icons/fa';
 
 import { Button } from '@/components/ui/button';
-import { FaHeart } from 'react-icons/fa';
 import FadeInOnScroll from '@/components/ui/fadeInScroll';
 import { getTranslations } from '@/lib/translations';
 import { loadRuntimeConfig } from '@/lib/runtime-config';
+import type { IPrsDonationProgress } from '@/types/prsDonationProgress.types';
 
-export default function PRS({ donationProgress }: { donationProgress: any }) {
+export default function PRS({
+  donationProgress,
+}: {
+  donationProgress: IPrsDonationProgress;
+}) {
   const router = useRouter();
   const params = useParams();
   const locale = params.locale as string;
@@ -158,17 +163,17 @@ export default function PRS({ donationProgress }: { donationProgress: any }) {
           </motion.div>
 
           <motion.div
-            className="w-full h-62.5 sm:h-75 md:h-100 lg:h-112.5 relative"
+            className="relative w-full max-w-64 sm:max-w-72 md:max-w-80 lg:max-w-96 aspect-square mx-auto"
             variants={{
               hidden: { opacity: 0, y: 50 },
               visible: { opacity: 1, y: 0 },
             }}
           >
             <Image
-              src="/images/hero-bg.webp"
+              src={donationProgress?.image?.url || '/images/hero-bg.webp'}
               alt={t.prs.imageAlt}
               fill
-              className="object-cover"
+              className="object-fit"
               priority
             />
           </motion.div>

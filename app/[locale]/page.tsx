@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { notFound } from 'next/navigation';
+
 import Hero from '@/components/hero/hero';
 import OurServices from '@/components/ourServices/ourServices';
 import LoadingPage from '@/components/loadingPage/loadingPage';
@@ -14,13 +15,15 @@ import {
   IHistoriesComponent,
   IPageResponse,
 } from '@/types/page.types';
+import type { IPrsDonationProgressResponse } from '@/types/prsDonationProgress.types';
 
 export default function Home() {
   const params = useParams();
   const locale = params.locale as string;
   const [initialized, setInitialized] = useState(false);
   const [pageData, setPageData] = useState<IPageResponse | null>(null);
-  const [donationProgress, setDonationProgress] = useState<any | null>(null);
+  const [donationProgress, setDonationProgress] =
+    useState<IPrsDonationProgressResponse | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {

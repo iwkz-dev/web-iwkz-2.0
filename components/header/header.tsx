@@ -4,14 +4,15 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
-import { INavbar } from '@/types/globalContent.types';
 import { FiMenu, FiX } from 'react-icons/fi';
+
+import { INavbar } from '@/types/globalContent.types';
 import {
   detectLocaleFromPathname,
   getLocalePrefix,
   getAvailableLocales,
 } from '@/lib/locales';
-import { usePathnameWithoutLocale } from '@/hooks/use-pathname-withou-locale';
+import { usePathnameWithoutLocale } from '@/hooks/use-pathname-without-locale';
 
 interface IHeaderContentProps {
   headerContent: INavbar;
