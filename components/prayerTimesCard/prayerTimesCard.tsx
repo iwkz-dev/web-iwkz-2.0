@@ -140,7 +140,7 @@ export default function PrayerTimesCard({
       <Button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed z-50 bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all"
+        className="fixed z-50 bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all text-base"
       >
         <Clock className="w-4 h-4" />
         <span>
