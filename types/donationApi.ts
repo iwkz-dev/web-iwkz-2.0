@@ -39,6 +39,7 @@ export interface DonationPackageResponse {
 // ─── Payment Config ───
 
 export interface PostbankConfig {
+  ownerName: string;
   bankName: string;
   iban: string;
   bic: string;

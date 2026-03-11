@@ -69,6 +69,7 @@ export const translations = {
       bankTransferInstructionPrefix:
         'Transfer ke rekening berikut dan gunakan jumlah',
       bankTransferInstructionSuffix: 'sebagai nominal transfer.',
+      ownerName: 'Nama Pemilik',
       bank: 'Bank',
       iban: 'IBAN',
       bic: 'BIC',
@@ -156,6 +157,7 @@ export const translations = {
       bankTransferInstructionPrefix:
         'Überweisen Sie auf folgendes Konto und verwenden Sie',
       bankTransferInstructionSuffix: 'als Überweisungsbetrag.',
+      ownerName: 'Kontoinhaber',
       bank: 'Bank',
       iban: 'IBAN',
       bic: 'BIC',

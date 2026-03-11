@@ -438,6 +438,10 @@ export function CheckoutDrawer() {
                 </p>
                 {[
                   {
+                    label: t.checkoutDrawer.ownerName,
+                    value: config.postbank.ownerName,
+                  },
+                  {
                     label: t.checkoutDrawer.bank,
                     value: config.postbank.bankName,
                   },
