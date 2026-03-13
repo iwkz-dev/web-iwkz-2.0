@@ -104,14 +104,15 @@ export const translations = {
       socialMedia: 'Soziale Medien',
     },
     jadwalShalatPage: {
-      title: '-',
-      description: '-',
-      month: '-',
-      year: '-',
-      generate: '-',
-      loading: '-',
-      error: '-',
-      downloadRamadan: '-',
+      title: 'Gebetszeiten',
+      description:
+        'Laden Sie den monatlichen Gebetszeitenplan im PDF-Format herunter.',
+      month: 'Monat',
+      year: 'Jahr',
+      generate: 'Gebetszeiten herunterladen',
+      loading: 'Wird verarbeitet...',
+      error: 'Beim Erstellen der PDF ist ein Fehler aufgetreten',
+      downloadRamadan: 'Ramadan-Gebetszeiten herunterladen',
     },
     prs: {
       donationProgress: 'Spendenfortschritt',
