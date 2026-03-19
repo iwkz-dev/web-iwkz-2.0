@@ -6,7 +6,6 @@ import { fetchDonationPackages } from '@/lib/donation-api';
 import { DonationList } from '@/components/donationList/donationList';
 import { CheckoutDrawer } from '@/components/checkoutDrawer/checkoutDrawer';
 import { DonationPackageData } from '@/types/donationApi';
-import ContactFooter from '@/components/contactFooter/contactFooter';
 import LoadingPage from '@/components/loadingPage/loadingPage';
 
 export default function Home() {
@@ -27,7 +26,7 @@ export default function Home() {
           fetchDonationPackages(),
           fetch(`/api/global?locale=${locale}`).then((res) => res.json()),
         ]);
-        setData(donationRes.data);
+        setData(validateDonationPackages(donationRes.data));
         setGlobalContent(globalRes);
 
         // Extract translations from global content
@@ -49,6 +48,26 @@ export default function Home() {
       loadDonationPackages();
     }
   }, [locale]);
+
+  const validateDonationPackages = (
+    data: DonationPackageData
+  ): DonationPackageData => {
+    return {
+      ...data,
+      donationPackages:
+        data.donationPackages.filter(
+          ({ published, endDate }) => published && isDonationNotExpired(endDate)
+        ) || [],
+    };
+  };
+
+  const isDonationNotExpired = (dateStr: string | null): boolean => {
+    if (!dateStr) return true;
+
+    const endDate = new Date(dateStr);
+
+    return endDate >= new Date();
+  };
 
   if (loading) {
     return <LoadingPage />;
