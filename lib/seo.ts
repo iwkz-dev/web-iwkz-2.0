@@ -1,10 +1,38 @@
 import type { Metadata } from 'next';
 import type { IPageResponse } from '@/types/page.types';
+import { DEFAULT_LOCALE, LOCALES, type LocaleCode } from '@/lib/locales';
 
-export async function getLayoutMetadata(): Promise<Metadata> {
+type LayoutMetadataParams = {
+  locale?: string;
+};
+
+function resolveLocale(locale?: string): LocaleCode {
+  if (locale && locale in LOCALES) {
+    return locale as LocaleCode;
+  }
+
+  return DEFAULT_LOCALE;
+}
+
+function buildLanguageAlternates(): Record<string, string> {
+  return {
+    id: '/id',
+    'de-DE': '/de-DE',
+    'x-default': `/${DEFAULT_LOCALE}`,
+  };
+}
+
+export async function getLayoutMetadata(
+  params?: LayoutMetadataParams
+): Promise<Metadata> {
+  const locale = resolveLocale(params?.locale);
+
   const fallback: Metadata = {
     title: 'IWKZ Berlin',
     description: 'indonesischer Weisheits- & Kulturzentrum e.V.',
+    alternates: {
+      languages: buildLanguageAlternates(),
+    },
     applicationName: 'IWKZ e.V.',
     manifest: '/site.webmanifest',
     icons: {
@@ -21,12 +49,15 @@ export async function getLayoutMetadata(): Promise<Metadata> {
   };
 
   try {
-    const res = await fetch(`${process.env.IWKZ_API_URL}/pages`, {
-      headers: {
-        Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
-      },
-      cache: 'no-store',
-    });
+    const res = await fetch(
+      `${process.env.IWKZ_API_URL}/pages?locale=${encodeURIComponent(locale)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
+        },
+        next: { revalidate: 300 },
+      }
+    );
 
     if (!res.ok) return fallback;
 
@@ -53,9 +84,10 @@ export async function getLayoutMetadata(): Promise<Metadata> {
       title: seo.metaTitle,
       description: seo.metaDescription,
       keywords,
-      alternates: seo.canonicalURL
-        ? { canonical: seo.canonicalURL }
-        : undefined,
+      alternates: {
+        canonical: seo.canonicalURL || `/${locale}`,
+        languages: buildLanguageAlternates(),
+      },
       robots,
       applicationName: 'IWKZ e.V.',
       manifest: '/site.webmanifest',

@@ -1,11 +1,22 @@
+import type { Metadata } from 'next';
 import PrayerTimesCard from '@/components/prayerTimesCard/prayerTimesCard';
 import { IPrayerTimes } from '@/types/prayerTimes.types';
 import Header from '@/components/header/header';
 import ContactFooter from '@/components/contactFooter/contactFooter';
 import { fetchStrapiData } from '@/lib/fetch-strapi-data';
 import { IGlobalContent } from '@/types/globalContent.types';
+import { getLayoutMetadata } from '@/lib/seo';
 
 export const revalidate = 300;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return getLayoutMetadata({ locale });
+}
 
 export default async function LocaleLayout({
   children,
