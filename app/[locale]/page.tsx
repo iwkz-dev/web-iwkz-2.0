@@ -13,8 +13,6 @@ import {
 import type { IPrsDonationProgressResponse } from '@/types/prsDonationProgress.types';
 import { fetchStrapiData } from '@/lib/fetch-strapi-data';
 
-export const revalidate = 300;
-
 export default async function Home({
   params,
 }: {
@@ -26,10 +24,10 @@ export default async function Home({
 
   const [pageData, donationProgress] = await Promise.all([
     fetchStrapiData(`/pages?${queryParams.toString()}`, {
-      revalidate,
+      revalidate: 300,
     }) as Promise<IPageResponse>,
     fetchStrapiData(`/prs-donation-progress?${queryParams.toString()}`, {
-      revalidate,
+      revalidate: 60, // Donation progress might change more frequently, so we can set a shorter revalidation time
     }) as Promise<IPrsDonationProgressResponse>,
   ]);
 

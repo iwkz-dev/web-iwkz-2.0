@@ -7,15 +7,13 @@ import {
 import { fetchStrapiData } from '@/lib/fetch-strapi-data';
 import { validateDonationPackages } from '@/lib/donation-utils';
 
-export const revalidate = 300;
-
 export default async function Home() {
   let data: DonationPackageData | null = null;
   let error: string | null = null;
 
   try {
     const donationRes = (await fetchStrapiData('/donation-package', {
-      revalidate,
+      revalidate: 60, // Donation packages might change more frequently, so we can set a shorter revalidation time
     })) as DonationPackageResponse | undefined;
 
     if (!donationRes?.data) {
