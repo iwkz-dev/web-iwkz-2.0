@@ -1,59 +1,29 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useParams, notFound } from 'next/navigation';
-import LoadingPage from '@/components/loadingPage/loadingPage';
+import { notFound } from 'next/navigation';
 import EventCalendar from '@/components/eventCalendar/eventCalendar';
 import { IActivityCategoryComponent, IPageResponse } from '@/types/page.types';
-import { IGlobalContent } from '@/types/globalContent.types';
-import { getTranslations } from '@/lib/translations';
+import { fetchStrapiData } from '@/lib/fetch-strapi-data';
 
-export default function KalenderKegiatanPage() {
-  const params = useParams();
-  const locale = (params.locale as string) || 'id';
+export const revalidate = 300;
+
+export default async function KalenderKegiatanPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const resolvedLocale = locale || 'id';
 
   // Only allow Indonesian locale
-  if (locale !== 'id') {
+  if (resolvedLocale !== 'id') {
     notFound();
   }
 
-  const t = getTranslations(locale);
+  const pageData = (await fetchStrapiData(`/pages?locale=${resolvedLocale}`, {
+    revalidate,
+  })) as IPageResponse | undefined;
 
-  const [initialized, setInitialized] = useState(false);
-  const [pageData, setPageData] = useState<IPageResponse | null>(null);
-  const [globalContent, setGlobalContent] = useState<IGlobalContent | null>(
-    null
-  );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [pageRes, globalRes] = await Promise.all([
-          fetch(`/api/pages?locale=${locale}`),
-          fetch(`/api/global?locale=${locale}`),
-        ]);
-
-        const [pageJson, globalJson] = await Promise.all([
-          pageRes.json(),
-          globalRes.json(),
-        ]);
-
-        setPageData(pageJson.error ? null : pageJson);
-        setGlobalContent(globalJson.error ? null : globalJson);
-        setInitialized(true);
-      } catch (err) {
-        console.error('Failed to fetch data:', err);
-      }
-    };
-
-    fetchData();
-  }, [locale]);
-
-  if (!pageData || !globalContent) {
-    if (initialized) {
-      notFound();
-    }
-    return <LoadingPage />;
+  if (!pageData || 'error' in pageData || !pageData.data?.length) {
+    notFound();
   }
 
   const eventCalendarData = pageData.data[0].content[3] as

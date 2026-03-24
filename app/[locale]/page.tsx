@@ -1,12 +1,7 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
 import { notFound } from 'next/navigation';
 
 import Hero from '@/components/hero/hero';
 import OurServices from '@/components/ourServices/ourServices';
-import LoadingPage from '@/components/loadingPage/loadingPage';
 import Timeline from '@/components/timeline/timeline';
 import PRS from '@/components/prs/prs';
 import {
@@ -16,49 +11,36 @@ import {
   IPageResponse,
 } from '@/types/page.types';
 import type { IPrsDonationProgressResponse } from '@/types/prsDonationProgress.types';
+import { fetchStrapiData } from '@/lib/fetch-strapi-data';
 
-export default function Home() {
-  const params = useParams();
-  const locale = params.locale as string;
-  const [initialized, setInitialized] = useState(false);
-  const [pageData, setPageData] = useState<IPageResponse | null>(null);
-  const [donationProgress, setDonationProgress] =
-    useState<IPrsDonationProgressResponse | null>(null);
+export const revalidate = 300;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const apiLocale = locale || 'id';
-        const queryParams = new URLSearchParams({ locale: apiLocale });
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const apiLocale = locale || 'id';
+  const queryParams = new URLSearchParams({ locale: apiLocale });
 
-        const [pageRes, donationProgressRes] = await Promise.all([
-          fetch(`/api/pages?${queryParams.toString()}`),
-          fetch(`/api/prs-donation-progress?${queryParams.toString()}`),
-        ]);
+  const [pageData, donationProgress] = await Promise.all([
+    fetchStrapiData(`/pages?${queryParams.toString()}`, {
+      revalidate,
+    }) as Promise<IPageResponse>,
+    fetchStrapiData(`/prs-donation-progress?${queryParams.toString()}`, {
+      revalidate,
+    }) as Promise<IPrsDonationProgressResponse>,
+  ]);
 
-        const [pageJson, donationProgressJson] = await Promise.all([
-          pageRes.json(),
-          donationProgressRes.json(),
-        ]);
-
-        setPageData(pageJson.error ? null : pageJson);
-        setDonationProgress(
-          donationProgressJson.error ? null : donationProgressJson
-        );
-        setInitialized(true);
-      } catch (err) {
-        console.error('Failed to fetch one or more resources:', err);
-      }
-    };
-
-    fetchData();
-  }, [locale]);
-
-  if (!pageData || !donationProgress) {
-    if (initialized) {
-      notFound();
-    }
-    return <LoadingPage />;
+  if (
+    !pageData ||
+    !donationProgress ||
+    'error' in pageData ||
+    'error' in donationProgress ||
+    !pageData.data?.length
+  ) {
+    notFound();
   }
 
   const heroContent = pageData.data[0].content.find(

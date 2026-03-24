@@ -5,6 +5,8 @@ import ContactFooter from '@/components/contactFooter/contactFooter';
 import { fetchStrapiData } from '@/lib/fetch-strapi-data';
 import { IGlobalContent } from '@/types/globalContent.types';
 
+export const revalidate = 300;
+
 export default async function LocaleLayout({
   children,
   params,
@@ -17,8 +19,12 @@ export default async function LocaleLayout({
   try {
     // Parallel data fetching for better performance
     const [prayerTimesData, globalData] = await Promise.all([
-      fetchStrapiData('/jadwalshalat') as Promise<IPrayerTimes>,
-      fetchStrapiData(`/global?locale=${locale}`) as Promise<IGlobalContent>,
+      fetchStrapiData('/jadwalshalat', {
+        revalidate,
+      }) as Promise<IPrayerTimes>,
+      fetchStrapiData(`/global?locale=${locale}`, {
+        revalidate,
+      }) as Promise<IGlobalContent>,
     ]);
 
     return (
