@@ -3,15 +3,21 @@
 import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
-import { X, Loader2, Copy, Check, ArrowRight } from 'lucide-react';
+import { X } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDonationStore } from '@/store/donation-store';
 import { usePayment } from '@/hooks/use-payment';
 import type { PaypalCheckoutItem } from '@/types/donationApi';
 import { getTranslations } from '@/lib/translations';
 import { MarkdownRenderer } from '../ui/markdownRenderer';
-import { QuantityCounter } from '../ui/quantityCounter';
 import { PaymentTabs } from '../ui/paymentTabs';
+import { formatCurrency } from '@/lib/utils';
+import { SubpackageList } from './parts/subpackageList';
+import { SingleDonatorInfoField } from './parts/singleDonatorInfoField';
+import { OpenDonationInput } from './parts/OpenDonationInput';
+import { TotalCard } from './parts/totalCard';
+import { BankTransferSection } from './parts/bankTransferSection';
+import { PaypalSection } from './parts/paypalSection';
 
 const scrollHideStyle = `
   .scrollbar-hide::-webkit-scrollbar {
@@ -22,15 +28,6 @@ const scrollHideStyle = `
     scrollbar-width: none;
   }
 `;
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount);
-}
 
 export function CheckoutDrawer() {
   const params = useParams();
@@ -71,6 +68,7 @@ export function CheckoutDrawer() {
   const totalPrice = getTotalPrice();
   const totalQuantity = getTotalQuantity();
   const { fee: paypalFee, total: paypalTotal } = calculatePaypalFee(totalPrice);
+  const singleCartItem = cartItems[0];
 
   useEffect(() => {
     if (config) {
@@ -325,93 +323,34 @@ export function CheckoutDrawer() {
 
             {/* Subpackage items */}
             {isSubpackageMode && (
-              <div className="mb-4">
-                <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-400">
-                  {t.checkoutDrawer.choosePackage}
-                </h3>
-                <div className="flex flex-col gap-3">
-                  {cartItems.map((item) => (
-                    <div
-                      key={item.uniqueCode}
-                      className="flex items-center justify-between rounded-2xl border border-gray-100 bg-gray-50/50 p-4 transition-colors hover:bg-gray-50"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-gray-800 truncate">
-                          {item.title}
-                        </p>
-                        <p className="text-xs text-emerald-600 font-medium wrap-break-word">
-                          {formatCurrency(item.price)} /{' '}
-                          {t.checkoutDrawer.perPackage}
-                        </p>
-                        {item.requireDonatorInfo && (
-                          <div className="mt-1 space-y-1">
-                            <p className="text-[10px] font-semibold uppercase tracking-wide text-amber-600">
-                              {t.checkoutDrawer.donatorInfoRequired}
-                            </p>
-                            <input
-                              type="text"
-                              value={item.donatorInfo || ''}
-                              onChange={(e) =>
-                                setDonatorInfo(item.uniqueCode, e.target.value)
-                              }
-                              placeholder={
-                                t.checkoutDrawer.donatorInfoPlaceholder
-                              }
-                              className="w-full rounded-lg border border-amber-200 bg-white px-3 py-2 text-sm focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100"
-                            />
-                          </div>
-                        )}
-                      </div>
-                      <QuantityCounter
-                        quantity={item.quantity}
-                        onQuantityChange={(qty) =>
-                          setQuantity(item.uniqueCode, qty)
-                        }
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <SubpackageList
+                items={cartItems}
+                t={t.checkoutDrawer}
+                setQuantity={setQuantity}
+                setDonatorInfo={setDonatorInfo}
+              />
+            )}
+
+            {/* Single package donor info */}
+            {!isSubpackageMode && (
+              <SingleDonatorInfoField
+                item={singleCartItem}
+                t={t.checkoutDrawer}
+                setDonatorInfo={setDonatorInfo}
+              />
             )}
 
             {/* Open donation input */}
             {isOpenDonation && (
-              <div className="mb-6">
-                <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-gray-400">
-                  {t.checkoutDrawer.donationAmount}
-                </h3>
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-bold text-gray-400">
-                    €
-                  </span>
-                  <input
-                    type="number"
-                    min="1"
-                    step="0.01"
-                    placeholder="0.00"
-                    value={customAmount || ''}
-                    onChange={(e) =>
-                      setCustomAmount(parseFloat(e.target.value) || 0)
-                    }
-                    className="w-full rounded-2xl border border-gray-200 bg-gray-50 py-4 pl-10 pr-4 text-2xl font-bold text-gray-800 outline-none transition-all focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-400/20"
-                  />
-                </div>
-              </div>
+              <OpenDonationInput
+                customAmount={customAmount}
+                setCustomAmount={setCustomAmount}
+                t={t.checkoutDrawer}
+              />
             )}
 
             {/* Total */}
-            {totalPrice > 0 && (
-              <div className="mb-3 rounded-lg bg-linear-to-r from-emerald-50 to-teal-50 p-3">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-medium text-gray-500">
-                    {t.checkoutDrawer.subtotal}
-                  </span>
-                  <span className="text-sm font-extrabold text-emerald-700 wrap-break-word">
-                    {formatCurrency(totalPrice)}
-                  </span>
-                </div>
-              </div>
-            )}
+            <TotalCard totalPrice={totalPrice} t={t.checkoutDrawer} />
 
             {/* Payment tabs */}
             <div className="mb-3">
@@ -428,138 +367,28 @@ export function CheckoutDrawer() {
 
             {/* Bank Transfer content */}
             {paymentTab === 'bank' && config && (
-              <div className="mb-4 animate-fade-in rounded-lg border border-gray-100 bg-gray-50/50 p-3">
-                <p className="mb-3 text-xs text-gray-500 wrap-break-word">
-                  {t.checkoutDrawer.bankTransferInstructionPrefix}{' '}
-                  <strong className="text-gray-800 wrap-break-word">
-                    {formatCurrency(totalPrice)}
-                  </strong>
-                  {t.checkoutDrawer.bankTransferInstructionSuffix}
-                </p>
-                {[
-                  {
-                    label: t.checkoutDrawer.ownerName,
-                    value: config.postbank.ownerName,
-                  },
-                  {
-                    label: t.checkoutDrawer.bank,
-                    value: config.postbank.bankName,
-                  },
-                  {
-                    label: t.checkoutDrawer.iban,
-                    value: config.postbank.iban,
-                  },
-                  {
-                    label: t.checkoutDrawer.bic,
-                    value: config.postbank.bic,
-                  },
-                  {
-                    label: t.checkoutDrawer.usagePurpose,
-                    value:
-                      verwendungszweck || t.checkoutDrawer.donationFallback,
-                  },
-                ].map(({ label, value }) => (
-                  <div
-                    key={label}
-                    className="mb-2 last:mb-0 flex items-center justify-between rounded-lg bg-white p-2 border border-gray-100 gap-2"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                        {label}
-                      </p>
-                      <p className="text-xs font-semibold text-gray-800 font-mono wrap-break-word">
-                        {value}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleCopy(value, label)}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 text-gray-400 transition-colors hover:bg-emerald-50 hover:text-emerald-600"
-                    >
-                      {copiedField === label ? (
-                        <Check className="h-4 w-4 text-emerald-500" />
-                      ) : (
-                        <Copy className="h-4 w-4" />
-                      )}
-                    </button>
-                  </div>
-                ))}
-              </div>
+              <BankTransferSection
+                config={config}
+                totalPrice={totalPrice}
+                verwendungszweck={verwendungszweck}
+                copiedField={copiedField}
+                onCopy={handleCopy}
+                t={t.checkoutDrawer}
+              />
             )}
 
             {/* PayPal content */}
             {paymentTab === 'paypal' && (
-              <div className="mb-4 animate-fade-in">
-                {configLoading ? (
-                  <div className="flex items-center justify-center py-4">
-                    <Loader2 className="h-5 w-5 animate-spin text-gray-300" />
-                  </div>
-                ) : config ? (
-                  <>
-                    {/* Fee breakdown */}
-                    {totalPrice > 0 && (
-                      <div className="mb-3 rounded-lg border border-gray-100 bg-gray-50/50 p-3 space-y-2">
-                        <div className="flex justify-between text-xs gap-2">
-                          <span className="text-gray-500">
-                            {t.checkoutDrawer.subtotal}
-                          </span>
-                          <span className="font-medium text-gray-700 wrap-break-word">
-                            {formatCurrency(totalPrice)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between text-xs gap-2">
-                          <span className="text-gray-500 flex-1">
-                            {t.checkoutDrawer.paypalFee}{' '}
-                            <span className="text-xs text-gray-400">
-                              ({config.paypal.percentageFee.toFixed(2)}% +{' '}
-                              {formatCurrency(config.paypal.fixFee)})
-                            </span>
-                          </span>
-                          <span className="font-medium text-amber-600">
-                            +{formatCurrency(paypalFee)}
-                          </span>
-                        </div>
-                        <div className="border-t border-gray-200 pt-1 flex justify-between items-center gap-2">
-                          <span className="font-bold text-gray-800 text-xs">
-                            {t.checkoutDrawer.total}
-                          </span>
-                          <span className="font-extrabold text-emerald-700 text-sm wrap-break-word">
-                            {formatCurrency(paypalTotal)}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Submit button */}
-                    <button
-                      type="button"
-                      onClick={handlePaypalSubmit}
-                      disabled={loading || totalPrice <= 0}
-                      className="flex w-full items-center justify-center gap-2 rounded-lg bg-linear-to-r from-emerald-500 to-teal-500 px-4 py-2 text-sm font-bold text-white shadow-md shadow-emerald-500/20 transition-all duration-200 hover:from-emerald-600 hover:to-teal-600 hover:shadow-lg hover:shadow-emerald-500/30 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
-                    >
-                      {loading ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          <span className="text-xs">
-                            {t.checkoutDrawer.processing}
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="text-xs">
-                            {t.checkoutDrawer.payWithPaypal}
-                          </span>
-                          <ArrowRight className="h-4 w-4" />
-                        </>
-                      )}
-                    </button>
-                  </>
-                ) : (
-                  <p className="text-center text-sm text-gray-400 py-4">
-                    {t.checkoutDrawer.paymentConfigUnavailable}
-                  </p>
-                )}
-              </div>
+              <PaypalSection
+                configLoading={configLoading}
+                config={config}
+                totalPrice={totalPrice}
+                paypalFee={paypalFee}
+                paypalTotal={paypalTotal}
+                loading={loading}
+                onSubmit={handlePaypalSubmit}
+                t={t.checkoutDrawer}
+              />
             )}
           </div>
         </div>

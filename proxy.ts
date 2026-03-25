@@ -26,8 +26,15 @@ export function proxy(request: NextRequest) {
   }
 
   // PayPal callbacks return to root paths configured in PayPal settings.
+  // Redirect them to the localized donation page and keep query params.
   if (pathname === '/success' || pathname === '/cancel') {
-    return NextResponse.next();
+    const url = request.nextUrl.clone();
+    url.pathname = `/${locale}/donation`;
+    url.searchParams.set(
+      'paypal_status',
+      pathname === '/success' ? 'success' : 'cancel'
+    );
+    return NextResponse.redirect(url);
   }
 
   // Check if pathname already has a locale
