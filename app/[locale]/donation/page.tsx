@@ -1,5 +1,6 @@
 import { DonationList } from '@/components/donationList/donationList';
 import { CheckoutDrawer } from '@/components/checkoutDrawer/checkoutDrawer';
+import { PaypalReturnToast } from '@/components/paypalReturnToast/paypalReturnToast';
 import {
   DonationPackageData,
   DonationPackageResponse,
@@ -42,6 +43,7 @@ export default async function Home() {
 
   return (
     <>
+      <PaypalReturnToast />
       <DonationList donationData={data} />
       <CheckoutDrawer />
     </>

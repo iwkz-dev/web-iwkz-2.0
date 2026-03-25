@@ -80,6 +80,12 @@ export const translations = {
       processing: 'Sedang diproses...',
       payWithPaypal: 'Bayar dengan PayPal',
       paymentConfigUnavailable: 'Konfigurasi pembayaran tidak tersedia',
+      paypalReturnSuccess: 'Donasi Anda berhasil dikonfirmasi.',
+      paypalReturnCancelled: 'Pembayaran dibatalkan.',
+      paypalReturnVerificationError: 'Konfirmasi pembayaran belum berhasil.',
+      islamicGratitude: 'Jazakallahu khayran. Semoga Allah menerima amal Anda.',
+      contactSupportMessage:
+        'Jika saldo terpotong namun status belum masuk, silakan hubungi kami.',
     },
     donationCard: {
       choices: 'Pilihan',
@@ -169,6 +175,13 @@ export const translations = {
       processing: 'Wird verarbeitet...',
       payWithPaypal: 'Mit PayPal bezahlen',
       paymentConfigUnavailable: 'Zahlungskonfiguration nicht verfügbar',
+      paypalReturnSuccess: 'Ihre Spende wurde erfolgreich bestätigt.',
+      paypalReturnCancelled: 'Die Zahlung wurde abgebrochen.',
+      paypalReturnVerificationError:
+        'Die Zahlungsbestätigung konnte noch nicht abgeschlossen werden.',
+      islamicGratitude: 'Jazakallahu khayran. Möge Allah Ihre Spende annehmen.',
+      contactSupportMessage:
+        'Falls bereits belastet wurde, aber kein Status sichtbar ist, kontaktieren Sie uns bitte.',
     },
     donationCard: {
       choices: 'Optionen',
