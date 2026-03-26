@@ -3,14 +3,13 @@
 import { JSX } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa';
 
 import { IFooter } from '@/types/globalContent.types';
 import FadeInOnScroll from '@/components/ui/fadeInScroll';
-import { getTranslations } from '@/lib/translations';
 
 interface IContactFooterProps {
   contactFooterContent: IFooter;
@@ -19,10 +18,7 @@ interface IContactFooterProps {
 export default function ContactFooter({
   contactFooterContent,
 }: IContactFooterProps) {
-  const params = useParams();
-  const locale = (params.locale as string) || 'id';
-
-  const t = getTranslations(locale);
+  const t = useTranslations('contactFooter');
 
   const { description, social_media_links, copyright } = contactFooterContent;
 
@@ -49,22 +45,22 @@ export default function ContactFooter({
     >
       <FadeInOnScroll>
         <div className="max-w-6xl mx-auto text-center space-y-4 mb-12">
-          <h2 className="text-4xl">{t.contactFooter.heading}</h2>
+          <h2 className="text-4xl">{t('heading')}</h2>
         </div>
 
         {/* Contact Info */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl w-full mx-auto text-center mb-6">
           <div className="space-y-2 flex flex-col items-center">
             <FaMapMarkerAlt className="text-2xl mb-3" />
-            <h3 className="text-lg font-semibold">{t.contactFooter.address}</h3>
+            <h3 className="text-lg font-semibold">{t('address')}</h3>
             <p className="text-sm text-gray-600">{orgName}</p>
             <p className="text-sm text-gray-600">{address}</p>
           </div>
 
           <div className="space-y-2 flex flex-col items-center">
             <FaEnvelope className="text-2xl mb-3" />
-            <h3 className="text-lg font-semibold">{t.contactFooter.email}</h3>
-            <p className="text-sm text-gray-600">{t.contactFooter.emailDesc}</p>
+            <h3 className="text-lg font-semibold">{t('email')}</h3>
+            <p className="text-sm text-gray-600">{t('emailDesc')}</p>
             <Link
               href={`mailto:${email}`}
               className="text-sm text-blue-600 underline"
@@ -75,9 +71,7 @@ export default function ContactFooter({
 
           <div className="space-y-2 flex flex-col items-center">
             <FiExternalLink className="text-2xl mb-3" />
-            <h3 className="text-lg font-semibold">
-              {t.contactFooter.socialMedia}
-            </h3>
+            <h3 className="text-lg font-semibold">{t('socialMedia')}</h3>
             {social_media_links.map((link) => (
               <Link
                 key={link.id}

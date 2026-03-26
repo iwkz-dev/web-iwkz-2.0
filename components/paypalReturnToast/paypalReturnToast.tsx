@@ -1,22 +1,17 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { capturePaypalPayment } from '@/lib/donation-api';
-import { getTranslations } from '@/lib/translations';
 
 const PAYPAL_QUERY_KEYS = ['paypal_status', 'token', 'PayerID', 'ba_token'];
 
 export function PaypalReturnToast() {
-  const params = useParams();
-  const locale = params.locale as string;
-  const t = getTranslations(locale);
+  const tCheckout = useTranslations('checkoutDrawer');
+  const tCancel = useTranslations('donationCancelPage');
+  const tSuccess = useTranslations('donationSuccessPage');
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -48,12 +43,12 @@ export function PaypalReturnToast() {
 
     const handleReturn = async () => {
       if (status === 'cancel') {
-        toast.error(t.donationCancelPage.title, {
+        toast.error(tCancel('title'), {
           description: (
             <p className="text-sm text-gray-500 leading-relaxed">
-              {t.donationCancelPage.descriptionLine1}
+              {tCancel('descriptionLine1')}
               <br />
-              {t.donationCancelPage.descriptionLine2}
+              {tCancel('descriptionLine2')}
             </p>
           ),
         });
@@ -62,8 +57,8 @@ export function PaypalReturnToast() {
       }
 
       if (!token) {
-        toast.error(t.checkoutDrawer.paypalReturnVerificationError, {
-          description: t.checkoutDrawer.contactSupportMessage,
+        toast.error(tCheckout('paypalReturnVerificationError'), {
+          description: tCheckout('contactSupportMessage'),
         });
         clearPaypalParams();
         return;
@@ -72,7 +67,7 @@ export function PaypalReturnToast() {
       try {
         const res = await capturePaypalPayment({ token });
         if (res.ok) {
-          toast.success(t.checkoutDrawer.paypalReturnSuccess, {
+          toast.success(tCheckout('paypalReturnSuccess'), {
             description: (
               <div>
                 <p className="mt-1 text-sm font-medium text-emerald-700">
@@ -82,19 +77,19 @@ export function PaypalReturnToast() {
                   Jazāk Allāhu Khayran
                 </p>
                 <p className="mt-1 text-xs text-emerald-500">
-                  {t.donationSuccessPage.successDescriptionLine2}
+                  {tSuccess('successDescriptionLine2')}
                 </p>
               </div>
             ),
           });
         } else {
-          toast.error(t.checkoutDrawer.paypalReturnVerificationError, {
-            description: t.checkoutDrawer.contactSupportMessage,
+          toast.error(tCheckout('paypalReturnVerificationError'), {
+            description: tCheckout('contactSupportMessage'),
           });
         }
       } catch {
-        toast.error(t.checkoutDrawer.paypalReturnVerificationError, {
-          description: t.checkoutDrawer.contactSupportMessage,
+        toast.error(tCheckout('paypalReturnVerificationError'), {
+          description: tCheckout('contactSupportMessage'),
         });
       }
 
@@ -102,7 +97,7 @@ export function PaypalReturnToast() {
     };
 
     handleReturn();
-  }, [pathname, router, searchParams, t]);
+  }, [pathname, router, searchParams, tCancel, tCheckout, tSuccess]);
 
   return null;
 }

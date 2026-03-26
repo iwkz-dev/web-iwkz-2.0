@@ -1,14 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { getTranslations } from '@/lib/translations';
+import { useTranslations } from 'next-intl';
 import { loadRuntimeConfig } from '@/lib/runtime-config';
 
 export default function JadwalShalatPage() {
-  const params = useParams();
-  const locale = (params.locale as string) || 'id';
-  const t = getTranslations(locale);
+  const t = useTranslations('jadwalShalatPage');
   const [month, setMonth] = useState<string>(new Date().getMonth() + 1 + '');
   const [year, setYear] = useState<string>(new Date().getFullYear() + '');
   const [loading, setLoading] = useState(false);
@@ -73,7 +70,7 @@ export default function JadwalShalatPage() {
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Failed to generate PDF:', response.status, errorText);
-        alert(t.jadwalShalatPage.error);
+        alert(t('error'));
         setLoading(false);
         return;
       }
@@ -89,7 +86,7 @@ export default function JadwalShalatPage() {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error(error);
-      alert(t.jadwalShalatPage.error);
+      alert(t('error'));
     } finally {
       setLoading(false);
     }
@@ -99,16 +96,14 @@ export default function JadwalShalatPage() {
     <main className="grow pt-32 pb-16 px-4  flex flex-col items-center">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 space-y-6">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-gray-800">
-            {t.jadwalShalatPage.title}
-          </h1>
-          <p className="text-gray-500">{t.jadwalShalatPage.description}</p>
+          <h1 className="text-3xl font-bold text-gray-800">{t('title')}</h1>
+          <p className="text-gray-500">{t('description')}</p>
         </div>
 
         <div className="space-y-4">
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
-              {t.jadwalShalatPage.month}
+              {t('month')}
             </label>
             <select
               value={month}
@@ -125,7 +120,7 @@ export default function JadwalShalatPage() {
 
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
-              {t.jadwalShalatPage.year}
+              {t('year')}
             </label>
             <select
               value={year}
@@ -172,10 +167,10 @@ export default function JadwalShalatPage() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                {t.jadwalShalatPage.loading}
+                {t('loading')}
               </span>
             ) : (
-              t.jadwalShalatPage.generate
+              t('generate')
             )}
           </button>
 
@@ -193,7 +188,7 @@ export default function JadwalShalatPage() {
                 rel="noopener noreferrer"
                 className="w-full block text-center py-3 px-4 rounded-xl text-teal-700 bg-teal-50 border border-teal-200 font-medium hover:bg-teal-100 transition-all transform hover:scale-[1.02] active:scale-[0.98]"
               >
-                {t.jadwalShalatPage.downloadRamadan}
+                {t('downloadRamadan')}
               </a>
             </>
           )}

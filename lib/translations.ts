@@ -191,13 +191,3 @@ export const translations = {
     },
   },
 } as const;
-
-export type LocaleKey = keyof typeof translations;
-
-/**
- * Get translations for a specific locale
- * Falls back to Indonesian if locale not found
- */
-export function getTranslations(locale: string) {
-  return translations[locale as LocaleKey] || translations.id;
-}

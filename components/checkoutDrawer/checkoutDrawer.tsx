@@ -2,13 +2,13 @@
 
 import { useEffect, useRef } from 'react';
 import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { toast } from 'sonner';
 import { useDonationStore } from '@/store/donation-store';
 import { usePayment } from '@/hooks/use-payment';
 import type { PaypalCheckoutItem } from '@/types/donationApi';
-import { getTranslations } from '@/lib/translations';
+import type { CheckoutDrawerText } from '@/types/checkoutDrawer.types';
 import { MarkdownRenderer } from '../ui/markdownRenderer';
 import { PaymentTabs } from '../ui/paymentTabs';
 import { formatCurrency } from '@/lib/utils';
@@ -30,9 +30,38 @@ const scrollHideStyle = `
 `;
 
 export function CheckoutDrawer() {
-  const params = useParams();
-  const locale = params.locale as string;
-  const t = getTranslations(locale);
+  const tCheckout = useTranslations('checkoutDrawer');
+  const t: CheckoutDrawerText = {
+    copiedToClipboard: tCheckout('copiedToClipboard'),
+    copyFailed: tCheckout('copyFailed'),
+    selectItemOrAmount: tCheckout('selectItemOrAmount'),
+    fillRequiredDonatorInfo: tCheckout('fillRequiredDonatorInfo'),
+    choosePackage: tCheckout('choosePackage'),
+    perPackage: tCheckout('perPackage'),
+    donatorInfoRequired: tCheckout('donatorInfoRequired'),
+    donatorInfoPlaceholder: tCheckout('donatorInfoPlaceholder'),
+    donationAmount: tCheckout('donationAmount'),
+    subtotal: tCheckout('subtotal'),
+    paymentMethod: tCheckout('paymentMethod'),
+    bankTransferInstructionPrefix: tCheckout('bankTransferInstructionPrefix'),
+    bankTransferInstructionSuffix: tCheckout('bankTransferInstructionSuffix'),
+    ownerName: tCheckout('ownerName'),
+    bank: tCheckout('bank'),
+    iban: tCheckout('iban'),
+    bic: tCheckout('bic'),
+    usagePurpose: tCheckout('usagePurpose'),
+    donationFallback: tCheckout('donationFallback'),
+    paypalFee: tCheckout('paypalFee'),
+    total: tCheckout('total'),
+    processing: tCheckout('processing'),
+    payWithPaypal: tCheckout('payWithPaypal'),
+    paymentConfigUnavailable: tCheckout('paymentConfigUnavailable'),
+    paypalReturnSuccess: tCheckout('paypalReturnSuccess'),
+    paypalReturnCancelled: tCheckout('paypalReturnCancelled'),
+    paypalReturnVerificationError: tCheckout('paypalReturnVerificationError'),
+    islamicGratitude: tCheckout('islamicGratitude'),
+    contactSupportMessage: tCheckout('contactSupportMessage'),
+  };
 
   const {
     selectedPackage,
@@ -129,16 +158,16 @@ export function CheckoutDrawer() {
     try {
       await navigator.clipboard.writeText(text);
       setCopiedField(field);
-      toast.success(t.checkoutDrawer.copiedToClipboard);
+      toast.success(t.copiedToClipboard);
       setTimeout(() => setCopiedField(null), 2000);
     } catch {
-      toast.error(t.checkoutDrawer.copyFailed);
+      toast.error(t.copyFailed);
     }
   };
 
   const handlePaypalSubmit = async () => {
     if (totalPrice <= 0) {
-      toast.error(t.checkoutDrawer.selectItemOrAmount);
+      toast.error(t.selectItemOrAmount);
       return;
     }
 
@@ -157,7 +186,7 @@ export function CheckoutDrawer() {
         })();
 
     if (missingInfo) {
-      toast.error(t.checkoutDrawer.fillRequiredDonatorInfo);
+      toast.error(t.fillRequiredDonatorInfo);
       return;
     }
 
@@ -325,7 +354,7 @@ export function CheckoutDrawer() {
             {isSubpackageMode && (
               <SubpackageList
                 items={cartItems}
-                t={t.checkoutDrawer}
+                t={t}
                 setQuantity={setQuantity}
                 setDonatorInfo={setDonatorInfo}
               />
@@ -335,7 +364,7 @@ export function CheckoutDrawer() {
             {!isSubpackageMode && (
               <SingleDonatorInfoField
                 item={singleCartItem}
-                t={t.checkoutDrawer}
+                t={t}
                 setDonatorInfo={setDonatorInfo}
               />
             )}
@@ -345,17 +374,17 @@ export function CheckoutDrawer() {
               <OpenDonationInput
                 customAmount={customAmount}
                 setCustomAmount={setCustomAmount}
-                t={t.checkoutDrawer}
+                t={t}
               />
             )}
 
             {/* Total */}
-            <TotalCard totalPrice={totalPrice} t={t.checkoutDrawer} />
+            <TotalCard totalPrice={totalPrice} t={t} />
 
             {/* Payment tabs */}
             <div className="mb-3">
               <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-400">
-                {t.checkoutDrawer.paymentMethod}
+                {t.paymentMethod}
               </h3>
               <PaymentTabs
                 activeTab={paymentTab}
@@ -373,7 +402,7 @@ export function CheckoutDrawer() {
                 verwendungszweck={verwendungszweck}
                 copiedField={copiedField}
                 onCopy={handleCopy}
-                t={t.checkoutDrawer}
+                t={t}
               />
             )}
 
@@ -387,7 +416,7 @@ export function CheckoutDrawer() {
                 paypalTotal={paypalTotal}
                 loading={loading}
                 onSubmit={handlePaypalSubmit}
-                t={t.checkoutDrawer}
+                t={t}
               />
             )}
           </div>
