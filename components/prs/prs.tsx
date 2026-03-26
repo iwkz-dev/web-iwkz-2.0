@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
@@ -9,7 +10,6 @@ import { FaHeart } from 'react-icons/fa';
 
 import { Button } from '@/components/ui/button';
 import FadeInOnScroll from '@/components/ui/fadeInScroll';
-import { getTranslations } from '@/lib/translations';
 import { loadRuntimeConfig } from '@/lib/runtime-config';
 import type { IPrsDonationProgress } from '@/types/prsDonationProgress.types';
 
@@ -21,7 +21,7 @@ export default function PRS({
   const router = useRouter();
   const params = useParams();
   const locale = params.locale as string;
-  const t = getTranslations(locale);
+  const t = useTranslations('prs');
 
   const headline = donationProgress?.headline || '';
   const subHeadline = donationProgress?.subHeadline || '';
@@ -90,7 +90,7 @@ export default function PRS({
             >
               <div className="flex justify-between text-sm mb-2">
                 <span className="font-semibold text-gray-800">
-                  {t.prs.donationProgress}
+                  {t('donationProgress')}
                 </span>
                 <span className="text-gray-600">
                   €
@@ -115,7 +115,7 @@ export default function PRS({
 
               <p className="mt-2 text-xs text-gray-500">
                 <CountUp end={percentage} duration={2} enableScrollSpy />
-                {'% ' + t.prs.funded}
+                {'% ' + t('funded')}
               </p>
             </motion.div>
 
@@ -149,7 +149,7 @@ export default function PRS({
                   >
                     <FaHeart className="text-red-500" />
                   </motion.div>
-                  {t.prs.donateNow}
+                  {t('donateNow')}
                 </Button>
               </form>
               <Button
@@ -157,7 +157,7 @@ export default function PRS({
                 className="text-black border border-gray-400"
                 onClick={() => router.push(`/${locale}/donation`)}
               >
-                {t.prs.viewOtherDonations}
+                {t('viewOtherDonations')}
               </Button>
             </div>
           </motion.div>
@@ -171,7 +171,7 @@ export default function PRS({
           >
             <Image
               src={donationProgress?.image?.url || '/images/hero-bg.webp'}
-              alt={t.prs.imageAlt}
+              alt={t('imageAlt')}
               fill
               className="object-fit"
               priority
