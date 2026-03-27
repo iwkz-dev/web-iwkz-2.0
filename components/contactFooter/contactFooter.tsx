@@ -86,17 +86,7 @@ export default function ContactFooter({
         </div>
 
         {/* Footer Copyright */}
-        <footer className="border-t border-gray-200 pt-10 text-center space-y-6 w-full">
-          <div className="relative w-8 h-8 mx-auto">
-            <Image
-              src="/iwkz-logo.svg"
-              alt="IWKZ Logo"
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
-
+        <footer className="border-t border-gray-200 pt-20 text-center space-y-6 w-full">
           <div className="text-sm text-gray-500">{copyright}</div>
         </footer>
       </FadeInOnScroll>
