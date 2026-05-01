@@ -51,6 +51,38 @@ export default function Header({ headerContent }: IHeaderContentProps) {
     };
   }, [menuOpen]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.location.hash !== '#prs') return;
+
+    const scrollToPrs = () => {
+      const prsSection = document.getElementById('prs');
+      if (!prsSection) return false;
+
+      // Keep section title visible below the fixed header.
+      const top = prsSection.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+      return true;
+    };
+
+    if (scrollToPrs()) return;
+
+    const observer = new MutationObserver(() => {
+      if (scrollToPrs()) {
+        observer.disconnect();
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [pathname]);
+
   const isMainUrl =
     pathname === '/' ||
     pathname === localePrefix ||
