@@ -22,6 +22,17 @@ export default function DesktopNav({
   currentLocale,
   onLocaleChange,
 }: IDesktopNavProps) {
+  const handlePrsClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    const prsSection = document.getElementById('prs');
+    if (!prsSection) return;
+
+    event.preventDefault();
+    window.history.replaceState(null, '', `${window.location.pathname}#prs`);
+
+    const top = prsSection.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+  };
+
   return (
     <nav
       className="hidden md:flex items-center gap-1 text-sm font-medium"
@@ -29,11 +40,18 @@ export default function DesktopNav({
     >
       {navbarItems.map((item) => {
         if (item.text === 'PRS') {
+          const prsClassName = isTransparent
+            ? 'ml-2 px-3 py-1.5 rounded-md bg-emerald-100/15 text-emerald-50 hover:bg-emerald-100/25'
+            : isLight
+              ? 'ml-2 px-3 py-1.5 rounded-md bg-emerald-50 text-emerald-800 hover:bg-emerald-100/80'
+              : 'ml-2 px-3 py-1.5 rounded-md bg-emerald-100/10 text-emerald-100 hover:bg-emerald-100/20';
+
           return (
             <Link
               key={item.id}
-              href={`${localePrefix}/${item.url}`}
-              className="ml-2 px-4 py-1.5 rounded-full bg-green-500 text-white text-sm font-semibold hover:bg-green-600 active:bg-green-700 transition-colors duration-150 shadow-sm"
+              href={`${localePrefix}#prs`}
+              onClick={handlePrsClick}
+              className={`${prsClassName} text-sm font-medium transition-colors duration-150`}
             >
               {item.text}
             </Link>
