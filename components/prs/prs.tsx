@@ -1,32 +1,29 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import CountUp from 'react-countup';
-import { FaHeart } from 'react-icons/fa';
 
-import { Button } from '@/components/ui/button';
 import FadeInOnScroll from '@/components/ui/fadeInScroll';
 import { loadRuntimeConfig } from '@/lib/runtime-config';
 import type { IPrsDonationProgress } from '@/types/prsDonationProgress.types';
+import DonationProgress from './_parts/DonationProgress';
+import DonationActions from './_parts/DonationActions';
+import PrsImage from './_parts/PrsImage';
 
 export default function PRS({
   donationProgress,
 }: {
   donationProgress: IPrsDonationProgress;
 }) {
-  const router = useRouter();
   const params = useParams();
   const locale = params.locale as string;
-  const t = useTranslations('prs');
 
   const headline = donationProgress?.headline || '';
   const subHeadline = donationProgress?.subHeadline || '';
   const target = donationProgress?.targetDonation || 0;
   const funded = donationProgress?.currentDonation || 0;
+  const payments = donationProgress?.Payments || [];
   const percentage = target ? Math.round((funded / target) * 100) : 0;
   const vzw = donationProgress?.VZW || 'prs';
   const [paypalHostId, setPaypalHostId] = useState('');
@@ -82,101 +79,25 @@ export default function PRS({
             <h2 className="text-4xl">{headline}</h2>
             <p className="max-w-2xl mx-auto">{subHeadline}</p>
 
-            <motion.div
-              className="mt-8"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              <div className="flex justify-between text-sm mb-2">
-                <span className="font-semibold text-gray-800">
-                  {t('donationProgress')}
-                </span>
-                <span className="text-gray-600">
-                  €
-                  <CountUp
-                    end={funded}
-                    duration={2}
-                    separator=","
-                    enableScrollSpy
-                  />{' '}
-                  / €{target.toLocaleString()}
-                </span>
-              </div>
+            <DonationProgress
+              funded={funded}
+              target={target}
+              percentage={percentage}
+            />
 
-              <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-                <motion.div
-                  className="bg-green-500 h-4"
-                  initial={{ width: '0%' }}
-                  whileInView={{ width: `${percentage}%` }}
-                  transition={{ duration: 2, ease: 'easeInOut' }}
-                ></motion.div>
-              </div>
-
-              <p className="mt-2 text-xs text-gray-500">
-                <CountUp end={percentage} duration={2} enableScrollSpy />
-                {'% ' + t('funded')}
-              </p>
-            </motion.div>
-
-            <div className="flex flex-wrap gap-4 mt-6">
-              <form action={paypalUrl} method="post" target="_blank">
-                {isDevelopment && (
-                  <>
-                    <input type="hidden" name="cmd" value="_s-xclick" />
-                    <input
-                      type="hidden"
-                      name="hosted_button_id"
-                      value={paypalHostId}
-                    />
-                    <input type="hidden" name="item_name" value={vzw} />
-                  </>
-                )}
-                <Button
-                  type="submit"
-                  name="submit"
-                  variant="outline"
-                  className="flex items-center gap-2 "
-                >
-                  <motion.div
-                    animate={{ scale: [1, 1.3, 1] }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                      repeatType: 'loop',
-                      ease: 'easeInOut',
-                    }}
-                  >
-                    <FaHeart className="text-red-500" />
-                  </motion.div>
-                  {t('donateNow')}
-                </Button>
-              </form>
-              <Button
-                variant="ghost"
-                className="text-black border border-gray-400"
-                onClick={() => router.push(`/${locale}/donation`)}
-              >
-                {t('viewOtherDonations')}
-              </Button>
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="relative w-full max-w-64 sm:max-w-72 md:max-w-80 lg:max-w-96 aspect-square mx-auto"
-            variants={{
-              hidden: { opacity: 0, y: 50 },
-              visible: { opacity: 1, y: 0 },
-            }}
-          >
-            <Image
-              src={donationProgress?.image?.url || '/images/hero-bg.webp'}
-              alt={t('imageAlt')}
-              fill
-              className="object-fit"
-              priority
+            <DonationActions
+              paypalUrl={paypalUrl}
+              paypalHostId={paypalHostId}
+              isDevelopment={isDevelopment}
+              vzw={vzw}
+              locale={locale}
+              payments={payments}
             />
           </motion.div>
+
+          <PrsImage
+            imageUrl={donationProgress?.image?.url || '/images/hero-bg.webp'}
+          />
         </motion.div>
       </FadeInOnScroll>
     </section>

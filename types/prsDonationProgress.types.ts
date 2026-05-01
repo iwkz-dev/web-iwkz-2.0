@@ -55,6 +55,30 @@ export interface IPrsDonationProgressImage {
   related: IPrsDonationProgressImageRelated[];
 }
 
+export interface IPaymentInfoTextNode {
+  type: 'text';
+  text: string;
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+  strikethrough?: boolean;
+  code?: boolean;
+}
+
+export interface IPaymentInfoParagraphNode {
+  type: 'paragraph';
+  children: IPaymentInfoTextNode[];
+}
+
+export type IPaymentInfoNode = IPaymentInfoParagraphNode;
+
+export interface IPayment {
+  id: number;
+  paymentType: string;
+  description: string;
+  paymentInfo: IPaymentInfoNode[];
+}
+
 export interface IPrsDonationProgress {
   id: number;
   documentId: string;
@@ -69,6 +93,7 @@ export interface IPrsDonationProgress {
   link: unknown[]; // Add later if the structure of link is known
   image: IPrsDonationProgressImage | null;
   VZW?: string;
+  Payments?: IPayment[];
 }
 
 export interface IPrsDonationProgressResponse {

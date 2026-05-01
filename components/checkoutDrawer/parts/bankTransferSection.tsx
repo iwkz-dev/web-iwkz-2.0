@@ -1,6 +1,6 @@
-import { Check, Copy } from 'lucide-react';
 import type { PaymentConfigData } from '@/types/donationApi';
 import { formatCurrency } from '@/lib/utils';
+import { LabelValueCopyRow } from '@/components/ui/labelValueCopyRow';
 import type { CheckoutDrawerText } from '@/types/checkoutDrawer.types';
 
 interface BankTransferSectionProps {
@@ -51,30 +51,13 @@ export function BankTransferSection({
           value: verwendungszweck || t.donationFallback,
         },
       ].map(({ label, value }) => (
-        <div
+        <LabelValueCopyRow
           key={label}
-          className="mb-2 last:mb-0 flex items-center justify-between rounded-lg bg-white p-2 border border-gray-100 gap-2"
-        >
-          <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
-              {label}
-            </p>
-            <p className="text-xs font-semibold text-gray-800 font-mono wrap-break-word">
-              {value}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => onCopy(value, label)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 text-gray-400 transition-colors hover:bg-emerald-50 hover:text-emerald-600"
-          >
-            {copiedField === label ? (
-              <Check className="h-4 w-4 text-emerald-500" />
-            ) : (
-              <Copy className="h-4 w-4" />
-            )}
-          </button>
-        </div>
+          label={label}
+          value={value}
+          isCopied={copiedField === label}
+          onCopy={() => onCopy(value, label)}
+        />
       ))}
     </div>
   );
