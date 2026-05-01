@@ -60,7 +60,10 @@ export default function PRS({
   }, []);
 
   return (
-    <section className="relative min-h-dvh bg-pink-50 font-questrial px-4 py-20 sm:px-6 lg:px-8 md:py-24 flex flex-col items-center justify-center">
+    <section
+      id="prs"
+      className="relative min-h-dvh bg-pink-50 font-questrial px-4 py-20 sm:px-6 lg:px-8 md:py-24 flex flex-col items-center justify-center"
+    >
       <FadeInOnScroll>
         <motion.div
           className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-center"
