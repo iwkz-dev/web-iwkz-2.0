@@ -1,10 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
-import { FiMenu, FiX } from 'react-icons/fi';
 
 import { INavbar } from '@/types/globalContent.types';
 import {
@@ -13,6 +10,11 @@ import {
   getAvailableLocales,
 } from '@/lib/locales';
 import { usePathnameWithoutLocale } from '@/hooks/use-pathname-without-locale';
+
+import HeaderLogo from './_parts/header-logo';
+import DesktopNav from './_parts/desktop-nav';
+import MobileMenuButton from './_parts/mobile-menu-button';
+import MobileMenu from './_parts/mobile-menu';
 
 interface IHeaderContentProps {
   headerContent: INavbar;
@@ -25,172 +27,80 @@ export default function Header({ headerContent }: IHeaderContentProps) {
   const pathname = usePathname();
   const pathnameWithoutLocale = usePathnameWithoutLocale();
 
-  // Detect current locale from pathname
   const currentLocale = detectLocaleFromPathname(pathname);
   const localePrefix = getLocalePrefix(currentLocale);
   const navbarItems = headerContent.left_navbar_items;
+  const availableLocales = getAvailableLocales();
 
   const handleLocaleChange = (newLocale: string) => {
-    // Save locale preference to cookie
-    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`; // 1 year
-
-    // Navigate to the new locale path
-    const newPath = `/${newLocale}/${pathnameWithoutLocale}`;
-    router.push(newPath);
+    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
+    router.push(`/${newLocale}/${pathnameWithoutLocale}`);
   };
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-
+    const handleScroll = () => setScrolled(window.scrollY > 10);
     handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
+
   const isMainUrl =
     pathname === '/' ||
     pathname === localePrefix ||
     pathname === `${localePrefix}/`;
-  const isNotMainUrl = !isMainUrl;
-
-  const renderNavLink = (
-    item: INavbar['left_navbar_items'][0],
-    mode: 'desktop' | 'mobile'
-  ) => {
-    const baseClass = 'border px-3 py-1';
-    const desktopClass = scrolled
-      ? 'border-gray-300 hover:bg-gray-100'
-      : 'border-white hover:bg-white hover:text-black';
-    const mobileClass = 'border-gray-800'; // consistent dark border, no hover needed
-
-    const handleMobileClick = () => {
-      if (mode === 'mobile') {
-        setMenuOpen(false);
-      }
-    };
-
-    if (item.text === 'PRS') {
-      return (
-        <Link
-          key={item.id}
-          href={`${localePrefix}/${item.url}`}
-          className={`${baseClass} ${mode === 'desktop' ? desktopClass : mobileClass}`}
-          onClick={handleMobileClick}
-        >
-          {item.text}
-        </Link>
-      );
-    }
-
-    let href = `${item.url}`;
-
-    return (
-      <Link
-        key={item.id}
-        href={href}
-        className="block"
-        onClick={handleMobileClick}
-      >
-        {item.text}
-      </Link>
-    );
-  };
+  const isTransparent = !scrolled && !menuOpen && isMainUrl;
+  const isLight = scrolled || menuOpen;
 
   return (
     <header
       className={`fixed w-full top-0 z-50 transition-all duration-300 ${
-        scrolled || menuOpen
-          ? 'bg-white text-gray-800 shadow'
-          : isNotMainUrl
-            ? 'bg-gray-900 text-white shadow-md'
-            : 'bg-transparent text-white'
+        isLight
+          ? 'bg-white/90 backdrop-blur-md text-gray-800 shadow-sm border-b border-gray-100'
+          : isMainUrl
+            ? 'bg-transparent text-white'
+            : 'bg-gray-900/95 backdrop-blur-md text-white border-b border-white/10'
       }`}
     >
       <div
         className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all duration-300 ${
-          scrolled || menuOpen ? 'py-4' : 'py-6'
+          scrolled ? 'py-3' : 'py-5'
         }`}
       >
-        <Link href={localePrefix} className="flex items-center gap-2">
-          {headerContent.logo.image?.url && (
-            <div className="relative w-8 h-8">
-              <Image
-                src={headerContent.logo.image.url}
-                alt={headerContent.logo.image.alternativeText || 'IWKZ logo'}
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-          )}
-          <span className="text-xl font-semibold tracking-tight">
-            {headerContent.logo.iwkz || 'IWKZ e.V.'}
-          </span>
-        </Link>
+        <HeaderLogo logo={headerContent.logo} localePrefix={localePrefix} />
 
-        <nav
-          className="hidden md:flex items-center gap-6 text-sm font-medium"
-          aria-label="Main Navigation"
-        >
-          {navbarItems.map((item) => renderNavLink(item, 'desktop'))}
+        <DesktopNav
+          navbarItems={navbarItems}
+          localePrefix={localePrefix}
+          isTransparent={isTransparent}
+          isLight={isLight}
+          availableLocales={availableLocales}
+          currentLocale={currentLocale}
+          onLocaleChange={handleLocaleChange}
+        />
 
-          {/* Language Dropdown */}
-          <select
-            value={currentLocale}
-            onChange={(e) => handleLocaleChange(e.target.value)}
-            className={`border px-3 py-1 rounded cursor-pointer ${
-              scrolled
-                ? 'border-gray-300 bg-white text-gray-800'
-                : 'border-white bg-transparent text-white'
-            }`}
-            style={{
-              color: scrolled ? undefined : 'white',
-            }}
-          >
-            {getAvailableLocales().map(([code, { flag, label }]) => (
-              <option key={code} value={code} style={{ color: 'black' }}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </nav>
-
-        <button
-          className="md:hidden text-2xl"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          {menuOpen ? <FiX /> : <FiMenu />}
-        </button>
+        <MobileMenuButton
+          menuOpen={menuOpen}
+          isLight={isLight}
+          onToggle={() => setMenuOpen((prev) => !prev)}
+        />
       </div>
 
-      {/* Mobile menu */}
-      <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          menuOpen ? 'max-h-60 opacity-100 py-4' : 'max-h-0 opacity-0 py-0'
-        } bg-white text-gray-800 px-4 border-t border-gray-200`}
-      >
-        <div className="space-y-3 text-sm font-medium">
-          {navbarItems.map((item) => renderNavLink(item, 'mobile'))}
-
-          {/* Mobile Language Dropdown */}
-          <select
-            value={currentLocale}
-            onChange={(e) => {
-              handleLocaleChange(e.target.value);
-              setMenuOpen(false);
-            }}
-            className="w-auto border border-gray-800 px-3 py-1 rounded cursor-pointer bg-white text-gray-800"
-          >
-            {getAvailableLocales().map(([code, { label }]) => (
-              <option key={code} value={code} style={{ color: 'black' }}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
+      <MobileMenu
+        menuOpen={menuOpen}
+        navbarItems={navbarItems}
+        localePrefix={localePrefix}
+        availableLocales={availableLocales}
+        currentLocale={currentLocale}
+        onLocaleChange={handleLocaleChange}
+        onClose={() => setMenuOpen(false)}
+      />
     </header>
   );
 }

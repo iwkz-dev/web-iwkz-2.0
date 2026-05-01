@@ -108,11 +108,11 @@ export default function JadwalShalatPage() {
             <select
               value={month}
               onChange={(e) => setMonth(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+              className="w-full px-4 py-2.5 bg-gray-100 border-0 rounded-xl text-gray-800 font-medium text-sm cursor-pointer focus:ring-2 focus:ring-green-500 outline-none transition-all appearance-none"
             >
               {months.map((m) => (
                 <option key={m.value} value={m.value}>
-                  {m.label} ({m.value})
+                  {m.label}
                 </option>
               ))}
             </select>
@@ -125,7 +125,7 @@ export default function JadwalShalatPage() {
             <select
               value={year}
               onChange={(e) => setYear(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all"
+              className="w-full px-4 py-2.5 bg-gray-100 border-0 rounded-xl text-gray-800 font-medium text-sm cursor-pointer focus:ring-2 focus:ring-green-500 outline-none transition-all appearance-none"
             >
               {years.map((y) => (
                 <option key={y} value={y}>
