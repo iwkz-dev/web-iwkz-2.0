@@ -1,3 +1,5 @@
+import { CircleFlag } from 'react-circle-flags';
+
 interface ILanguageSwitcherProps {
   availableLocales: [string, { flag: string; label: string }][];
   currentLocale: string;
@@ -5,6 +7,11 @@ interface ILanguageSwitcherProps {
   /** 'desktop' renders a pill container; 'mobile' renders flat buttons in a row */
   variant: 'desktop' | 'mobile';
   isLight?: boolean;
+}
+
+/** Extract ISO 3166-1 alpha-2 country code from a locale string (e.g. 'de-DE' → 'de') */
+function toCountryCode(locale: string): string {
+  return locale.split('-')[0].toLowerCase();
 }
 
 export default function LanguageSwitcher({
@@ -21,19 +28,23 @@ export default function LanguageSwitcher({
           isLight ? 'bg-gray-100' : 'bg-white/10'
         }`}
       >
-        {availableLocales.map(([code, { flag, label }]) => (
+        {availableLocales.map(([code]) => (
           <button
             key={code}
             onClick={() => onLocaleChange(code)}
-            className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-150 ${
+            className={`cursor-pointer p-0.5 rounded-full transition-all duration-150 ${
               currentLocale === code
-                ? 'bg-green-500 text-white shadow-sm'
+                ? 'ring-2 ring-green-500'
                 : isLight
-                  ? 'text-gray-600 hover:text-gray-900'
-                  : 'text-white/70 hover:text-white'
+                  ? 'opacity-50 hover:opacity-100'
+                  : 'opacity-50 hover:opacity-100'
             }`}
           >
-            {flag} {label}
+            <CircleFlag
+              countryCode={toCountryCode(code)}
+              width={24}
+              height={24}
+            />
           </button>
         ))}
       </div>
@@ -42,18 +53,21 @@ export default function LanguageSwitcher({
 
   return (
     <div className="pt-3 mt-3 border-t border-gray-100 flex gap-2">
-      {availableLocales.map(([code, { flag, label }]) => (
+      {availableLocales.map(([code]) => (
         <button
           key={code}
           onClick={() => onLocaleChange(code)}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 ${
+          className={`cursor-pointer p-0.5 rounded-full transition-all duration-150 ${
             currentLocale === code
-              ? 'bg-green-500 text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              ? 'ring-2 ring-green-500'
+              : 'opacity-50 hover:opacity-100'
           }`}
         >
-          <span>{flag}</span>
-          <span>{label}</span>
+          <CircleFlag
+            countryCode={toCountryCode(code)}
+            width={28}
+            height={28}
+          />
         </button>
       ))}
     </div>

@@ -94,10 +94,10 @@ export default function Header({ headerContent }: IHeaderContentProps) {
     <header
       className={`fixed w-full top-0 z-50 transition-all duration-300 ${
         isLight
-          ? 'bg-white/90 backdrop-blur-md text-gray-800 shadow-sm border-b border-gray-100'
+          ? 'bg-white backdrop-blur-md text-gray-800 shadow-sm border-b0'
           : isMainUrl
             ? 'bg-transparent text-white'
-            : 'bg-gray-900/95 backdrop-blur-md text-white border-b border-white/10'
+            : 'bg-gray-900/95 backdrop-blur-md text-white'
       }`}
     >
       <div
