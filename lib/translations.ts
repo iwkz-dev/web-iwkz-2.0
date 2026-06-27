@@ -102,6 +102,9 @@ export const translations = {
       collected: 'Terkumpul',
       donors: 'Donatur',
     },
+    prayerTimesCard: {
+      solatJumat: 'Solat Jumat di Al-Falah IWKZ pukul 13:30',
+    },
   },
   'de-DE': {
     navbar: {
@@ -205,6 +208,9 @@ export const translations = {
       openDonation: 'Offene Spende',
       collected: 'Gesammelt',
       donors: 'Spender',
+    },
+    prayerTimesCard: {
+      solatJumat: 'Freitagsgebet in der Al-Falah IWKZ um 13:30',
     },
   },
 } as const;
