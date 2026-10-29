@@ -103,7 +103,7 @@ export const translations = {
       donors: 'Donatur',
     },
     prayerTimesCard: {
-      solatJumat: 'Solat Jumat di Al-Falah IWKZ pukul 13:30',
+      solatJumat: 'Solat Jumat di Al-Falah IWKZ pukul',
     },
   },
   'de-DE': {
@@ -210,7 +210,7 @@ export const translations = {
       donors: 'Spender',
     },
     prayerTimesCard: {
-      solatJumat: 'Freitagsgebet in der Al-Falah IWKZ um 13:30',
+      solatJumat: 'Freitagsgebet in der Al-Falah IWKZ um',
     },
   },
 } as const;

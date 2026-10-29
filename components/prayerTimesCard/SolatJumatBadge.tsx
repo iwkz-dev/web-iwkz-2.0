@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl';
 import MosqueIcon from '@/assets/icons/MosqueIcon';
+import { getSolatJumatTime } from '@/lib/prayerTimesCardHelpers';
 
 interface SolatJumatBadgeProps {
   isFriday: boolean;
@@ -14,12 +15,14 @@ export default function SolatJumatBadge({ isFriday }: SolatJumatBadgeProps) {
         <div className="inline-flex flex-col items-center gap-1 bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium">
           <div className="flex items-center gap-2">
             <MosqueIcon />
-            <span>{t('solatJumat')}</span>
+            <span>{`${t('solatJumat')} ${getSolatJumatTime()}`}</span>
           </div>
         </div>
       </div>
     );
   }
 
-  return <p className="text-center text-sm text-gray-700">{t('solatJumat')}</p>;
+  return (
+    <p className="text-center text-sm text-gray-700">{`${t('solatJumat')} ${getSolatJumatTime()}`}</p>
+  );
 }
