@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import { isCEST } from '@/lib/timezone';
 
 export const PRAYER_LABELS = {
   subuh: 'Subuh',
@@ -13,11 +13,7 @@ export const PRAYER_LABELS = {
 export type PrayerLabelKey = keyof typeof PRAYER_LABELS;
 
 // Helper function to get Solat Jumat time based on timezone
-export const getSolatJumatTime = (): string => {
-  const now = dayjs();
-  const offset = now.utcOffset() / 60; // Returns +1 (CET) or +2 (CEST)
-  return offset === 2 ? '13:30' : '12:30'; // CEST: 13:30, CET: 12:30
-};
+export const getSolatJumatTime = (): string => (isCEST() ? '13:30' : '12:30'); // CEST: 13:30, CET: 12:30
 
 interface PrayerRowConfig {
   isCurrent: boolean;
